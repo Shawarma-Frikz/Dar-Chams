@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HELIOS — Project Roadmap & Graphic Charter</title>
+<meta name="description" content="A detailed engineering roadmap and visual identity system for Helios, a simulation-first residential solar microgrid digital twin.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap');
+:root{--basalt:#202B2A;--limestone:#E9E3D5;--oxide:#B86B45;--sage:#8A9B83;--lichen:#D3D86A;--slate:#526C70;--chalk:#F3EFE6;--clay:#A64F3D;--ink:#26302E;--muted:#68736D;--line:#D1CCBF;--serif:'Literata',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--mono:'DM Mono',Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--limestone);color:var(--ink);font:15px/1.65 var(--sans)}a{color:var(--oxide);text-decoration:none}a:hover{text-decoration:underline}.top{position:sticky;top:0;z-index:10;background:#e9e3d5ed;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}.topin{max-width:1160px;margin:auto;padding:0 30px;height:58px;display:flex;align-items:center;gap:12px}.wordmark{font:600 15px var(--sans);letter-spacing:.16em;color:var(--basalt)}.wordmark span{font:10px var(--mono);color:var(--oxide);margin-left:8px;letter-spacing:.12em}nav{margin-left:auto;display:flex;gap:18px}nav a{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+main{max-width:1160px;margin:auto;padding:0 30px 90px}.hero{margin:30px 0 24px;background:var(--basalt);color:var(--chalk);padding:58px 58px 36px;position:relative;overflow:hidden;border-left:7px solid var(--oxide)}.hero:before{content:"";position:absolute;width:440px;height:440px;border:1px solid #e9e3d526;border-radius:50%;right:-130px;top:-220px}.hero:after{content:"";position:absolute;width:280px;height:280px;border:1px solid #e9e3d51c;border-radius:50%;right:-48px;top:-140px}.hero-inner{position:relative;z-index:1;max-width:800px}.eyebrow{font:10px var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--oxide);margin:0 0 13px}h1{font:500 clamp(48px,8vw,82px)/.98 var(--serif);letter-spacing:-.045em;margin:0 0 17px}.hero p.lede{font-size:18px;line-height:1.5;color:#d5d8cc;max-width:720px;margin:0}.hero-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;border-top:1px solid #ffffff2b;margin-top:30px;padding-top:18px}.hero-meta span{display:block;font:9px var(--mono);letter-spacing:.13em;color:#aeb8a7;text-transform:uppercase;margin-bottom:5px}.hero-meta b{font-size:12px;font-weight:500;color:var(--chalk)}
+.intro-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;margin:34px 0 54px}.intro-grid h2,.section-head h2{font:500 32px/1.12 var(--serif);margin:0 0 10px;color:var(--basalt)}.intro-grid p{color:#4f5a55;margin:0 0 10px}.principles{border-top:2px solid var(--basalt)}.principle{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.principle b{font:10px var(--mono);color:var(--oxide)}.principle strong{display:block;font-size:13px}.principle small{display:block;color:var(--muted);font-size:12px}
+.section-head{border-top:1px solid #9da59a;padding-top:16px;margin:64px 0 22px;display:flex;gap:20px;align-items:flex-start}.section-index{font:400 38px/.9 var(--serif);color:var(--oxide);min-width:52px}.section-head p{margin:0;color:var(--muted);max-width:760px;font-size:13px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:24px 0 28px}.flow div{background:var(--chalk);border-top:3px solid var(--oxide);padding:14px 13px;min-height:112px}.flow b{display:block;font:10px var(--mono);letter-spacing:.08em;color:var(--oxide);margin-bottom:7px}.flow strong{font:500 17px var(--serif);display:block;color:var(--basalt)}.flow small{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:4px}
+.phase-section{margin:58px 0 0;scroll-margin-top:78px}.phase-head{display:grid;grid-template-columns:76px 1fr;gap:18px;padding:22px 0 17px;border-top:2px solid var(--basalt)}.phase-no{font:400 48px/.9 var(--serif);color:var(--oxide)}.phase-head h2{font:500 30px/1.1 var(--serif);margin:0 0 7px;color:var(--basalt)}.phase-desc{margin:0;color:var(--muted);font-size:13px;max-width:760px}.deliverable{display:flex;gap:14px;align-items:center;background:#dce2d5;padding:12px 16px;margin:0 0 12px;border-left:3px solid var(--sage)}.deliverable span{font:9px var(--mono);letter-spacing:.13em;color:#52634f;white-space:nowrap}.deliverable strong{font-size:12px;font-weight:600}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}.tasks{background:#f3efe6;font-size:12px}.tasks th{background:var(--basalt);color:var(--chalk);text-align:left;padding:10px 12px;font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase}.tasks td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:#45504a}.tasks tr:nth-child(even) td{background:#eeeadf}.tasks td:first-child{width:72px;font:10px var(--mono);color:var(--oxide);font-weight:500;white-space:nowrap}.tasks td:nth-child(2){width:47%}.tasks td:nth-child(3){width:36%}.tasks p{margin:5px 0 0}.tasks strong{color:var(--basalt);font-size:12px}.done-label{font:8px var(--mono);letter-spacing:.12em;color:#627a5c}
+.charter-hero{background:var(--basalt);color:var(--chalk);padding:30px;margin:22px 0}.charter-hero h3{font:500 26px var(--serif);margin:0 0 8px}.charter-hero p{color:#c5cec2;margin:0;max-width:780px;font-size:13px}.palette{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 30px}.swatch{background:var(--chalk);padding:8px 8px 12px;border:1px solid var(--line)}.swatch i{display:block;height:86px;background:var(--sw);margin-bottom:10px}.swatch b{display:block;font-size:13px;color:var(--basalt)}.swatch code{font:10px var(--mono);color:var(--oxide)}.swatch small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.charter-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:24px 0}.charter-panel{border-top:2px solid var(--basalt);padding-top:14px}.charter-panel h3{font:500 22px var(--serif);margin:0 0 8px}.charter-panel p,.charter-panel li{font-size:12px;color:#56615b}.type-sample{font:500 31px/1.1 var(--serif);color:var(--basalt);margin:12px 0 5px}.type-ui{font:600 18px var(--sans);color:var(--slate)}.type-mono{font:10px var(--mono);letter-spacing:.1em;color:var(--oxide)}.motif-box{background:#e2e4d8;padding:18px;margin:12px 0}.motif-box svg{width:100%;height:auto;display:block}.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.rule{padding:14px 0;border-top:1px solid var(--line)}.rule b{font:10px var(--mono);color:var(--oxide);display:block;margin-bottom:5px}.rule strong{font:500 17px var(--serif);display:block;color:var(--basalt)}.rule p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.schema{background:var(--basalt);color:var(--chalk);padding:22px 25px;overflow:auto;font:11px/1.7 var(--mono);white-space:pre}.gate-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.gate{border-top:2px solid var(--oxide);padding:12px 0}.gate b{font:9px var(--mono);letter-spacing:.1em;color:var(--oxide)}.gate p{font-size:12px;color:#58625c;margin:5px 0 0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{border-top:2px solid var(--sage);padding:12px 0}.metric b{font:500 20px var(--serif);display:block;color:var(--basalt)}.metric small{font:9px var(--mono);color:var(--oxide);letter-spacing:.08em}.metric p{font-size:11px;color:var(--muted);margin:5px 0}
+footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;border-left:6px solid var(--oxide)}footer h2{font:500 28px var(--serif);margin:0 0 8px}footer p{font-size:13px;color:#c5cec2;max-width:760px}.footline{border-top:1px solid #ffffff2a;padding-top:12px;margin-top:20px;font:9px var(--mono);color:#aeb8a7;display:flex;justify-content:space-between;gap:12px}
+@media(max-width:800px){nav{display:none}.hero{padding:38px 28px}.hero-meta{grid-template-columns:1fr 1fr}.intro-grid,.charter-grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.palette{grid-template-columns:repeat(2,1fr)}.rules,.metrics{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){main{padding:0 16px 55px}.topin{padding:0 16px}.hero{padding:30px 21px}.hero h1{font-size:48px}.hero-meta{gap:12px}.section-head h2{font-size:26px}.phase-head{grid-template-columns:48px 1fr;gap:12px}.phase-no{font-size:34px}.phase-head h2{font-size:24px}.flow,.rules,.metrics,.gate-grid{grid-template-columns:1fr}.tasks{min-width:760px}.palette{gap:8px}.swatch i{height:58px}.footline{display:block}}
+@media print{@page{size:A4;margin:12mm}body{background:white}.top{display:none}main{max-width:none;padding:0}.hero{break-inside:avoid}.phase-section{break-before:page}.tasks tr{break-inside:avoid}.charter-hero{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><div class="wordmark">HELIOS <span>ENGINEERING ROADMAP</span></div><nav><a href="#brief">Brief</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#charter">Graphic charter</a><a href="#validation">Validation</a></nav></div></header>
+<main>
+<section class="hero">
+ <div class="hero-inner"><p class="eyebrow">RESIDENTIAL ENERGY SYSTEMS · SIMULATION · DIGITAL TWIN</p><h1>Helios</h1>
+ <p class="lede">A simulation-first residential solar microgrid that predicts energy conditions, coordinates household loads and storage, and exposes every decision through an interactive 3D digital twin.</p></div>
+ <div class="hero-meta">
+  <div><span>Project class</span><b>Engineering prototype / digital twin</b></div>
+  <div><span>Core loop</span><b>Model → predict → schedule → explain</b></div>
+  <div><span>Primary interface</span><b>Interactive cutaway house</b></div>
+  <div><span>Build philosophy</span><b>Physics first, visuals second</b></div>
+ </div>
+</section>
+<section class="intro-grid" id="brief">
+ <div><p class="eyebrow">01 · PROJECT DEFINITION</p><h2>What Helios is meant to prove</h2>
+ <p>Helios is not a decorative smart-home dashboard. It is a configurable virtual energy installation. Its simulation engine models photovoltaic generation, household demand, battery storage, conversion limits and grid exchange at a defined timestep. A management layer first runs a transparent baseline, then a forecast-aware policy. The interface makes the resulting state and decisions inspectable.</p>
+ <p>The first release is software-only. It must be useful without an ESP32, physical solar panel, battery, or live sensor. Future hardware can replace selected simulated inputs, but it must not require rewriting the energy-management rules.</p>
+ </div>
+ <div class="principles">
+  <div class="principle"><b>01</b><div><strong>One source of truth</strong><small>The simulation engine owns state; charts and 3D are projections of it.</small></div></div>
+  <div class="principle"><b>02</b><div><strong>Honest intelligence</strong><small>Rules are called rules; ML is measured against naïve baselines.</small></div></div>
+  <div class="principle"><b>03</b><div><strong>Reproducible experiments</strong><small>Same scenario, seed and inputs must reproduce the same run.</small></div></div>
+  <div class="principle"><b>04</b><div><strong>Hardware-ready boundaries</strong><small>Virtual sensors and future physical telemetry share contracts.</small></div></div>
+ </div>
+</section>
+<div class="section-head" id="architecture"><div class="section-index">02</div><div><h2>System architecture</h2><p>Keep the numerical engine independent of the browser renderer. External services supply optional inputs; they never become hidden dependencies for a valid run.</p></div></div>
+<div class="flow">
+ <div><b>01 · INPUTS</b><strong>Scenario + weather</strong><small>Location, PV specification, household profile, tariff, forecast or seeded synthetic weather.</small></div>
+ <div><b>02 · PHYSICS</b><strong>Energy engine</strong><small>PV, inverter, battery, grid, appliance states and timestep energy balance.</small></div>
+ <div><b>03 · INTELLIGENCE</b><strong>Forecast + policy</strong><small>Load/PV prediction, baseline dispatch, scheduling, anomaly detection and fallback.</small></div>
+ <div><b>04 · STATE</b><strong>Event + run store</strong><small>Snapshots, decisions, alerts, experiment metadata and reproducible run IDs.</small></div>
+ <div><b>05 · EXPERIENCE</b><strong>Dashboard + 3D</strong><small>Charts, house scene, device inspection, what-if controls and reports.</small></div>
+</div>
+<div class="section-head"><div class="section-index">03</div><div><h2>Recommended technical stack</h2><p>Use the smallest stack that supports the requirements. Keep the core simulation in TypeScript so it can run in tests and in the browser without a Python service dependency.</p></div></div>
+<div class="table-wrap"><table class="tasks"><thead><tr><th>Layer</th><th>Recommended choice</th><th>Reason / boundary</th></tr></thead><tbody>
+<tr><td>Web application</td><td><strong>Next.js + React + TypeScript</strong></td><td>Typed application shell, routing, component composition and deployment flexibility.</td></tr>
+<tr><td>Styling / UI</td><td><strong>Tailwind CSS + shadcn/ui, selectively</strong></td><td>Use a restrained component base; avoid default template styling and excessive card grids.</td></tr>
+<tr><td>3D</td><td><strong>Three.js via React Three Fiber + Drei</strong></td><td>Interactive scene integrated with React; low-poly assets and a 2D fallback.</td></tr>
+<tr><td>Charts</td><td><strong>Recharts</strong></td><td>Energy histories and comparisons; chart values derive from the same run records.</td></tr>
+<tr><td>Solar position</td><td><strong>SunCalc or validated equivalent</strong></td><td>Sun elevation/azimuth for the chosen site and simulation time.</td></tr>
+<tr><td>Weather input</td><td><strong>Open-Meteo adapter + cached/synthetic fallback</strong></td><td>Useful forecast context while preserving offline reproducibility and provenance.</td></tr>
+<tr><td>ML experiments</td><td><strong>Python + pandas + scikit-learn</strong></td><td>Train/evaluate forecasting and anomaly models separately; export versioned model artifacts.</td></tr>
+<tr><td>Persistence</td><td><strong>IndexedDB/local-first; Supabase only if needed</strong></td><td>Save scenarios and runs without introducing accounts/backend complexity prematurely.</td></tr>
+<tr><td>Testing</td><td><strong>Vitest + Playwright</strong></td><td>Fast numerical tests and browser-level user flows.</td></tr>
+<tr><td>Deployment</td><td><strong>Vercel Hobby or static-compatible hosting</strong></td><td>Deploy the UI; keep secrets server-side and respect free-tier limits.</td></tr>
+</tbody></table></div>
+<div class="section-head" id="roadmap"><div class="section-index">04</div><div><h2>Complete implementation roadmap</h2><p>Each task has a stable ID, concrete implementation work, and a definition of done. Work in order where dependencies matter. A phase is not complete because a screen exists; it is complete when its acceptance conditions pass.</p></div></div>
+
+    <section class="phase-section" id="phase-00">
+      <div class="phase-head">
+        <div class="phase-no">00</div>
+        <div><p class="eyebrow">PHASE 00 · Week 1</p><h2>Project definition &amp; engineering decisions</h2><p class="phase-desc">Lock what Helios is, what it is not, and what counts as a successful simulation.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Scope brief, requirements register, decision log</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">00.1</td>
+          <td><strong>Write the product statement</strong><p>Describe Helios as a simulation-first residential solar microgrid and energy-management digital twin. State that the first release models a virtual installation; physical ESP32/sensor integration is a later extension.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>One paragraph appears in README and report; it does not claim a real installation is being controlled.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.2</td>
+          <td><strong>Define the operating scenario</strong><p>Specify a single residential property, grid-connected or off-grid operating mode, location/timezone, panel capacity, inverter limits, battery chemistry abstraction, and household profile. Keep all assumptions configurable.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A scenario file describes the complete installation without hard-coded values in simulation code.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.3</td>
+          <td><strong>Freeze the MVP boundary</strong><p>MVP includes solar generation, weather/daylight input, battery, household appliances, energy balance, rule-based baseline, forecast-aware scheduler, event log, dashboard, and a basic 3D twin.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every MVP item has an owner, test, and acceptance criterion; optional features are explicitly separated.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.4</td>
+          <td><strong>Create a requirements register</strong><p>Write functional requirements, non-functional requirements, constraints, priorities, dependencies, and verification method. Assign IDs such as FR-01 and NFR-01.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No requirement is only a vague phrase such as &#x27;make it smart&#x27;; each is testable.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.5</td>
+          <td><strong>Define simulation truth and limits</strong><p>Document that simulated values are not measurements. Distinguish estimated energy, forecast values, measured values (future hardware), and derived values in both code and UI.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every displayed metric has a source/type label and unit.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.6</td>
+          <td><strong>Set success criteria</strong><p>Define measurable MVP targets: energy-balance closure, deterministic replay, valid state transitions, baseline-vs-optimizer comparison, forecast error reporting, and stable demo performance.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A signed acceptance checklist exists before implementation.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">00.7</td>
+          <td><strong>Create a decision log</strong><p>Record decisions on framework, units, timestep, weather source, battery model, 3D approach, persistence, and optimization method, including rejected alternatives and reasons.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A new contributor can understand why the project uses each major choice.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-01">
+      <div class="phase-head">
+        <div class="phase-no">01</div>
+        <div><p class="eyebrow">PHASE 01 · Week 1</p><h2>Repository, tooling &amp; engineering foundations</h2><p class="phase-desc">Create a reproducible project skeleton before building domain logic.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Runnable repository, setup guide, CI checks</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">01.1</td>
+          <td><strong>Initialize Git repository</strong><p>Create the repository, README, license decision, .gitignore, editor settings, and branch/commit conventions. Keep generated simulation runs, secrets, downloaded model files, and bulky assets out of Git.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A clean clone can be installed using documented commands.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">01.2</td>
+          <td><strong>Pin the runtime</strong><p>Use a supported Node.js LTS version and package manager; pin dependencies with a lockfile. Record browser support and minimum hardware expectations.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The same lockfile installs successfully on a clean Windows machine.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">01.3</td>
+          <td><strong>Create the application shell</strong><p>Set up Next.js, React, TypeScript, linting, formatting, and a minimal route structure. Keep simulation logic in a separate package/module.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The app starts and the TypeScript/lint checks pass.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">01.4</td>
+          <td><strong>Create configuration layers</strong><p>Separate defaults, scenario configuration, user settings, and runtime state. Validate configuration at startup with readable errors.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Invalid capacity, negative power, impossible SOC, or missing units fail early with actionable messages.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">01.5</td>
+          <td><strong>Establish code quality gates</strong><p>Add formatting, lint, type-check, unit-test, and production-build commands. Add CI to run them on pushes and pull requests.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A failing check blocks a green build; the README lists exact commands.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">01.6</td>
+          <td><strong>Create documentation conventions</strong><p>Add architecture decision records, module READMEs, API notes, data dictionary, experiment log, and changelog.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every major module has purpose, inputs, outputs, and test instructions.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-02">
+      <div class="phase-head">
+        <div class="phase-no">02</div>
+        <div><p class="eyebrow">PHASE 02 · Weeks 2–3</p><h2>System model &amp; energy mathematics</h2><p class="phase-desc">Build the numerical heart of Helios before the 3D house. The simulator is the source of truth.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Deterministic energy engine with unit tests</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">02.1</td>
+          <td><strong>Choose the simulation timestep</strong><p>Start with a configurable 5- or 15-minute timestep for day-scale simulation. Define timestamps as timezone-aware instants and store all energy internally in Wh/kWh and power in W/kW.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A full day produces the expected number of steps and daylight/timezone boundaries are correct.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.2</td>
+          <td><strong>Define canonical units</strong><p>Use W for instantaneous power, Wh for interval energy, kW/kWh for larger display values, °C for temperature, and percent or 0–1 consistently for SOC. Add explicit conversions at boundaries.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No calculation silently adds power to energy or mixes Wh and kWh.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.3</td>
+          <td><strong>Define the energy-balance equation</strong><p>For each timestep calculate PV energy + grid import + battery discharge = household load + battery charge + grid export + conversion/loss terms. Choose a sign convention and document it.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Energy-balance residual stays within a defined numerical tolerance on every simulated step.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.4</td>
+          <td><strong>Define component interfaces</strong><p>Specify typed inputs/outputs for PV, inverter, battery, appliance, grid, weather, scheduler, and simulation clock. Components must not reach into UI state.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The engine runs in a headless test without rendering React or Three.js.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.5</td>
+          <td><strong>Implement simulation clock</strong><p>Support start, pause, resume, reset, speed multiplier, step-forward, and deterministic replay from a scenario seed.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The same scenario and seed reproduce identical results.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.6</td>
+          <td><strong>Implement event-driven state transitions</strong><p>Define events for appliance start/stop, SOC thresholds, grid outage/return, forecast update, inverter limit, and optimization action.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every event has timestamp, source, payload, and stable event ID.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">02.7</td>
+          <td><strong>Add numerical guards</strong><p>Clamp only physically bounded states; reject impossible inputs; prevent negative energy, SOC above capacity, and silent NaN propagation.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Property-based tests cover boundary and extreme conditions.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-03">
+      <div class="phase-head">
+        <div class="phase-no">03</div>
+        <div><p class="eyebrow">PHASE 03 · Weeks 3–4</p><h2>Solar generation &amp; environment model</h2><p class="phase-desc">Estimate PV production from solar position, weather, panel properties, and system losses.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>PV model, weather adapter, production traces</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">03.1</td>
+          <td><strong>Define installation geometry</strong><p>Configure latitude/longitude, panel tilt, azimuth, installed DC capacity, panel count, and optional shading profile. Do not assume a tracking array unless explicitly enabled.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A scenario file fully describes panel geometry and rated capacity.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.2</td>
+          <td><strong>Calculate solar position</strong><p>Integrate a solar-position library or validated algorithm for elevation and azimuth. Handle local timezone, daylight-saving changes where relevant, and polar/night edge cases.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Known test dates/locations produce plausible sunrise, solar noon, and sunset values.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.3</td>
+          <td><strong>Build weather data adapter</strong><p>Use Open-Meteo as an optional external input for irradiance/cloud/temperature forecasts, with a cached sample and deterministic synthetic-weather fallback.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The simulator still runs offline; provider failures are visible and do not corrupt state.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.4</td>
+          <td><strong>Model plane-of-array irradiance</strong><p>Convert available irradiance inputs to panel-plane irradiance using a documented simplified transposition approach; explicitly label approximations.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The model responds plausibly to sun angle, cloud cover, and panel orientation.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.5</td>
+          <td><strong>Model panel temperature and derating</strong><p>Estimate cell temperature from ambient temperature/irradiance using a simplified documented model; apply a configurable temperature coefficient and system derate.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Higher panel temperature reduces output according to the configured coefficient.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.6</td>
+          <td><strong>Calculate PV power and interval energy</strong><p>Compute DC output from irradiance and rated capacity, apply temperature/soiling/shading/availability losses, then inverter efficiency and AC limit.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Output is zero at night, bounded by inverter capacity, and never exceeds physical limits.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.7</td>
+          <td><strong>Model shading and soiling scenarios</strong><p>Add configurable shading windows and soiling loss factors; make them scenario controls, not hidden random penalties.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A shading/soiling experiment produces an explainable, repeatable production reduction.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.8</td>
+          <td><strong>Add optional solar tracking model</strong><p>If tracking is in MVP, model fixed-tilt vs tracker orientation, tracking limits, stow conditions, actuator energy overhead, and net gain. Otherwise reserve it for extension.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Tracker is only beneficial when additional harvested energy exceeds its own energy cost and constraints.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">03.9</td>
+          <td><strong>Validate PV traces</strong><p>Compare curve shape against expected clear-sky/daylight behavior and documented sample traces; record assumptions and error sources.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A validation notebook/report includes at least clear, cloudy, hot, and shaded cases.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-04">
+      <div class="phase-head">
+        <div class="phase-no">04</div>
+        <div><p class="eyebrow">PHASE 04 · Weeks 4–5</p><h2>Battery, inverter, grid &amp; storage</h2><p class="phase-desc">Represent storage constraints and conversion losses without pretending to simulate electrochemistry in detail.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Battery and power-conversion models</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">04.1</td>
+          <td><strong>Define battery parameters</strong><p>Configure nominal capacity, usable capacity, initial SOC, minimum/maximum SOC, max charge/discharge power, round-trip efficiency, and optional degradation coefficient.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Invalid combinations are rejected and the active battery specification is visible.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.2</td>
+          <td><strong>Implement SOC update</strong><p>Calculate charge/discharge energy per timestep with efficiency and power limits. Enforce SOC bounds and preserve energy accounting.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Hand-calculated cases match implementation within tolerance.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.3</td>
+          <td><strong>Prevent simultaneous charge/discharge</strong><p>Define dispatch precedence and prohibit physically inconsistent simultaneous battery charging and discharging unless a documented topology explicitly permits it.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Invariant tests prove the battery cannot charge and discharge in the same interval.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.4</td>
+          <td><strong>Model inverter constraints</strong><p>Represent DC/AC conversion efficiency, inverter rated power, clipping, standby consumption, and optional export limit.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>PV clipping and conversion losses appear in energy accounting.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.5</td>
+          <td><strong>Model grid connection</strong><p>Support grid import/export limits, tariffs, optional export compensation, and outage windows. Keep grid-connected and islanded modes explicit.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>An outage removes grid support; restoration is logged and balance remains valid.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.6</td>
+          <td><strong>Add battery aging as an extension-ready model</strong><p>Track equivalent throughput/cycle proxy and configurable capacity fade. Avoid claiming accurate remaining useful life without calibration data.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Aging is clearly marked as an approximation and does not alter baseline runs unless enabled.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">04.7</td>
+          <td><strong>Build storage validation suite</strong><p>Test empty/full battery, minimum SOC, max power, efficiency loss, outage, and long-duration cycling.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No scenario violates SOC or power constraints; losses are accounted for.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-05">
+      <div class="phase-head">
+        <div class="phase-no">05</div>
+        <div><p class="eyebrow">PHASE 05 · Weeks 5–6</p><h2>Residential household &amp; appliance model</h2><p class="phase-desc">Create a configurable virtual home with individual loads, schedules, priorities, and user interaction.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Household profile, appliance catalogue, load traces</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">05.1</td>
+          <td><strong>Define house and room schema</strong><p>Create room IDs, room types, appliance placement, and optional occupancy schedule. Start with living room, kitchen, bedrooms, bathroom, and outdoor/garden loads.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The same household configuration feeds both simulation and digital twin.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.2</td>
+          <td><strong>Create appliance catalogue</strong><p>Define appliance name, room, rated power, operating profile, minimum run time, duty cycle, flexibility, priority, controllability, and estimated energy per cycle.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every appliance has explicit parameters and a test fixture.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.3</td>
+          <td><strong>Add core household appliances</strong><p>Include refrigerator, lighting, TV, computer, fan/AC, washing machine, dishwasher, oven, water heater, irrigation pump, and chargers as configurable examples.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A demo home has a plausible daily load curve; appliance set can be edited.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.4</td>
+          <td><strong>Implement appliance state machines</strong><p>Model off, scheduled, running, paused/deferred, completed, and unavailable states where appropriate. Respect non-interruptible cycles.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Appliances cannot enter invalid state transitions.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.5</td>
+          <td><strong>Build load profiles</strong><p>Generate time-of-day demand profiles, duty cycles, standby consumption, and stochastic variation using a seeded random generator.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Daily demand is repeatable and component contributions sum to total household load.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.6</td>
+          <td><strong>Classify appliance priority</strong><p>Define critical, important, flexible, and discretionary classes. Priority is policy metadata, not an unexplained AI score.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Load shedding preserves critical loads unless an explicit emergency override is configured.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.7</td>
+          <td><strong>Add user interaction controls</strong><p>Allow a user to switch eligible devices, change schedules, adjust priority, and add a custom appliance. Show when an action is rejected and why.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>UI action changes simulation input and produces a logged event.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">05.8</td>
+          <td><strong>Add household scenario presets</strong><p>Create at least economical, typical, high-consumption, and high-flexibility household profiles.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Preset differences are documented and can be compared under identical weather.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-06">
+      <div class="phase-head">
+        <div class="phase-no">06</div>
+        <div><p class="eyebrow">PHASE 06 · Weeks 6–8</p><h2>Energy management &amp; optimization</h2><p class="phase-desc">Compare a transparent baseline with a forecast-aware policy. Never call a fixed threshold rule &#x27;AI&#x27;.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Baseline controller, optimizer, decision explanations</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">06.1</td>
+          <td><strong>Specify dispatch policy</strong><p>Define order of use for PV, household load, battery charge/discharge, grid import, and export. Specify reserve SOC and export behavior.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Policy can be described in a state/decision table and is deterministic.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.2</td>
+          <td><strong>Implement rule-based baseline</strong><p>Create a conventional threshold controller using SOC reserve, PV surplus, load demand, and grid state. This is the benchmark strategy.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Baseline runs end-to-end and is reproducible.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.3</td>
+          <td><strong>Define appliance scheduling objective</strong><p>Formalize objective terms such as grid cost, unmet critical load, battery wear proxy, curtailed PV, and schedule inconvenience. Set hard constraints separately from weighted preferences.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Objective function, units, weights, and constraints are documented.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.4</td>
+          <td><strong>Implement forecast-aware scheduler</strong><p>Use forecast PV and expected household demand over a configurable horizon to schedule flexible loads into suitable windows while respecting deadlines and device constraints.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Scheduler emits a feasible plan and explains each deferred/advanced load.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.5</td>
+          <td><strong>Add battery reserve management</strong><p>Maintain configurable reserve for evening demand/outages; avoid discharging below minimum SOC and avoid charging beyond limits.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Reserve behavior is testable under sunny, cloudy, and outage scenarios.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.6</td>
+          <td><strong>Add load shedding policy</strong><p>When supply is insufficient, shed or defer discretionary loads first, then flexible loads; preserve critical loads and expose any unmet demand.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The order is deterministic, visible, and never silently drops critical demand.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.7</td>
+          <td><strong>Add surplus-energy policy</strong><p>Choose among battery charging, flexible-load activation, export, and curtailment according to configuration and tariff assumptions.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Surplus is fully accounted for and the chosen action has a reason code.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.8</td>
+          <td><strong>Add decision explanation engine</strong><p>For every action store trigger, forecast values, constraints, alternatives considered, selected action, and expected effect. Use deterministic templates first.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A user can inspect why an appliance was postponed or a battery reserve was protected.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.9</td>
+          <td><strong>Add strategy comparison runner</strong><p>Run baseline and optimizer on identical scenario seeds, weather, and initial conditions; compare results with paired metrics.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Comparison cannot accidentally use different weather or load traces.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">06.10</td>
+          <td><strong>Add optimization fallback</strong><p>If forecasts are missing, stale, or invalid, revert to the documented baseline policy and mark the run as fallback mode.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Fallback is automatic, logged, and clearly shown in the UI.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-07">
+      <div class="phase-head">
+        <div class="phase-no">07</div>
+        <div><p class="eyebrow">PHASE 07 · Weeks 8–9</p><h2>Forecasting, anomaly detection &amp; ML</h2><p class="phase-desc">Introduce ML only after the deterministic simulator and baseline produce trustworthy data.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Forecast experiments, anomaly detector, model card</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">07.1</td>
+          <td><strong>Define prediction targets</strong><p>Separate PV generation forecast, household load forecast, and optional battery SOC trajectory. Define horizon and interval; avoid mixing forecast with ground truth.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Each target has units, horizon, baseline, and evaluation metric.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.2</td>
+          <td><strong>Generate or source training data</strong><p>Create reproducible synthetic scenarios from the simulator and optionally enrich with permitted weather/history data. Tag synthetic data and avoid presenting it as field measurements.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Dataset manifest includes source, generator version, scenario parameters, and split.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.3</td>
+          <td><strong>Build naïve forecasting baselines</strong><p>Implement persistence, time-of-day average, and simple weather-driven baseline before trying ML.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>ML is only retained if it improves over a relevant baseline.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.4</td>
+          <td><strong>Train PV/load forecasting model</strong><p>Start with scikit-learn models such as Random Forest or Gradient Boosting; compare with linear baselines. Use time-aware splits, not random row shuffling.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Saved model, preprocessing, feature schema, seed, and evaluation report are versioned.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.5</td>
+          <td><strong>Evaluate forecast quality</strong><p>Report MAE/RMSE and MAPE only where denominator behavior is sensible; include horizon-specific errors and confidence/uncertainty if available.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Forecast report includes sample counts, units, test period, and baseline comparison.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.6</td>
+          <td><strong>Implement anomaly detection</strong><p>Detect unexpected PV underproduction relative to irradiance/temperature expectation, unusual load spikes, and battery/SOC inconsistencies. Start with residual thresholds or Isolation Forest.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Each anomaly has severity, evidence window, expected range, and false-positive caveat.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.7</td>
+          <td><strong>Add model monitoring hooks</strong><p>Track input ranges, missing values, forecast residuals, model version, and fallback frequency. Do not silently retrain on the test set.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A model-health panel exposes drift indicators and stale-model status.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">07.8</td>
+          <td><strong>Write model cards</strong><p>Document intended use, training data, synthetic-data proportion, metrics, known limitations, and when not to trust the model.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every ML model has a concise model card linked from the interface/report.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-08">
+      <div class="phase-head">
+        <div class="phase-no">08</div>
+        <div><p class="eyebrow">PHASE 08 · Weeks 8–10</p><h2>3D digital twin &amp; visual interaction</h2><p class="phase-desc">The 3D house is a view of the simulation state, never a second source of truth.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Interactive 3D house linked to live simulation</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">08.1</td>
+          <td><strong>Define visual scene requirements</strong><p>Choose a readable isometric/cutaway residential house with roof PV, rooms, battery/inverter utility area, grid connection, and garden loads. Prioritize legibility over architectural photorealism.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A scene storyboard identifies camera, room layout, selectable objects, and status states.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.2</td>
+          <td><strong>Build scene shell</strong><p>Set up React Three Fiber, Drei, camera controls, lighting, environment, responsive canvas, and loading/error states.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Scene loads on target laptop without blocking the dashboard.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.3</td>
+          <td><strong>Create low-poly house geometry</strong><p>Model walls, floors, roof sections, doors/windows, room boundaries, roof panels, and utility equipment. Use consistent scale and named meshes.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Each interactive object has a stable semantic ID and sensible performance budget.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.4</td>
+          <td><strong>Create appliance assets</strong><p>Build or source simple consistent models for core appliances. Prefer low-poly, clean silhouettes over mixed-style stock assets.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>All assets share scale, material roughness, and visual detail level.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.5</td>
+          <td><strong>Bind 3D objects to simulation entities</strong><p>Map mesh IDs to room/appliance IDs. Read simulation state through a typed view model; do not put energy logic in mesh click handlers.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Changing simulation state updates the matching 3D object without duplicating rules.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.6</td>
+          <td><strong>Visualize energy flows</strong><p>Show PV-to-load, PV-to-battery, battery-to-load, grid import/export with restrained directional lines or pulses. Flow width/speed must map to actual power values.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Flow visualization matches numerical values and becomes inactive at zero power.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.7</td>
+          <td><strong>Add selection and detail inspection</strong><p>Click/tap an appliance or energy component to open its current state, rated power, interval energy, schedule, priority, and history.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Selected object and detail panel stay synchronized on desktop and mobile.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.8</td>
+          <td><strong>Add environmental time states</strong><p>Represent day/night, sun direction, cloud cover, and weather state without implying that decorative lighting is a measured quantity.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Visual environment follows the simulation clock and weather inputs.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.9</td>
+          <td><strong>Optimize rendering</strong><p>Use instancing where appropriate, compressed assets, capped pixel ratio, limited dynamic shadows, and lazy loading. Provide reduced-motion and 2D fallback modes.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Scene remains responsive on the target laptop and can be disabled without breaking the app.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">08.10</td>
+          <td><strong>Add accessibility alternative</strong><p>Provide an equivalent 2D system map/list of rooms and devices for keyboard, screen-reader, low-power, and mobile users.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>All critical controls and state information are available without 3D.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-09">
+      <div class="phase-head">
+        <div class="phase-no">09</div>
+        <div><p class="eyebrow">PHASE 09 · Weeks 9–11</p><h2>Dashboard, persistence &amp; application experience</h2><p class="phase-desc">Make the system understandable, inspectable, and resilient—not a collection of decorative cards.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Complete responsive application and stored runs</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">09.1</td>
+          <td><strong>Define navigation and information hierarchy</strong><p>Create Overview, Digital Twin, Energy Management, Forecasts, Analytics, Scenarios/Experiments, and Settings. Keep the primary energy state visible without overwhelming the first screen.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A user can answer current generation, load, SOC, grid state, and next recommended action quickly.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.2</td>
+          <td><strong>Build live system overview</strong><p>Show PV power, household load, battery SOC/power, grid import/export, self-consumption, and system state with units and timestamps.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>All widgets read from the same simulation snapshot.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.3</td>
+          <td><strong>Build energy-flow and history charts</strong><p>Add generation/load/storage/grid charts, SOC history, appliance breakdown, and daily energy summary. Include range selection and empty states.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Charts reconcile with raw interval data and totals.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.4</td>
+          <td><strong>Build decision and alert timeline</strong><p>Display scheduler actions, anomalies, outages, threshold crossings, and user overrides with severity and reason.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Selecting an event reveals the exact simulation inputs and state transition.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.5</td>
+          <td><strong>Build appliance control panel</strong><p>List appliances by room and priority; allow schedule changes and eligible manual overrides; show deferred tasks and expected energy.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Controls update the simulator, not just the visual component.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.6</td>
+          <td><strong>Add scenario editor</strong><p>Allow editing panel capacity, battery size, weather profile, household profile, tariff, and grid availability with validation.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Scenario changes create a new run configuration and do not mutate historical runs.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.7</td>
+          <td><strong>Persist scenarios and runs</strong><p>Start local-first (IndexedDB or local persistence) for saved configurations and run summaries; add Supabase only if multi-device sync/auth is required.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Refresh does not lose saved scenarios; no secrets are shipped to the browser.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.8</td>
+          <td><strong>Add exportable experiment reports</strong><p>Export run metadata, comparison tables, charts, and assumptions to CSV/JSON and a printable report view.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>An exported report can be traced to a scenario ID, engine version, and run seed.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">09.9</td>
+          <td><strong>Polish responsive behavior</strong><p>Test desktop, tablet, and narrow phone widths; collapse 3D scene gracefully and keep charts legible.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No critical action requires horizontal scrolling on a phone.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-10">
+      <div class="phase-head">
+        <div class="phase-no">10</div>
+        <div><p class="eyebrow">PHASE 10 · Weeks 10–12</p><h2>Validation, security, performance &amp; reliability</h2><p class="phase-desc">Prove the simulation is coherent and the comparison is fair before calling it intelligent.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Test suite, validation report, risk register</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">10.1</td>
+          <td><strong>Unit-test physical components</strong><p>Test PV bounds, battery SOC, inverter clipping, appliance state machines, grid limits, and unit conversions.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Core component tests cover nominal, boundary, and failure cases.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.2</td>
+          <td><strong>Property-test energy invariants</strong><p>Generate many random valid scenarios and assert non-negative energy, SOC bounds, power limits, valid transitions, and balance closure.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No invariant failure occurs across the defined randomized test suite.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.3</td>
+          <td><strong>Test deterministic replay</strong><p>Run the same scenario/seed twice and compare interval outputs and event sequences.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Outputs are identical within documented floating-point tolerance.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.4</td>
+          <td><strong>Validate weather adapter failure modes</strong><p>Test offline use, rate limits, malformed payloads, missing values, stale forecasts, and timezone mismatches.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The system degrades to cached/synthetic inputs with a visible provenance label.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.5</td>
+          <td><strong>Test optimizer feasibility</strong><p>Verify every schedule respects appliance deadlines, run durations, battery reserve, inverter power, grid limits, and critical-load rules.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No optimizer plan violates hard constraints; infeasible cases explain why.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.6</td>
+          <td><strong>Benchmark runtime and rendering</strong><p>Measure simulation steps per second, browser memory, 3D frame rate, initial load, and chart responsiveness on the target laptop.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A documented benchmark meets agreed demo targets or records a justified reduced-quality mode.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.7</td>
+          <td><strong>Review security and privacy</strong><p>Keep API keys server-side, validate user inputs, avoid collecting personal household data by default, and document third-party weather requests.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>No secrets in Git/client bundle; data collection and retention are explicit.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">10.8</td>
+          <td><strong>Create failure-mode gallery</strong><p>Capture cloudy forecast miss, shading, inverter clipping, battery reserve, appliance surge, grid outage, and invalid-data scenarios.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Each failure case includes expected behavior, observed behavior, and corrective action.</p></td>
+        </tr></tbody></table></div>
+    </section>
+    <section class="phase-section" id="phase-11">
+      <div class="phase-head">
+        <div class="phase-no">11</div>
+        <div><p class="eyebrow">PHASE 11 · Week 12</p><h2>Final experiment, demonstration &amp; handoff</h2><p class="phase-desc">Turn the engineering work into a defensible result and a repeatable demonstration.</p></div>
+      </div>
+      <div class="deliverable"><span>PHASE OUTPUT</span><strong>Final report, demo, repository handoff</strong></div>
+      <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
+        <tr>
+          <td class="task-id">11.1</td>
+          <td><strong>Freeze experimental protocol</strong><p>Choose representative scenarios, weather traces, household profiles, baseline policy, optimizer configuration, and metrics before final comparison.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Protocol is timestamped; test scenarios are not tuned after results are viewed.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.2</td>
+          <td><strong>Run paired baseline/optimizer experiments</strong><p>Execute both strategies against identical PV, weather, load, tariff, initial SOC, and random seed inputs.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Experiment manifest proves the comparison is paired and reproducible.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.3</td>
+          <td><strong>Report energy-management metrics</strong><p>Report critical-load uptime, grid import cost, PV self-consumption, renewable utilization, curtailed PV, unmet demand, battery throughput proxy, and schedule disruption.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every metric has formula, unit, denominator, and scenario context.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.4</td>
+          <td><strong>Report forecasting metrics</strong><p>Report PV/load MAE and RMSE by horizon and compare with naïve baselines; distinguish synthetic evaluation from real-world validation.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Claims state exactly which data generated each result.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.5</td>
+          <td><strong>Prepare the demonstration sequence</strong><p>Show normal sunny day, cloudy-day forecast, battery reserve, appliance deferral, grid outage, anomaly detection, and a what-if scenario. Keep a precomputed replay as a fallback.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The full demo runs in a fixed time without retraining or relying on live internet.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.6</td>
+          <td><strong>Write technical report and presentation</strong><p>Cover problem, requirements, architecture, equations, assumptions, simulation, optimizer, ML experiments, digital twin, evaluation, failure analysis, ethics, and future hardware integration.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>All charts and claims trace to saved experiment outputs.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.7</td>
+          <td><strong>Prepare reproducible handoff</strong><p>Document installation, environment, run commands, scenario editing, model files, data provenance, known limitations, and troubleshooting.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A fresh machine can launch the app and reproduce a reference scenario from README instructions.</p></td>
+        </tr>
+
+        <tr>
+          <td class="task-id">11.8</td>
+          <td><strong>Tag the release</strong><p>Tag version, archive final configuration and metrics, clean repository, and record what is complete versus future work.</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Release artifact, report, demo scenario, and repository point to the same version.</p></td>
+        </tr></tbody></table></div>
+    </section>
+<div class="section-head" id="charter"><div class="section-index">05</div><div><h2>Graphic charter · visual identity system</h2><p>The visual direction is an architectural field atlas: part energy instrumentation, part material study, part domestic cutaway drawing. It should feel designed by a small product studio—not like a generic AI dashboard or a stock green-energy template.</p></div></div>
+<div class="charter-hero"><p class="eyebrow">HELIOS · VISUAL IDENTITY 01</p><h3>“Energy, made legible.”</h3><p>Quiet mineral surfaces, dark structural ink, oxidized copper for captured solar energy, sage for storage, and a restrained lichen accent for active flows. The visual language borrows from architectural section drawings, field instruments, and printed technical atlases.</p></div>
+<h3 style="font:500 22px var(--serif);color:var(--basalt)">01 · Core palette</h3>
+<div class="palette"><div class="swatch"><i style="--sw:#202B2A"></i><b>Basalt</b><code>#202B2A</code><small>Primary dark / structure</small></div><div class="swatch"><i style="--sw:#E9E3D5"></i><b>Limestone</b><code>#E9E3D5</code><small>Main canvas / light surfaces</small></div><div class="swatch"><i style="--sw:#B86B45"></i><b>Oxide</b><code>#B86B45</code><small>Primary accent / solar energy</small></div><div class="swatch"><i style="--sw:#8A9B83"></i><b>Sage</b><code>#8A9B83</code><small>Storage / healthy state</small></div><div class="swatch"><i style="--sw:#D3D86A"></i><b>Lichen</b><code>#D3D86A</code><small>Highlights / active energy</small></div><div class="swatch"><i style="--sw:#526C70"></i><b>Slate Blue</b><code>#526C70</code><small>Grid / secondary information</small></div><div class="swatch"><i style="--sw:#F3EFE6"></i><b>Chalk</b><code>#F3EFE6</code><small>Panels / elevated surfaces</small></div><div class="swatch"><i style="--sw:#A64F3D"></i><b>Signal Clay</b><code>#A64F3D</code><small>Warnings / faults only</small></div></div>
+<div class="charter-grid">
+ <div class="charter-panel"><h3>02 · Typography</h3><p class="type-sample">A house in balance.</p><p>Literata — editorial headlines, chapter titles, large metrics when emphasis is needed. Use a restrained weight and avoid oversized display text in everyday UI.</p><p class="type-ui">Generation · 2.4 kW</p><p>DM Sans — navigation, controls, body copy, labels and explanatory text. Prioritize legibility and compact rhythm.</p><p class="type-mono">PV-02 / 14:35 / 0840 WH</p><p>DM Mono — timestamps, IDs, units, sensor values, model versions and small technical annotations only.</p></div>
+ <div class="charter-panel"><h3>03 · Graphic motif</h3><p>The signature motif is the <b>sun path / circuit trace</b>: a measured arc crossing a rectilinear house plan, punctuated by small node marks. It can appear as a section divider, loading mark, chart annotation, or cover graphic.</p>
+ <div class="motif-box"><svg viewBox="0 0 620 190" role="img" aria-label="Helios sun-path graphic motif"><path d="M25 150 H595 M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#526C70" stroke-width="2" stroke-dasharray="5 7"/><path d="M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#B86B45" stroke-width="3"/><circle cx="310" cy="18" r="13" fill="#D3D86A" stroke="#202B2A" stroke-width="2"/><path d="M310 32 V80 H400 V116 H500" fill="none" stroke="#202B2A" stroke-width="2"/><rect x="392" y="108" width="16" height="16" fill="#8A9B83" stroke="#202B2A"/><circle cx="500" cy="116" r="6" fill="#B86B45"/><path d="M115 150 V132 H205 V150 M415 150 V132 H505 V150" fill="none" stroke="#202B2A" stroke-width="2"/><g fill="#526C70"><circle cx="80" cy="150" r="4"/><circle cx="540" cy="150" r="4"/></g></svg></div></div>
+ <div class="charter-panel"><h3>04 · Icon and illustration style</h3><ul><li>Use thin, consistent 1.5–2 px strokes and simple geometric silhouettes.</li><li>Prefer custom line icons for PV, battery, grid, inverter, appliance and weather.</li><li>3D assets use a coherent low-poly architectural style, matte materials and restrained edge detail.</li><li>Use diagram labels and leader lines rather than decorative floating labels.</li><li>Avoid gradients, glowing neon outlines, glassmorphism, generic AI sparkles and random green leaves.</li></ul></div>
+ <div class="charter-panel"><h3>05 · Layout and composition</h3><ul><li>Use a 12-column desktop grid, generous outer margins, and consistent 8 px spacing increments.</li><li>Favor editorial sections, aligned data tables, thin rules and one strong visual per screen.</li><li>Use cards only when they group a real object or action; not every metric needs a card.</li><li>Keep chart axes, units and time ranges explicit. Do not remove context to make charts look cleaner.</li><li>On mobile, prioritize current system state and appliance controls; collapse the 3D scene to a compact view or 2D map.</li></ul></div>
+ <div class="charter-panel"><h3>06 · Data color semantics</h3><ul><li>Oxide: solar generation and PV-derived energy.</li><li>Sage: battery storage, reserve and healthy component state.</li><li>Slate blue: grid exchange and environmental context.</li><li>Lichen: active energy route or selected/interactive state; use sparingly.</li><li>Signal clay: warning, anomaly or fault. Pair every color with text/icon/pattern; never rely on color alone.</li></ul></div>
+</div>
+<div class="section-head"><div class="section-index">06</div><div><h2>Interface and visualization rules</h2><p>Apply the charter consistently across the 3D twin, dashboard, charts, diagrams, reports and presentation slides.</p></div></div>
+<div class="rules">
+ <div class="rule"><b>01 / SURFACES</b><strong>Material, not glass</strong><p>Use limestone/chalk surfaces, basalt structural areas, thin borders and subtle depth. No glossy gradient panels.</p></div>
+ <div class="rule"><b>02 / ENERGY FLOWS</b><strong>Show direction and magnitude</strong><p>Use a line, arrow or restrained pulse whose width/speed is mapped to power. Include numeric value on selection.</p></div>
+ <div class="rule"><b>03 / 3D HOUSE</b><strong>Architectural cutaway</strong><p>Consistent camera angle, readable rooms, simple roof geometry and stable object placement. Avoid toy-like clutter.</p></div>
+ <div class="rule"><b>04 / CHARTS</b><strong>Explain the axis</strong><p>Label units, interval and source. Use direct labels where possible; avoid unnecessary legends and 3D charts.</p></div>
+ <div class="rule"><b>05 / STATUS</b><strong>Color plus language</strong><p>Every status uses a label and icon/shape. Warnings are not conveyed by color alone.</p></div>
+ <div class="rule"><b>06 / MOTION</b><strong>Motion has meaning</strong><p>Animate only actual simulated flows, state transitions or selection. Respect reduced-motion preferences.</p></div>
+</div>
+<div class="section-head" id="validation"><div class="section-index">07</div><div><h2>Evaluation framework & decision gates</h2><p>These are proposed measurements and gates, not results already achieved. Establish target thresholds after the first working baseline and record them before final testing.</p></div></div>
+<div class="metrics">
+ <div class="metric"><small>PHYSICS / INVARIANT</small><b>Energy balance residual</b><p>Per-step supply minus demand and losses; report absolute and relative residual.</p></div>
+ <div class="metric"><small>ENERGY MANAGEMENT</small><b>Critical-load uptime</b><p>Share of required critical-load intervals served without interruption.</p></div>
+ <div class="metric"><small>RENEWABLE USE</small><b>PV self-consumption</b><p>PV energy consumed locally divided by total PV energy generated.</p></div>
+ <div class="metric"><small>ECONOMICS</small><b>Grid import cost</b><p>Imported energy multiplied by the configured time-varying tariff.</p></div>
+ <div class="metric"><small>STORAGE</small><b>Battery throughput proxy</b><p>Charge/discharge throughput or equivalent-cycle estimate; not a certified aging prediction.</p></div>
+ <div class="metric"><small>FORECASTING</small><b>MAE / RMSE by horizon</b><p>Forecast error compared with persistence and time-of-day baselines.</p></div>
+ <div class="metric"><small>CURTAILMENT</small><b>Unused PV energy</b><p>Available PV that cannot be used, stored or exported under configured limits.</p></div>
+ <div class="metric"><small>FLEXIBILITY</small><b>Schedule disruption</b><p>Deferred tasks, delay duration and deadline misses for flexible appliances.</p></div>
+ <div class="metric"><small>SOFTWARE</small><b>Replay & runtime</b><p>Deterministic run match, simulation throughput, load time and 3D frame rate.</p></div>
+</div>
+<div class="gate-grid">
+ <div class="gate"><b>PHYSICS GATE</b><p>Do not build optimization on top of an energy engine that fails unit tests or energy-balance invariants.</p></div>
+ <div class="gate"><b>DATA GATE</b><p>Do not train ML on synthetic traces and present the result as validated real-world performance. Keep synthetic and external observations separate.</p></div>
+ <div class="gate"><b>OPTIMIZER GATE</b><p>Do not claim improvement unless the baseline and optimizer use identical scenarios, forecasts, initial states and random seeds.</p></div>
+ <div class="gate"><b>3D GATE</b><p>Do not add detailed models before the semantic object map and state binding work. The scene is a client of the simulation.</p></div>
+ <div class="gate"><b>HARDWARE GATE</b><p>Physical ESP32/sensor integration is a later milestone. Add it through an adapter and validate units, timestamps and missing-data behavior first.</p></div>
+ <div class="gate"><b>CLAIM GATE</b><p>Describe Helios as a simulation-based digital twin until it is connected to a real installation with validated telemetry.</p></div>
+</div>
+<footer><h2>The Helios standard</h2><p>Build a coherent energy model first. Make every decision inspectable. Let the 3D house show the same state the equations calculate. Compare strategies fairly, publish the limitations, and leave a clean path from virtual sensors to physical hardware.</p><div class="footline"><span>HELIOS · ENGINEERING ROADMAP & GRAPHIC CHARTER</span><span>12-PHASE PLAN · SIMULATION-FIRST EDITION</span></div></footer>
+</main>
+</body></html>

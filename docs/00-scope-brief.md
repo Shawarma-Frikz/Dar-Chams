@@ -110,7 +110,7 @@ The MVP is the smallest build that can produce the report's central comparison �
 | MVP-06 | **Rule-based baseline** | automation | FR-EMS-01, FR-EMS-02, FR-EMS-05, FR-EMS-06, FR-EMS-07 | Decision-table conformance against scripted SOC trajectories; deterministic replay | AC-24 (exact shed order, hysteresis honoured, no silent critical drop), AC-02 | 06 |
 | MVP-07 | **Forecast-aware scheduler** | automation | FR-EMS-03, FR-EMS-04, FR-EMS-08, FR-EMS-10, FR-FCT-01–05 | Feasibility property test; explanation-record test; stale-forecast injection; paired evaluation | AC-25 (0 infeasible plans), AC-07 (skill vs baselines), AC-12 (fallback) | 06, 07 |
 | MVP-08 | **Event log** (with timeline drill-down) | ui | FR-SIM-06, FR-EMS-08, FR-UX-04 | Event-emission test; timeline drill-down end-to-end; export traceability test | AC-26 (100% of actions and alerts fully resolved), AC-16 | 09 |
-| MVP-09 | **Dashboard** (with authoritative 2D map) | ui | FR-UX-01–10; NFR-07, NFR-08 | Playwright flows at desktop and 390 px; chart reconciliation test; keyboard pass | AC-13, AC-14, AC-15, AC-16, AC-17, AC-20 | 08, 09 |
+| MVP-09 | **Dashboard** (with authoritative 2D map) | ui | FR-UX-01–10; NFR-07, NFR-08 | Playwright flows at desktop and 390 px; chart reconciliation test; keyboard pass; register-conformance test | AC-13, AC-14, AC-15, AC-16, AC-17, AC-20, AC-28 | 08, 09 |
 | MVP-10 | **Basic 3D twin** (timeboxed) | twin | FR-TWN-01–05 | Binding test (mesh → entity ID); flow-to-power test; disable-3D test; frame-rate benchmark | AC-27 (100% bound objects, no simulation value changes), AC-18, AC-17 | 08 |
 
 ### 6.2 Supporting items the gate cannot omit
@@ -156,7 +156,7 @@ These `M` requirements bind every MVP item rather than one row, so they are veri
 | Group | Requirements | Verified by | Evidence |
 | --- | --- | --- | --- |
 | Engine contract | FR-SIM-01, FR-SIM-02, FR-SIM-03, FR-SIM-05, FR-SIM-07, FR-SIM-08, FR-SIM-09, FR-SIM-10 | MVP-05 test suite plus the phase 01–02 CI harness | Headless run, replay log, property report, scenario CI |
-| Display integrity | NFR-04, NFR-05, NFR-07 | MVP-09 test and bundle scan | AC-15, AC-20 |
+| Display integrity | NFR-04, NFR-05, NFR-07 | MVP-09 test and bundle scan | AC-15, AC-20, AC-28 |
 | Build and portability | NFR-06, NFR-09 | Phase 01 CI | CI log |
 | Cost constraint | NFR-10 | Inspection of dependencies and providers | Report appendix |
 | Performance | NFR-01 | Benchmarks taken from MVP-01, MVP-09, MVP-10 | AC-18 |
@@ -227,7 +227,7 @@ These are assumptions, not obligations. The binding constraints derived from the
 | 00.2 Operating scenario | [`scenarios/`](../scenarios/README.md) — schema plus three validated scenarios | Done |
 | 00.3 MVP boundary | §6 of this document | Done |
 | 00.4 Requirements register | [`requirements.md`](requirements.md) | Done |
-| 00.5 Simulation truth and limits | [`data-provenance.md`](data-provenance.md) | Done at contract level; UI enforcement verified in phases 09–10 |
+| 00.5 Simulation truth and limits | [`data-provenance.md`](data-provenance.md), [`metric-register.json`](metric-register.json) — 88 registered metrics, generated tables, machine check | Done; UI enforcement verified in phases 09–10 |
 | 00.6 Success criteria | [`acceptance-checklist.md`](acceptance-checklist.md) | Done; provisional thresholds frozen before the final experiment |
 | 00.7 Decision log | [`decision-log.md`](decision-log.md) | Done |
 

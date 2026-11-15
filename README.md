@@ -8,7 +8,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 
 ## Status
 
-- **Phase 00 — project definition: complete.** Scope brief, requirements register, decision log, provenance contract, acceptance checklist and three validated scenarios are in `docs/` and `scenarios/`.
+- **Phase 00 — project definition: complete.** Scope brief, requirements register, decision log, simulation-truth contract with an 88-metric register, acceptance checklist and three validated scenarios are in `docs/` and `scenarios/`.
 - **Phases 01–11: planned.** See [`Helios_Roadmap_and_Graphic_Charter.html`](Helios_Roadmap_and_Graphic_Charter.html).
 - No application code yet. CI and the project scaffold arrive in phase 01.
 
@@ -52,8 +52,9 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 ├── docs/                       Phase 00 deliverables and the report seed
 │   ├── 00-scope-brief.md
 │   ├── acceptance-checklist.md
-│   ├── data-provenance.md
+│   ├── data-provenance.md      Simulation truth, labelling rules, generated register
 │   ├── decision-log.md
+│   ├── metric-register.json    Every displayable value: class, unit, source, gate
 │   ├── requirements.md
 │   └── report/
 │       └── 01-product-statement.md
@@ -64,13 +65,14 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── tunis-offgrid-v1.json   Off-grid autonomy variant
 │   └── tunis-dust-v1.json      Heavy-soiling variant
 ├── scripts/
+│   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   └── validate-scenarios.mjs  Scenario invariant checks
 ├── Helios_Roadmap_and_Graphic_Charter.html
 └── README.md
 ```
 
-Scenario files validate with `node scripts/validate-scenarios.mjs`.
+Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit.
 
 ## Documentation
 
@@ -79,7 +81,7 @@ Scenario files validate with `node scripts/validate-scenarios.mjs`.
 | [Scope brief](docs/00-scope-brief.md) | Product statement, operating scenario, MVP boundary, non-goals, assumptions, risks |
 | [Requirements register](docs/requirements.md) | Requirements with priority, verification, dependency and phase; constraints; external dependencies |
 | [Decision log](docs/decision-log.md) | Architecture decisions with rejected alternatives and consequences |
-| [Data provenance](docs/data-provenance.md) | Value classes, UI labelling rules, metric register |
+| [Simulation truth and provenance](docs/data-provenance.md) | Seven value classes, labelling and claim rules, generated metric register, limits |
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |
 | [Report · product statement](docs/report/01-product-statement.md) | Canonical paragraph for the final report |
 | [Scenario conventions](scenarios/README.md) | Schema contract, field groups, units, seeds, variants, tariff policy |

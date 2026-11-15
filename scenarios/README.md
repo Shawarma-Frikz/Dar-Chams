@@ -81,7 +81,7 @@ The off-grid scenario keeps a tariff block with `null` values for schema complet
 
 ## Provenance
 
-`provenance.class` states where the scenario's numbers come from: `synthetic-design` (chosen by the author), `dataset-derived`, or `measured`. No v1 scenario may claim `measured`, and none does. `provenance.notes` must say which values are assumptions and which are fetched at run time. See [data provenance](../docs/data-provenance.md) for the value classes used in the interface.
+`provenance.class` states where the scenario's numbers come from: `synthetic-design` (chosen by the author), `dataset-derived`, or `measured`. No v1 scenario may claim `measured`, and none does. `provenance.notes` must say which values are assumptions and which are fetched at run time. Values read from a scenario and displayed in the interface — limits, reserves, seed, speed — carry class `C · Configured` and are never summed into results. See [simulation truth and provenance](../docs/data-provenance.md) for the value classes, the metric register and the labelling rules.
 
 ## Validation
 

@@ -21,7 +21,7 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 | 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json), [`scenario.schema.json`](../scenarios/scenario.schema.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (three validated scenarios; tariff intentionally unverified) |
 | 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** — 10 items and 2 supporting items, each with domain owner, test and `AC` reference; Should/Could/Won't separated with admission rules |
 | 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** — 73 FR, 11 NFR, 13 constraints and 8 external dependencies, each with priority, verification method, dependency and phase; wording and structure machine-checked |
-| 00.5 | Every displayed metric has a source type and unit | [Data provenance](data-provenance.md) | **Met at contract level**; enforcement verified in phases 09–10 |
+| 00.5 | Every displayed metric has a source type and unit | [Simulation truth and provenance](data-provenance.md), [metric register](metric-register.json), [`check-provenance.mjs`](../scripts/check-provenance.mjs) | **Met** — 88 metrics, each with class, unit, source, inputs and gate; register, generated tables and declared counts machine-checked. Enforcement in the build verified in phases 09–10 (AC-20, AC-28) |
 | 00.6 | A signed acceptance checklist exists before implementation | This document | **Met** |
 | 00.7 | A new contributor can understand why each major choice was made | [Decision log](decision-log.md) | **Met** |
 
@@ -74,9 +74,10 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-17 | Accessibility parity | All critical state and controls available in 2D; status not colour-only; keyboard operable | Inspection + demo | Pending (phase 08–09) |
 | AC-18 | Performance on target laptop | Engine ≥ 5,000 steps/s; UI update < 100 ms; 3D ≥ 24 fps low / ≥ 30 fps medium at 1080p; cold interactive < 5 s — *provisional* | Benchmark log | Pending (phase 10) |
 | AC-19 | Offline demo | Full demonstration runs with network disabled, from cache and precomputed replay | Demo recording/checklist | Pending (phase 11) |
-| AC-20 | Honest labelling | Every displayed metric carries a provenance badge and unit; no simulated value presented as measured | Inspection | Pending (phase 09–10) |
+| AC-20 | Honest labelling | Every displayed metric carries a provenance badge and unit; no simulated value presented as measured | Inspection of the register and rendered labels | Pending (phase 09–10) |
 | AC-26 | Decision traceability | 100% of controller actions and alerts resolve to trigger, forecast inputs, active constraints, alternatives, chosen action and expected effect; the timeline shows the same record; 0 orphan records | Test + inspection | Pending (phase 09) |
 | AC-27 | Twin binding integrity | 100% of 3D objects map to an existing simulation entity; disabling 3D changes no simulation value; selection stays synchronised both ways on desktop and mobile | Test + demo | Pending (phase 08) |
+| AC-28 | Metric register conformance | 100% of numeric and state widgets resolve to a `MET-nn` entry; rendered class, unit and source equal the register; 0 disabled metric computed or displayed as a value; 0 value rendered outside the register (raw-number lint clean) | UI contract test + bundle scan | Pending (phase 09) |
 
 ---
 

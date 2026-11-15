@@ -174,7 +174,7 @@ A requirement is admitted only if it can be verified. Vague ambitions ("make it 
 | NFR-04 | No secret may appear in the repository or the client bundle; any third-party key stays server-side and is absent from build output. | M | I | — | 10.7 |
 | NFR-05 | No household-identifying data may be collected or transmitted; outbound requests are limited to weather and static assets, verified from the network log. | M | I | NFR-04 | 10.7 |
 | NFR-06 | TypeScript strict mode, lint, format, type-check and tests must pass in CI before merge. | M | T | — | 01.5 |
-| NFR-07 | Every displayed numeric value must carry a provenance class and a unit; a simulated value must never be presented as measured. | M | I | FR-SIM-03 | 00.5, 09 |
+| NFR-07 | Every displayed numeric or state value must resolve to an entry in the [metric register](data-provenance.md) carrying its provenance class, unit, source and gate; a simulated value must never be presented as measured, and an unregistered value must fail the interface contract test. | M | I, T | FR-SIM-03 | 00.5, 09 |
 | NFR-08 | Status must be conveyed by text or icon as well as colour; all controls must be keyboard-operable; reduced-motion preference must be respected. | M | I, D | FR-UX-10 | 08.9, 09.9 |
 | NFR-09 | The project must install and run from documented commands on Windows, Linux and macOS without Docker. | M | T | — | 01.2 |
 | NFR-10 | Only free tools and free tiers are permitted; a rate-limit response must degrade gracefully with a visible notice. | M | I, D | EX-01, EX-04, EX-05, EX-06, EX-07 | 10.4 |
@@ -229,7 +229,7 @@ The critical dependency chains are `SCN → FR-SIM → FR-PV/FR-BAT → FR-EMS �
 | External dependencies | 8 | `check-requirements.mjs` |
 | Priorities | 75 Must, 7 Should, 2 Could | `check-requirements.mjs` |
 | Must requirements mapped to an MVP row or cross-cutting table | 75 of 75 | `check-requirements.mjs`, [scope brief §6](00-scope-brief.md#6--mvp-boundary) |
-| Project-level gates | 27 criteria (AC-01…AC-27) | [acceptance checklist](acceptance-checklist.md) |
+| Project-level gates | 28 criteria (AC-01…AC-28) | [acceptance checklist](acceptance-checklist.md) |
 
 The register is the full requirement set; the acceptance checklist is the subset promoted to project gates. A requirement without a gate is still verified by its own test case in the named phase.
 

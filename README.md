@@ -64,7 +64,8 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── tunis-offgrid-v1.json   Off-grid autonomy variant
 │   └── tunis-dust-v1.json      Heavy-soiling variant
 ├── scripts/
-│   └── validate-scenarios.mjs  Schema-independent invariant checks
+│   ├── check-requirements.mjs  Register structure, dependencies, wording
+│   └── validate-scenarios.mjs  Scenario invariant checks
 ├── Helios_Roadmap_and_Graphic_Charter.html
 └── README.md
 ```
@@ -76,7 +77,7 @@ Scenario files validate with `node scripts/validate-scenarios.mjs`.
 | Document | Contents |
 | --- | --- |
 | [Scope brief](docs/00-scope-brief.md) | Product statement, operating scenario, MVP boundary, non-goals, assumptions, risks |
-| [Requirements register](docs/requirements.md) | Functional and non-functional requirements with priority, verification method and phase |
+| [Requirements register](docs/requirements.md) | Requirements with priority, verification, dependency and phase; constraints; external dependencies |
 | [Decision log](docs/decision-log.md) | Architecture decisions with rejected alternatives and consequences |
 | [Data provenance](docs/data-provenance.md) | Value classes, UI labelling rules, metric register |
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |

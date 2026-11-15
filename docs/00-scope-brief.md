@@ -188,6 +188,8 @@ A partially green MVP is a failed gate and is reported as failed, naming the row
 
 ## 8 · Assumptions and constraints
 
+These are assumptions, not obligations. The binding constraints derived from them are registered as `CON-01…CON-13` in the [requirements register](requirements.md#11--constraints), with a verification method and the consequence of violation for each.
+
 | ID | Assumption / constraint |
 | --- | --- |
 | AS-01 | Single developer; work happens in the hours left by a full course load. |

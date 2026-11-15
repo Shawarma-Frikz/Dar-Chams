@@ -20,7 +20,7 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 | 00.1 | One paragraph in README and report; no claim of controlling a real installation | [`README.md`](../README.md), [`report/01`](report/01-product-statement.md) | **Met** |
 | 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json), [`scenario.schema.json`](../scenarios/scenario.schema.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (three validated scenarios; tariff intentionally unverified) |
 | 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** — 10 items and 2 supporting items, each with domain owner, test and `AC` reference; Should/Could/Won't separated with admission rules |
-| 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** |
+| 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** — 73 FR, 11 NFR, 13 constraints and 8 external dependencies, each with priority, verification method, dependency and phase; wording and structure machine-checked |
 | 00.5 | Every displayed metric has a source type and unit | [Data provenance](data-provenance.md) | **Met at contract level**; enforcement verified in phases 09–10 |
 | 00.6 | A signed acceptance checklist exists before implementation | This document | **Met** |
 | 00.7 | A new contributor can understand why each major choice was made | [Decision log](decision-log.md) | **Met** |

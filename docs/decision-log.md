@@ -213,3 +213,11 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** YAML — indentation ambiguity for hand-edited numbers. TypeScript scenario objects — the configuration would compile into the bundle and could not be diffed or cited as evidence. A defaults layer — a value that is not in the file is a hidden assumption, which defeats the task 00.2 acceptance condition. Optional fields with defaults were rejected for the same reason: `additionalProperties: false` plus explicit requirements means every number in a run is visible in one file.
 
 **Consequences.** Scenarios are diffable evidence and hash cleanly into a run manifest. Adding a field is a schema version change, not an edit that silently reinterprets old files. The dependency-free validator runs before the toolchain exists and stays useful as a pre-commit and CI check.
+
+## DEC-022 · MVP frozen at ten items plus two supporting items
+
+**Decision.** The MVP is exactly the ten capabilities named in roadmap task 00.3, in that order, plus two supporting items that the gate cannot omit: the weather-driven forecast with naïve baselines (MVP-S1) and the paired experiment runner (MVP-S2). Every item names an owner by domain, a test type, and at least one measurable `AC` criterion. Should, Could and Won't are separated with admission rules rather than time estimates.
+
+**Alternatives rejected.** A feature-count MVP ("as many screens as possible") — the report's claim is a comparison, and extra screens do not make it falsifiable. Treating the forecast as optional — a forecast-aware scheduler without a scored forecast is a name, not a claim. Treating the paired runner as a Should — AC-09 and AC-11 cannot be evaluated without it, and an unpaired comparison is exactly what risk R-07's scope creep produces.
+
+**Consequences.** The gate is binary and can fail visibly. Adding a Should item requires removing a Must or moving the date. Anomaly detection moves to Should because its evaluation depends on a validated engine and calibrated residuals; the boundary is re-checked after every phase gate. `Won't` items are excluded structurally (claim gate, single-user scope, no measured data), not parked for later.

@@ -66,6 +66,8 @@ All values live in the scenario file, not in engine code. Each file validates ag
 
 ### In scope (v1)
 
+This is the whole v1 scope. The Must subset of it is the MVP, defined item by item in §6; a Should item is in scope but not in the MVP gate, and a Could item is not promised.
+
 - Deterministic simulation of PV generation, inverter conversion, battery storage, grid exchange and household loads at a configurable timestep.
 - Solar geometry, plane-of-array irradiance, temperature derating, soiling and shading as configurable scenario inputs.
 - A household of individually modelled appliances with schedules, duty cycles, minimum run times, flexibility windows and priority classes.
@@ -90,42 +92,88 @@ All values live in the scenario file, not in engine code. Each file validates ag
 
 ## 6 · MVP boundary
 
-Owner of every item: the author. A phase is not complete because a screen exists; it is complete when its acceptance evidence is recorded in the [acceptance checklist](acceptance-checklist.md).
+The MVP is the smallest build that can produce the report's central comparison — baseline versus forecast-aware scheduler on identical inputs — and demonstrate it without hardware, paid services or a network connection. It is fixed at the **ten items named in roadmap task 00.3**, in the same order. Anything else is Should, Could or Won't.
 
-### 6.1 Must — the MVP
+**Owner.** With one developer, ownership is by domain, not by person: `engine`, `data`, `automation`, `ui`, `twin`. The owner is accountable for the item's evidence appearing in the [acceptance checklist](acceptance-checklist.md); the sign-off in section D of that document is the accountability record.
 
-| ID | Item | Evidence | Acceptance summary |
+**Acceptance references.** `AC-nn` refers to a measurable criterion in the [acceptance checklist](acceptance-checklist.md). `FR-*` refers to the [requirements register](requirements.md). An item is Met only when every referenced AC row is green; a summary sentence is not evidence.
+
+### 6.1 The ten MVP items
+
+| ID | Capability (roadmap 00.3 wording) | Owner | Requirements | Test | Acceptance criterion | Phase |
+| --- | --- | --- | --- | --- | --- | --- |
+| MVP-01 | **Solar generation** | engine | FR-PV-01–08 | Solar-position fixtures against an independent reference; PV property tests; PVGIS cross-check notebook | AC-05 (±2 min, ±0.5°), AC-06 (bias ≤ 15% over ≥ 12 days), AC-01, AC-03 | 03 |
+| MVP-02 | **Weather / daylight input** | data | NFR-11, FR-PV-03; scenario `weather` block | Adapter tests: provider reachable, unreachable, cache empty, cache corrupt; offline replay | AC-22 (degrade to cached/synthetic with correct class, logged, balance still closes) | 03, 10 |
+| MVP-03 | **Battery** (with inverter conversion) | engine | FR-BAT-01–05, FR-GRD-01 | Hand-calculated SOC cases; randomized property test; clipping and outage fixtures | AC-01, AC-03, AC-02; SOC within 1 × 10⁻⁶ kWh of the hand calculation | 04 |
+| MVP-04 | **Household appliances** | engine | FR-LOD-01–06 | State-transition matrix test; cross-midnight fixture; seeded load-trace sum test | AC-23 (0 invalid transitions, every transition logged); component energy sums exactly to the household total | 05 |
+| MVP-05 | **Energy balance** (with grid exchange) | engine | FR-SIM-04, FR-GRD-01–03 | Step-level residual assertion over 50 seeds; islanded-outage scenario; unverified-tariff run | AC-01 (residual ≤ 1 × 10⁻⁶ kWh/step), AC-03; economic metrics absent when `verified: false` | 02, 04 |
+| MVP-06 | **Rule-based baseline** | automation | FR-EMS-01, FR-EMS-02, FR-EMS-05, FR-EMS-06, FR-EMS-07 | Decision-table conformance against scripted SOC trajectories; deterministic replay | AC-24 (exact shed order, hysteresis honoured, no silent critical drop), AC-02 | 06 |
+| MVP-07 | **Forecast-aware scheduler** | automation | FR-EMS-03, FR-EMS-04, FR-EMS-08, FR-EMS-10, FR-FCT-01–05 | Feasibility property test; explanation-record test; stale-forecast injection; paired evaluation | AC-25 (0 infeasible plans), AC-07 (skill vs baselines), AC-12 (fallback) | 06, 07 |
+| MVP-08 | **Event log** (with timeline drill-down) | ui | FR-SIM-06, FR-EMS-08, FR-UX-04 | Event-emission test; timeline drill-down end-to-end; export traceability test | AC-26 (100% of actions and alerts fully resolved), AC-16 | 09 |
+| MVP-09 | **Dashboard** (with authoritative 2D map) | ui | FR-UX-01–10; NFR-07, NFR-08 | Playwright flows at desktop and 390 px; chart reconciliation test; keyboard pass | AC-13, AC-14, AC-15, AC-16, AC-17, AC-20 | 08, 09 |
+| MVP-10 | **Basic 3D twin** (timeboxed) | twin | FR-TWN-01–05 | Binding test (mesh → entity ID); flow-to-power test; disable-3D test; frame-rate benchmark | AC-27 (100% bound objects, no simulation value changes), AC-18, AC-17 | 08 |
+
+### 6.2 Supporting items the gate cannot omit
+
+The roadmap schedules these outside the ten, but without them the MVP's claims would be unfalsifiable, so they are inside the MVP gate and outside the ten-item list. They are not optional extras.
+
+| ID | Item | Owner | Requirements | Test | Acceptance criterion | Phase |
+| --- | --- | --- | --- | --- | --- | --- |
+| MVP-S1 | Weather-driven forecast with naïve baselines | data | FR-FCT-01–07 | Time-aware split; MAE/RMSE per horizon vs persistence and time-of-day; artifact pinning test | AC-07 (skill score; a learned model retained only if it improves) | 07 |
+| MVP-S2 | Paired experiment runner and comparison export | automation | FR-EMS-09, NFR-03 | Manifest-hash equality test; deliberate input-mismatch test must fail | AC-09 (≥ 12 pairs, identical inputs proven), AC-10 (metric completeness), AC-11 (oracle upper bound) | 06 |
+
+PVGIS validation is not listed separately because it is the acceptance method inside MVP-01 (AC-06), even though it is delivered in phase 03 and reported in phase 10.
+
+### 6.3 Optional features, explicitly separated
+
+Optional means **not required for the MVP gate**, not "we will see". Each class has a different admission rule.
+
+**Should — built only after every Must row is green.**
+
+| ID | Item | Why it can wait | What unlocks it |
 | --- | --- | --- | --- |
-| MVP-01 | Deterministic engine: PV, inverter, battery, grid, loads, energy balance | Unit + property tests | Balance residual and physical bounds hold on every step; replay identical |
-| MVP-02 | Weather adapter with cache and synthetic fallback | Adapter tests | Runs offline; degraded source visible in provenance |
-| MVP-03 | Household model: rooms, appliances, state machines, priorities | Fixtures + tests | No invalid transitions; component energy sums to total |
-| MVP-04 | Rule-based baseline controller | Deterministic run | Reproducible end-to-end; policy table documented |
-| MVP-05 | Forecast-aware scheduler with explanations | Feasibility tests | Every plan respects deadlines, durations, reserve and power limits; each action explained |
-| MVP-06 | Decision/alert log and timeline | Demo | Every action traceable to inputs and state transition |
-| MVP-07 | Weather-driven forecast with naïve baselines | Evaluation report | MAE/RMSE by horizon vs persistence and time-of-day baselines |
-| MVP-08 | Dashboard: overview, charts, controls, scenario editor, persistence, export | Playwright flows | Widgets share one snapshot; charts reconcile; refresh keeps runs; export traceable |
-| MVP-09 | 2D system map with parity to 3D information and controls | Demo + inspection | All critical state and controls available without 3D |
-| MVP-10 | Basic 3D cutaway twin (timeboxed) | Demo | Binds to simulation IDs, flows map to power, cannot block the dashboard |
-| MVP-11 | Paired experiment runner + exportable comparison table | Manifest + CSV | Baseline and scheduler use identical scenario, seed, weather and initial SOC |
-| MVP-12 | PV validation vs PVGIS | Validation report | Mean absolute daily-energy bias ≤ 15% over ≥ 12 days spanning seasons |
+| SH-01 | Learned PV/load forecast model | A negative result is publishable; the scheduler runs on weather-driven forecasts | MVP-S1 baselines exist and are scored (FR-FCT-02/04) |
+| SH-02 | Anomaly detection on labelled faults | Depends on a stable engine and calibrated forecast residuals | AC-01 to AC-04 and AC-07 green |
+| SH-03 | Perfect-foresight oracle policy | Cheap, high report value; not needed for the live demo | MVP-S2 runner exists |
+| SH-04 | Solar tracker comparison | Secondary contribution; must charge actuator energy honestly | Fixed-tilt PV validation closed (AC-06) |
+| SH-05 | Model cards and health panel | Meaningful only once a learned model is retained | SH-01 retained |
 
-### 6.2 Should — included if the Must list is green
+**Could — evaluated only after the experiment protocol is frozen (task 11.1).** Seasonal manual-tilt baseline · PDF report export · PWA installation · Telegram alerts · Wokwi firmware sketch · hardware adapter interface.
 
-| ID | Item | Why it can wait |
-| --- | --- | --- |
-| SH-01 | Learned PV/load forecast model (retained only if it beats baselines) | A negative result is publishable; the scheduler works on weather-driven forecasts |
-| SH-02 | Anomaly detection with labelled fault injection | Valuable result, but depends on stable engine + forecast residuals |
-| SH-03 | Perfect-foresight oracle policy | Cheap, high report value; not needed for the live demo |
-| SH-04 | Solar tracker comparison (optional scenario) | Secondary contribution; must model actuator overhead honestly |
-| SH-05 | Model cards and model-health panel | Required only once a learned model is retained |
+**Won't — excluded for a structural reason, not for lack of time.** LLM chat assistant (free-tier dependency, not a control contribution, and a claim-gate risk) · cloud accounts and sync (multi-user is out of scope) · native mobile app (the responsive PWA covers the requirement) · real-time hardware control (claim gate: no measured data exists) · electrochemical battery model (cannot be validated without laboratory data) · MPC/MILP/RL controllers (not provable within the budget; the oracle bounds the achievable gain instead).
 
-### 6.3 Could — only after the final experiment protocol is frozen
+### 6.4 Boundary rules
 
-Seasonal manual-tilt baseline · PDF report export · PWA installation · Telegram alerts · Wokwi firmware sketch · hardware adapter interface.
+- A Should item enters the MVP only by removing a Must item or moving the delivery date, recorded in the [decision log](decision-log.md). A boundary change that only adds is a scope increase, not a decision (risk R-07).
+- A Must item may not be demoted after it has been demonstrated, and may not be dropped without naming in the log which report claim it weakens.
+- A Won't item requires a new project proposal, not a phase change. The claim gate in the acceptance checklist remains binding regardless.
+- "Working on screen" is not completion. Completion is the referenced AC rows being green with their evidence recorded.
 
-### 6.4 Won't — explicitly excluded
+### 6.5 Cross-cutting requirements
 
-LLM chat assistant · cloud accounts and sync · native mobile app · real-time hardware control · electrochemical battery model · MPC/MILP/RL controllers.
+These `M` requirements bind every MVP item rather than one row, so they are verified once, at the level named here. Without this table the gate would silently ignore them.
+
+| Group | Requirements | Verified by | Evidence |
+| --- | --- | --- | --- |
+| Engine contract | FR-SIM-01, FR-SIM-02, FR-SIM-03, FR-SIM-05, FR-SIM-07, FR-SIM-08, FR-SIM-09, FR-SIM-10 | MVP-05 test suite plus the phase 01–02 CI harness | Headless run, replay log, property report, scenario CI |
+| Display integrity | NFR-04, NFR-05, NFR-07 | MVP-09 test and bundle scan | AC-15, AC-20 |
+| Build and portability | NFR-06, NFR-09 | Phase 01 CI | CI log |
+| Cost constraint | NFR-10 | Inspection of dependencies and providers | Report appendix |
+| Performance | NFR-01 | Benchmarks taken from MVP-01, MVP-09, MVP-10 | AC-18 |
+| Offline operation | NFR-02 | Gate condition below | AC-19 |
+
+### 6.6 MVP completion gate
+
+The gate is binary. It passes only when all of the following hold:
+
+1. All ten MVP rows have every referenced AC green.
+2. MVP-S1 and MVP-S2 are green.
+3. AC-02 (deterministic replay) and AC-19 (offline demonstration) are green.
+4. Every `M` requirement in the register is verified by an MVP row or by §6.5, with evidence recorded.
+5. The demonstration script runs end-to-end with the network disabled.
+6. No Won't item is present in the build under another name.
+
+A partially green MVP is a failed gate and is reported as failed, naming the rows that did not pass. The MVP also carries no claim that hardware validation, measured savings or real installation behaviour occurred — those remain outside the boundary by design, not by omission.
 
 ---
 

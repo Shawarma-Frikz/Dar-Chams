@@ -19,7 +19,7 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 | --- | --- | --- | --- |
 | 00.1 | One paragraph in README and report; no claim of controlling a real installation | [`README.md`](../README.md), [`report/01`](report/01-product-statement.md) | **Met** |
 | 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json), [`scenario.schema.json`](../scenarios/scenario.schema.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (three validated scenarios; tariff intentionally unverified) |
-| 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** |
+| 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** — 10 items and 2 supporting items, each with domain owner, test and `AC` reference; Should/Could/Won't separated with admission rules |
 | 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** |
 | 00.5 | Every displayed metric has a source type and unit | [Data provenance](data-provenance.md) | **Met at contract level**; enforcement verified in phases 09–10 |
 | 00.6 | A signed acceptance checklist exists before implementation | This document | **Met** |
@@ -29,7 +29,7 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 
 ## B · MVP success criteria
 
-These are the measurable targets from task 00.6. "Evidence" names the artifact that must exist before a row can be ticked.
+These are the measurable targets from task 00.6. "Evidence" names the artifact that must exist before a row can be ticked. IDs are stable references grouped by category, not a sequence: a criterion added later is appended to its category rather than renumbering the set. The [MVP register](00-scope-brief.md#6--mvp-boundary) names which criteria each MVP item must satisfy.
 
 ### B.1 Simulation integrity
 
@@ -40,6 +40,8 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-03 | Physical invariants | 0 violations across 50 seeds × 10,000 steps (SOC bounds, power limits, non-negative energy, legal transitions) | Property-test report | Pending (phase 04) |
 | AC-04 | Observability contract | Static inspection + test proving controllers cannot read hidden world state | Interface test | Pending (phase 02) |
 | AC-21 | Scenario validity | Every committed scenario passes schema validation and invariant checks in CI; a deliberately corrupted scenario is rejected with a field-level message | CI log + negative test | Pending (phase 01.4) |
+| AC-22 | Weather degradation | Provider unreachable, cache empty and cache corrupt each yield a cached (`X`) or synthetic (`S`) series, emit a visible fallback event, and still close the step balance of AC-01 | Adapter test | Pending (phase 03) |
+| AC-23 | Appliance state legality | 0 invalid transitions across ≥ 10,000 randomized transitions; every accepted transition emits an event carrying timestamp, entity ID, from-state and to-state; component energy sums exactly to the household total | Property-test report | Pending (phase 05) |
 
 ### B.2 Model credibility
 
@@ -58,6 +60,8 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-10 | Metric completeness | Critical-load uptime, unmet demand, curtailment, self-consumption, import cost (if enabled), battery throughput, schedule disruption reported per scenario | Comparison CSV + report table | Pending (phase 06, 11) |
 | AC-11 | Upper bound | Scheduler result reported as a percentage of the perfect-foresight oracle for the same scenarios | Comparison CSV | Pending (phase 06) |
 | AC-12 | Fallback behaviour | Missing/stale forecast reverts to baseline, logged and visible, with a valid energy balance | Test + demo | Pending (phase 06) |
+| AC-24 | Baseline conformance | On scripted SOC trajectories, shedding follows the configured order exactly, restoration requires the threshold plus hysteresis, and no critical load is dropped without an unmet-demand record; 0 deviations | Unit test | Pending (phase 06) |
+| AC-25 | Scheduler feasibility | 0 infeasible plans emitted across ≥ 200 randomized scenarios; every rejected request names the violated constraint; every emitted plan respects deadline, duration, non-interruptible cycle, reserve SOC, inverter and grid limits | Property-test report | Pending (phase 06) |
 
 ### B.4 Application and operation
 
@@ -71,6 +75,8 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-18 | Performance on target laptop | Engine ≥ 5,000 steps/s; UI update < 100 ms; 3D ≥ 24 fps low / ≥ 30 fps medium at 1080p; cold interactive < 5 s — *provisional* | Benchmark log | Pending (phase 10) |
 | AC-19 | Offline demo | Full demonstration runs with network disabled, from cache and precomputed replay | Demo recording/checklist | Pending (phase 11) |
 | AC-20 | Honest labelling | Every displayed metric carries a provenance badge and unit; no simulated value presented as measured | Inspection | Pending (phase 09–10) |
+| AC-26 | Decision traceability | 100% of controller actions and alerts resolve to trigger, forecast inputs, active constraints, alternatives, chosen action and expected effect; the timeline shows the same record; 0 orphan records | Test + inspection | Pending (phase 09) |
+| AC-27 | Twin binding integrity | 100% of 3D objects map to an existing simulation entity; disabling 3D changes no simulation value; selection stays synchronised both ways on desktop and mobile | Test + demo | Pending (phase 08) |
 
 ---
 

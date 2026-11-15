@@ -2,12 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1.0 |
+| Version | 0.2.0 |
 | Date | 2026-11-15 |
 | Phase | 00 (task 00.7) |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
+
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`).
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -31,6 +33,11 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-018 | Node 24 LTS + npm | Accepted | 2026-11-15 |
 | DEC-019 | Provenance labels and the claim gate | Accepted | 2026-11-15 |
 | DEC-020 | English code and docs; report language pending | Accepted | 2026-11-15 |
+| DEC-021 | Scenario format: JSON + JSON Schema, validated in CI | Accepted | 2026-11-15 |
+| DEC-022 | MVP frozen at ten items plus two supporting items | Accepted | 2026-11-15 |
+| DEC-023 | Requirements register v0.2: constraints, dependencies, machine check | Accepted | 2026-11-15 |
+| DEC-024 | Seven provenance classes and a machine-readable metric register | Accepted | 2026-11-15 |
+| DEC-025 | Application shell: Next.js + React + TypeScript | Accepted | 2026-11-15 |
 
 ---
 
@@ -237,4 +244,14 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** A prose-only metric list — it drifts the first time a widget is added, and nothing fails. A JSON Schema for the register — it cannot express cross-references, cycles or availability propagation, so it would give a false sense of validation; one dependency-free checker is authoritative instead. Per-widget labels invented in components — the interface would decide provenance after the fact, which is how a simulated number becomes "live". Treating configured limits as simulated values — a reserve SOC is not a model output, and drawing it as data invites misreading. Removing the economics instead of gating them — deletion hides the missing evidence, while a disabled metric with a visible reason states exactly what is unverified.
 
 **Consequences.** A new screen cannot introduce a number without a register entry, so UI work starts with a register change. The UI contract test (AC-28) and the raw-number lint run from phase 09, and the checker runs in CI from 01.5. The register is the whitelist behind the claim gate: a value not in it cannot be shown, and a claim not in §7 of the provenance document cannot be made. Adding a metric that changes a claim, a gate or a unit requires a decision-log entry. The metric IDs `MET-01…MET-79` are stable and never reused.
+
+## DEC-025 · Application shell: Next.js + React + TypeScript
+
+**Context.** The dashboard, the authoritative 2D map, the 3D twin and the charts are one client-side application served from static hosting. The engine already runs headlessly in Node and in a Web Worker (DEC-002, DEC-016), and v1 has no backend (DEC-014).
+
+**Decision.** The application shell is Next.js with static export, React and TypeScript, styled with Tailwind CSS, with shadcn/ui used selectively. Charts render with Recharts from stored run records, never from live engine ticks. Solar position comes from SunCalc, or from a replacement library only after it passes the same AC-05 fixtures.
+
+**Alternatives rejected.** Vite SPA — a sound runtime, but it gives up file-based routing and framework-integrated tooling for no benefit at this scale, since static export already meets the hosting constraint. SvelteKit — the chosen charting, 3D and component libraries (Recharts, React Three Fiber, shadcn/ui) all assume React; adopting Svelte would force weaker substitutes in three layers at once. Server rendering with server functions — v1 has no backend and the demo must run with the network disabled (DEC-014, AS-06), so anything that needs a server at request time is excluded.
+
+**Consequences.** The app builds to static files for Vercel Hobby or any static-compatible host; the engine and Worker boundaries are unchanged. If SunCalc fails the AC-05 fixture comparison, adoption of a replacement is recorded in a new entry that supersedes this one.
 

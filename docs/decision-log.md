@@ -205,3 +205,11 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** Mixing languages in code and docs — inconsistent terminology across artifacts.
 
 **Consequences.** If the report must be in French, a translation pass is scheduled in phase 11 and the canonical product statement is translated once, then kept in sync.
+
+## DEC-021 · Scenario format: JSON + JSON Schema, validated in CI
+
+**Decision.** A scenario is one JSON file validated against `scenarios/scenario.schema.json` (JSON Schema 2020-12, strict at every level). Whole-file composition only: no inheritance, no partial overrides, no runtime default merging. Relational invariants that JSON Schema cannot express are checked by `scripts/validate-scenarios.mjs` now and by the runtime validator from phase 01.4. The file name must equal the scenario `id`, and changing a meaningful value creates a new versioned file.
+
+**Alternatives rejected.** YAML — indentation ambiguity for hand-edited numbers. TypeScript scenario objects — the configuration would compile into the bundle and could not be diffed or cited as evidence. A defaults layer — a value that is not in the file is a hidden assumption, which defeats the task 00.2 acceptance condition. Optional fields with defaults were rejected for the same reason: `additionalProperties: false` plus explicit requirements means every number in a run is visible in one file.
+
+**Consequences.** Scenarios are diffable evidence and hash cleanly into a run manifest. Adding a field is a schema version change, not an edit that silently reinterprets old files. The dependency-free validator runs before the toolchain exists and stays useful as a pre-commit and CI check.

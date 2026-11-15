@@ -27,6 +27,7 @@ A requirement is admitted only if it can be verified. Vague ambitions ("make it 
 | FR-SIM-07 | Invalid configuration and impossible states must be rejected or clamped according to documented rules; NaN must never propagate into results. | M | T | 02.7 |
 | FR-SIM-08 | Controllers and detectors must observe simulated state only through a typed observation interface; hidden world state (soiling, injected faults, future weather, ground-truth SOC) must be inaccessible to them. | M | I, T | 02.4 |
 | FR-SIM-09 | Simulation speed must be selectable (1×, 60×, maximum) while preserving fixed-step semantics and determinism. | M | T | 02.5 |
+| FR-SIM-10 | A scenario must be validated against `scenarios/scenario.schema.json` and the relational invariants (SOC ordering, unique IDs, room references, profile consistency, off-grid limits, verified-tariff completeness) before a run starts; an invalid scenario must be rejected with a message naming the offending field, never silently defaulted. | M | T, I | 01.4 |
 
 ## 2 · Photovoltaic model
 

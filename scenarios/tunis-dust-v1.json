@@ -1,0 +1,273 @@
+{
+  "schema_version": "0.1.0",
+  "id": "tunis-dust-v1",
+  "name": "Tunis · sirocco dust event",
+  "description": "Grid-connected variant reproducing heavy dust deposition: soiling loss raised to 12%, starting in the spring dust season. Used to test the underproduction anomaly detector, soiling attribution and cleaning prioritisation. The event is injected as a scenario assumption, not measured; every other parameter matches tunis-typical-v1 so the soiling effect can be isolated.",
+  "created": "2026-11-15",
+  "provenance": {
+    "class": "synthetic-design",
+    "notes": "The dust event is a configured loss factor, not an observation. No cleaning event is modelled in v1, so soiling remains constant for the run; a cleaning schedule is a phase 06 policy question."
+  },
+  "site": {
+    "label": "Tunis, Tunisia",
+    "latitude_deg": 36.8065,
+    "longitude_deg": 10.1815,
+    "altitude_m": 10,
+    "timezone": "Africa/Tunis"
+  },
+  "mode": "grid_connected",
+  "simulation": {
+    "timestep_minutes": 15,
+    "start": "2026-03-20T00:00:00+01:00",
+    "horizon_hours": 48,
+    "seed": 20260621,
+    "default_speed_multiplier": 60
+  },
+  "pv": {
+    "installed_dc_kwp": 3.0,
+    "panel_count": 12,
+    "tilt_deg": 30,
+    "azimuth_deg": 180,
+    "temperature_coefficient_per_degc": -0.0035,
+    "noct_degc": 45,
+    "soiling_loss": 0.12,
+    "mismatch_loss": 0.02,
+    "availability": 0.99,
+    "shading_windows": [],
+    "tracker": {
+      "enabled": false,
+      "axes": 0
+    }
+  },
+  "inverter": {
+    "rated_ac_kw": 3.0,
+    "efficiency": 0.96,
+    "standby_w": 5.0,
+    "clipping": true
+  },
+  "battery": {
+    "chemistry": "lfp",
+    "nominal_capacity_kwh": 5.12,
+    "initial_soc": 0.55,
+    "min_soc": 0.1,
+    "max_soc": 0.95,
+    "max_charge_kw": 2.5,
+    "max_discharge_kw": 3.0,
+    "round_trip_efficiency": 0.92,
+    "degradation": {
+      "enabled": false,
+      "annual_capacity_fade": 0.02
+    }
+  },
+  "grid": {
+    "import_limit_kw": 6.0,
+    "export_limit_kw": 3.0,
+    "outages": []
+  },
+  "tariff": {
+    "currency": "TND",
+    "verified": false,
+    "source": "STEG residential tariff — to be verified and cited before any economic claim",
+    "import_bands": [
+      { "up_to_kwh_per_month": 50, "price_tnd_per_kwh": null },
+      { "up_to_kwh_per_month": 100, "price_tnd_per_kwh": null },
+      { "up_to_kwh_per_month": 200, "price_tnd_per_kwh": null },
+      { "up_to_kwh_per_month": null, "price_tnd_per_kwh": null }
+    ],
+    "fixed_monthly_tnd": null,
+    "export_compensation_tnd_per_kwh": null
+  },
+  "weather": {
+    "primary_source": "open-meteo-forecast",
+    "historical_source": "open-meteo-era5",
+    "cache_dir": "data/weather-cache",
+    "refresh_hours": 6,
+    "fallback_order": ["cached", "synthetic"]
+  },
+  "household": {
+    "preset": "typical",
+    "rooms": [
+      { "id": "living_room", "name": "Living room", "type": "living" },
+      { "id": "kitchen", "name": "Kitchen", "type": "kitchen" },
+      { "id": "bedrooms", "name": "Bedrooms", "type": "bedroom" },
+      { "id": "bathroom", "name": "Bathroom", "type": "wet" },
+      { "id": "utility", "name": "Utility room", "type": "utility" },
+      { "id": "garden", "name": "Garden", "type": "outdoor" }
+    ],
+    "appliances": [
+      {
+        "id": "router",
+        "name": "Router",
+        "room": "utility",
+        "rated_power_w": 10,
+        "priority": "critical",
+        "controllable": false,
+        "profile": "always_on"
+      },
+      {
+        "id": "fridge",
+        "name": "Refrigerator",
+        "room": "kitchen",
+        "rated_power_w": 150,
+        "priority": "critical",
+        "controllable": false,
+        "profile": "duty_cycle",
+        "duty_cycle": 0.35
+      },
+      {
+        "id": "living_lights",
+        "name": "Living room lighting",
+        "room": "living_room",
+        "rated_power_w": 30,
+        "priority": "important",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "18:00", "end": "23:30" }
+      },
+      {
+        "id": "bedroom_lights",
+        "name": "Bedroom lighting",
+        "room": "bedrooms",
+        "rated_power_w": 20,
+        "priority": "important",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "21:00", "end": "23:00" }
+      },
+      {
+        "id": "tv",
+        "name": "Television",
+        "room": "living_room",
+        "rated_power_w": 100,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "19:00", "end": "23:00" }
+      },
+      {
+        "id": "fan",
+        "name": "Bedroom fan",
+        "room": "bedrooms",
+        "rated_power_w": 50,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "22:00", "end": "06:00" },
+        "note": "Cross-midnight window; the engine must wrap the interval."
+      },
+      {
+        "id": "laptop",
+        "name": "Laptop charger",
+        "room": "living_room",
+        "rated_power_w": 65,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "19:00", "end": "22:30" }
+      },
+      {
+        "id": "ac",
+        "name": "Air conditioner",
+        "room": "bedrooms",
+        "rated_power_w": 1200,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "14:00", "end": "18:00" },
+        "note": "Summer design load; seasonality is configured by scenario copies, not by engine logic."
+      },
+      {
+        "id": "washing_machine",
+        "name": "Washing machine",
+        "room": "utility",
+        "rated_power_w": 500,
+        "priority": "flexible",
+        "controllable": true,
+        "profile": "flexible_window",
+        "flexibility": {
+          "earliest": "09:00",
+          "latest": "18:00",
+          "duration_minutes": 120,
+          "non_interruptible": true
+        }
+      },
+      {
+        "id": "dishwasher",
+        "name": "Dishwasher",
+        "room": "kitchen",
+        "rated_power_w": 1200,
+        "priority": "flexible",
+        "controllable": true,
+        "profile": "flexible_window",
+        "flexibility": {
+          "earliest": "20:00",
+          "latest": "23:59",
+          "duration_minutes": 60,
+          "non_interruptible": true
+        }
+      },
+      {
+        "id": "water_heater",
+        "name": "Water heater",
+        "room": "utility",
+        "rated_power_w": 1500,
+        "priority": "flexible",
+        "controllable": true,
+        "profile": "flexible_window",
+        "flexibility": {
+          "earliest": "10:00",
+          "latest": "18:00",
+          "duration_minutes": 120,
+          "non_interruptible": true
+        }
+      },
+      {
+        "id": "irrigation_pump",
+        "name": "Garden irrigation pump",
+        "room": "garden",
+        "rated_power_w": 750,
+        "priority": "flexible",
+        "controllable": true,
+        "profile": "flexible_window",
+        "flexibility": {
+          "earliest": "10:00",
+          "latest": "16:00",
+          "duration_minutes": 60,
+          "non_interruptible": true
+        }
+      },
+      {
+        "id": "oven",
+        "name": "Oven",
+        "room": "kitchen",
+        "rated_power_w": 2000,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "19:00", "end": "20:00" }
+      },
+      {
+        "id": "device_chargers",
+        "name": "Small device chargers",
+        "room": "living_room",
+        "rated_power_w": 30,
+        "priority": "discretionary",
+        "controllable": true,
+        "profile": "schedule",
+        "schedule": { "start": "20:00", "end": "23:00" }
+      }
+    ]
+  },
+  "policies": {
+    "baseline": {
+      "reserve_soc": 0.4,
+      "shed_order": ["discretionary", "flexible", "important"],
+      "hysteresis_soc": 0.05
+    },
+    "scheduler": {
+      "reserve_soc": 0.3,
+      "horizon_hours": 24,
+      "forecast_fallback": "baseline"
+    }
+  }
+}

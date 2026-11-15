@@ -18,7 +18,7 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 | Task | Criterion | Artifact | Status |
 | --- | --- | --- | --- |
 | 00.1 | One paragraph in README and report; no claim of controlling a real installation | [`README.md`](../README.md), [`report/01`](report/01-product-statement.md) | **Met** |
-| 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical.json`](../scenarios/tunis-typical.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (tariff intentionally unverified) |
+| 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json), [`scenario.schema.json`](../scenarios/scenario.schema.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (three validated scenarios; tariff intentionally unverified) |
 | 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** |
 | 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** |
 | 00.5 | Every displayed metric has a source type and unit | [Data provenance](data-provenance.md) | **Met at contract level**; enforcement verified in phases 09–10 |
@@ -39,6 +39,7 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-02 | Deterministic replay | 3 runs × 3 scenarios identical within 1 × 10⁻⁹ relative, including event sequence | Test log + manifests | Pending (phase 02) |
 | AC-03 | Physical invariants | 0 violations across 50 seeds × 10,000 steps (SOC bounds, power limits, non-negative energy, legal transitions) | Property-test report | Pending (phase 04) |
 | AC-04 | Observability contract | Static inspection + test proving controllers cannot read hidden world state | Interface test | Pending (phase 02) |
+| AC-21 | Scenario validity | Every committed scenario passes schema validation and invariant checks in CI; a deliberately corrupted scenario is rejected with a field-level message | CI log + negative test | Pending (phase 01.4) |
 
 ### B.2 Model credibility
 

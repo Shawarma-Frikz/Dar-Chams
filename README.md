@@ -8,7 +8,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 
 ## Status
 
-- **Phase 00 — project definition: complete.** Scope brief, requirements register, decision log, provenance contract, acceptance checklist and the default scenario are in `docs/` and `scenarios/`.
+- **Phase 00 — project definition: complete.** Scope brief, requirements register, decision log, provenance contract, acceptance checklist and three validated scenarios are in `docs/` and `scenarios/`.
 - **Phases 01–11: planned.** See [`Helios_Roadmap_and_Graphic_Charter.html`](Helios_Roadmap_and_Graphic_Charter.html).
 - No application code yet. CI and the project scaffold arrive in phase 01.
 
@@ -58,11 +58,18 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   └── report/
 │       └── 01-product-statement.md
 ├── scenarios/
-│   ├── README.md               Units, conventions, tariff policy
-│   └── tunis-typical.json      Default simulation scenario
+│   ├── README.md               Scenario contract, conventions, tariff policy
+│   ├── scenario.schema.json    JSON Schema for every scenario
+│   ├── tunis-typical-v1.json   Default simulation scenario
+│   ├── tunis-offgrid-v1.json   Off-grid autonomy variant
+│   └── tunis-dust-v1.json      Heavy-soiling variant
+├── scripts/
+│   └── validate-scenarios.mjs  Schema-independent invariant checks
 ├── Helios_Roadmap_and_Graphic_Charter.html
 └── README.md
 ```
+
+Scenario files validate with `node scripts/validate-scenarios.mjs`.
 
 ## Documentation
 
@@ -74,7 +81,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 | [Data provenance](docs/data-provenance.md) | Value classes, UI labelling rules, metric register |
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |
 | [Report · product statement](docs/report/01-product-statement.md) | Canonical paragraph for the final report |
-| [Scenario conventions](scenarios/README.md) | Field groups, units, seeds, tariff policy |
+| [Scenario conventions](scenarios/README.md) | Schema contract, field groups, units, seeds, variants, tariff policy |
 
 ## Design
 

@@ -44,7 +44,7 @@ Helios is **not** aimed at utilities, installers, or control-room operators; it 
 
 ## 4 · Operating scenario
 
-The default scenario is [`scenarios/tunis-typical.json`](../scenarios/tunis-typical.json):
+The default scenario is [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json):
 
 | Parameter | Value | Note |
 | --- | --- | --- |
@@ -58,7 +58,7 @@ The default scenario is [`scenarios/tunis-typical.json`](../scenarios/tunis-typi
 | Weather | Open-Meteo forecast, ERA5 archive, cached, synthetic fallback | Deterministic when seeded |
 | Tariff | Structure defined, values unverified (`null`) | Economic metrics stay disabled until cited |
 
-All values live in the scenario file, not in engine code. Assumptions are design choices, not measurements — see [data provenance](data-provenance.md).
+All values live in the scenario file, not in engine code. Each file validates against [`scenarios/scenario.schema.json`](../scenarios/scenario.schema.json) and the relational checks in `scripts/validate-scenarios.mjs`. Two controlled variants exist beside the default: `tunis-offgrid-v1` (off-grid sizing and no grid exchange) and `tunis-dust-v1` (12% soiling, one variable changed) — see [scenario conventions](../scenarios/README.md). Assumptions are design choices, not measurements — see [data provenance](data-provenance.md).
 
 ---
 
@@ -174,7 +174,7 @@ LLM chat assistant · cloud accounts and sync · native mobile app · real-time 
 | Task | Artifact | Status |
 | --- | --- | --- |
 | 00.1 Product statement | [`README.md`](../README.md), [`report/01`](report/01-product-statement.md) | Done |
-| 00.2 Operating scenario | [`scenarios/tunis-typical.json`](../scenarios/tunis-typical.json), [`scenarios/README.md`](../scenarios/README.md) | Done |
+| 00.2 Operating scenario | [`scenarios/`](../scenarios/README.md) — schema plus three validated scenarios | Done |
 | 00.3 MVP boundary | §6 of this document | Done |
 | 00.4 Requirements register | [`requirements.md`](requirements.md) | Done |
 | 00.5 Simulation truth and limits | [`data-provenance.md`](data-provenance.md) | Done at contract level; UI enforcement verified in phases 09–10 |

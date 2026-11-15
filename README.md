@@ -65,6 +65,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── tunis-offgrid-v1.json   Off-grid autonomy variant
 │   └── tunis-dust-v1.json      Heavy-soiling variant
 ├── scripts/
+│   ├── check-acceptance.mjs    Signed checklist: targets, references, digest
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   └── validate-scenarios.mjs  Scenario invariant checks
@@ -72,7 +73,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 └── README.md
 ```
 
-Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit.
+Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`.
 
 ## Documentation
 

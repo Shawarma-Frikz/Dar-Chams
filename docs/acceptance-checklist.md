@@ -2,12 +2,13 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1.0 |
+| Version | 1.0.0 (signed) |
 | Date | 2026-11-15 |
 | Phase | 00 (task 00.6) |
 | Owner | Author (sole developer) |
+| Content digest (sha256) | 951760a0501b5d6712fec3d612221a06b61534c4412e18b76d3659c768af7387 |
 
-A phase is complete when its acceptance evidence exists, not when its screen exists. This checklist is the agreed definition of success; evidence is recorded next to each row as phases finish.
+A phase is complete when its acceptance evidence exists, not when its screen exists. This checklist is the agreed definition of success; evidence is recorded next to each row as phases finish. `scripts/check-acceptance.mjs` verifies its structure, the six task-00.6 headline targets, every cross-document AC reference and the content digest below; an edit after signing invalidates the digest until the sign-off is renewed.
 
 **Threshold rules.** Targets marked *provisional* are initial engineering estimates. Per task 11.1 they are frozen before the final experiment and never tuned after results are seen.
 
@@ -100,10 +101,10 @@ These gates from the roadmap are binding. A gate that fails stops the dependent 
 
 | Role | Name | Date | Signature |
 | --- | --- | --- | --- |
-| Author | Shawarma-Frikz | 2026-11-15 | digital sign-off |
+| Author | Shawarma-Frikz | 2026-11-15 | digital sign-off, bound to the content digest in the header |
 | Supervisor (if required by the module) |  |  |  |
 
-By signing, the author confirms that the Must items, thresholds and gates above are the definition of done for v1, and that any later change requires a decision-log entry.
+By signing, the author confirms that the Must items, thresholds and gates above — exactly as covered by the content digest in the header — are the definition of done for v1, and that any later change requires a decision-log entry and a renewed digest and signature.
 
 ---
 

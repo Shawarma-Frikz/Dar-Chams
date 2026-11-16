@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.3.0 |
-| Phase | 01 (task 01.6); v0.2.0 adds the phase-02.1 time proof; v0.3.0 adds the phase-02.2 unit proof |
+| Version | 0.4.0 |
+| Phase | 01 (task 01.6); v0.2.0 adds the phase-02.1 time proof; v0.3.0 adds the phase-02.2 unit proof; v0.4.0 adds the phase-02.3 balance proof |
 | Runtime | Node 26 type stripping; no checker imports a third-party module, and only `check-units.mjs` runs one, the already-installed TypeScript compiler |
 | Checked by | `npm run check` |
-| Decisions | DEC-023, DEC-030, DEC-034, DEC-035, DEC-037, DEC-038 |
+| Decisions | DEC-023, DEC-030, DEC-034, DEC-035, DEC-037, DEC-038, DEC-039 |
 
 ## Purpose
 
@@ -45,7 +45,8 @@ own negative proof so that a passing run is evidence the check can fail. `check-
 ten configuration failures and a synthetic unitless field; `check-time.mjs` checks the shipped runs,
 four DST days and five broken time cases; `check-units.mjs` compiles eight deliberately mixed-unit
 calculations, checks every shipped SOC fraction and scale crossing, and refuses nine wrong-scale
-values; `check-ci.mjs` breaks a copy of the workflow six ways;
+values; `check-balance.mjs` settles 1224 steps against the nine-term ledger and refuses ten broken
+ledgers; `check-ci.mjs` breaks a copy of the workflow six ways;
 `check-docs.mjs` breaks seven copies of the documentation; `check-acceptance.mjs` recomputes the
 signed digest; `check-decisions.mjs` resolves every reference; `check-requirements.mjs` looks for
 cycles, dangling dependencies and vague wording; `check-provenance.mjs` walks the metric graph;
@@ -68,6 +69,7 @@ responsibility.
 | `check-config.mjs` | The configuration failure classes, timezone agreement, units, layer boundaries | The validator accepts a bad scenario or a layer leaks | — |
 | `check-time.mjs` | Day step counts, site-day boundaries, DST transitions, instant offsets, unit scales | A count, boundary, offset or negative case is wrong | — |
 | `check-units.mjs` | Branded quantities, scale conversions, SOC fractions, the tsc type guard | A mixed-unit calculation compiles, a scale is wrong, or the contract stores a percentage | — |
+| `check-balance.mjs` | The nine-term ledger, its tolerance, the reference dispatch on the real grids | A step fails to close, a magnitude is negative, a limit is exceeded or a broken ledger is accepted | — |
 | `check-docs.mjs` | Module READMEs, API, dictionary, experiment log, changelog, map | A section, export, path, record or version is missing or stale | `docs/data-dictionary.md` with `--write` |
 | `check-ci.mjs` | Workflow structure and the gate list | A gate, trigger, pin or install command drifts | — |
 | `validate-scenarios.mjs` | Every committed scenario through the runtime validator | A scenario is invalid | — |

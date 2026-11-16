@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.2.0 |
+| Version | 1.3.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 follows the time check inserted ahead of this one in 02.1; v1.2.0 follows the unit check inserted in 02.2 |
+| Phase | 01 (task 01.6); v1.1.0 follows the time check inserted ahead of this one in 02.1; v1.2.0 follows the unit check inserted in 02.2; v1.3.0 follows the balance check inserted in 02.3 |
 | Decided by | DEC-035; commit vocabulary from DEC-030 |
-| Checked by | `node scripts/check-docs.mjs`, or `npm run check` for all eleven checks |
+| Checked by | `node scripts/check-docs.mjs`, or `npm run check` for all twelve checks |
 | Related | [Conventions](conventions.md) §3, §7 · [API notes](api.md) · [Data dictionary](data-dictionary.md) · [Experiment log](experiment-log.md) · [Changelog](../CHANGELOG.md) |
 
 Task 01.6 asks for architecture decision records, module READMEs, API notes, a data dictionary,
@@ -32,6 +32,7 @@ authority; the other one links to it rather than restating it.
 | [`docs/data-provenance.md`](data-provenance.md) | Provenance classes, claim gate and generated metric tables | What a displayed number means | `check-provenance` |
 | [`docs/acceptance-checklist.md`](acceptance-checklist.md) | Signed success criteria with thresholds | Whether a phase is done | `check-acceptance` |
 | [`docs/configuration.md`](configuration.md) | The four configuration layers | Where a configuration value lives | `check-config`; existence by `check-docs` |
+| [`docs/energy-balance.md`](energy-balance.md) | The step ledger: identity, sign convention, tolerance and proof | What a balanced step is | `check-balance`; existence by `check-docs` |
 | [`docs/conventions.md`](conventions.md) | Licence, branches, commits, evidence policy, checks | How the repository is kept | `check-docs` |
 | [`docs/quality-gates.md`](quality-gates.md) | Gates, CI job, demonstrated failure path | How a build turns red | `check-ci`; existence by `check-docs` |
 | [`docs/runtime-support.md`](runtime-support.md) | Pinned runtime, browsers, hardware, budgets | What the toolchain is | `check-runtime` |
@@ -212,7 +213,7 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 npm run check:docs
 ```
 
-`scripts/check-docs.mjs` is the ninth register check. On every run it verifies:
+`scripts/check-docs.mjs` is the tenth register check. On every run it verifies:
 
 | Area | What must hold |
 | --- | --- |

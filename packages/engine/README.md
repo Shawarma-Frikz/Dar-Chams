@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; physics from 02.3 |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; physics from 02.4 |
 | Boundary | No React, Next.js, DOM or browser API may be imported (DEC-002) |
-| Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs` |
+| Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039 |
 
 ## Purpose
 
@@ -18,7 +18,9 @@ scenario is. Phase 01 built the boundary the physics runs behind — the types, 
 relational invariants, the unit audit and the issue model. Phase 02.1 adds the axis: absolute
 instants, the site timezone's calendar-day boundaries and a uniform step grid. Phase 02.2 adds the
 canonical units: branded watts, watt-hours, degrees Celsius and state of charge, with every scale
-change behind a named conversion. It is not a UI, a controller or a persistence layer.
+change behind a named conversion. Phase 02.3 adds the energy ledger: the nine magnitudes every step
+must satisfy, with the direction in the term name and an absolute tolerance on the residual. It is
+not a UI, a controller or a persistence layer.
 
 ## Inputs
 
@@ -55,6 +57,11 @@ change behind a named conversion. It is not a UI, a controller or a persistence 
   conversion; and `addWatts`/`addWattHours` sum one unit only. `celsius` holds °C above absolute
   zero, and `stateOfCharge` holds the 0–1 fraction with `percentFromStateOfCharge` and
   `stateOfChargeFromPercent` as the two display crossings.
+- The **energy ledger**: `balanceStep` and `assertBalanced` settle a step's nine magnitudes into
+  supply and demand and report a signed residual; `BALANCE_TERMS` and `BALANCE_TOLERANCE_WH` state
+  the terms and the ±1e-6 Wh bound; `inverterConversionLoss` derives one loss from a declared
+  efficiency; and `StepTerms`, `StepBalance`, `BalanceTerm` and `BalanceError` carry the shape, the
+  result and the failure.
 
 The complete list, with signatures, is the first table in [`docs/api.md`](../../docs/api.md).
 
@@ -65,10 +72,11 @@ npm run test
 node scripts/check-config.mjs
 node scripts/check-time.mjs
 node scripts/check-units.mjs
+node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 43 engine tests and the application's ten, 53 in total:
+`npm run test` runs 55 engine tests and the application's ten, 65 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 14 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
@@ -87,6 +95,11 @@ node scripts/validate-scenarios.mjs
 - [`src/units/quantity.test.ts`](src/units/quantity.test.ts), 5 tests — Celsius holds down to
   absolute zero and refuses a colder or non-finite value; SOC stays a 0–1 fraction, crosses to
   percent and back, and refuses a percentage written as a fraction.
+- [`src/balance/balance.test.ts`](src/balance/balance.test.ts), 12 tests — a 1750 Wh step closes on
+  both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown
+  or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss
+  follows the inverter efficiency; and three properties show the residual is supply − demand, a
+  derived eighth term closes the step, and interval energy feeds the ledger.
 - [`src/lib/config/layers.test.ts`](../../src/lib/config/layers.test.ts), 10 application tests — the
   four layers stay separate and resolution fails closed.
 
@@ -97,14 +110,17 @@ days, the two transition directions, instant storage and the unit scales, then f
 cases back through the public API. `node scripts/check-units.mjs` is the acceptance proof for 02.2:
 it crosses every shipped kW and kWh boundary, holds all eighteen SOC fields to the fraction, compiles
 eight deliberately mixed calculations that must each be refused, and feeds nine wrong-scale values
-back through the constructors and the schema audit. `node scripts/validate-scenarios.mjs` runs the validator over every
+back through the constructors and the schema audit. `node scripts/check-balance.mjs` is the
+acceptance proof for 02.3: it settles 1224 steps across the three shipped scenarios, one Tunis day
+at all four timesteps and both Paris daylight-saving days, keeps every residual inside ±1e-6 Wh, and
+feeds ten broken ledgers back through the public API. `node scripts/validate-scenarios.mjs` runs the validator over every
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
-**Not covered yet.** There is no physics, no energy balance and no running simulation clock; 02.1
-fixes the axis those phases will step along. Solar elevation and sunrise/sunset — the weather model's
-daylight flag (MET-11) — belong to 03.2, not to this day boundary. The time base is tested; the
-simulation it will carry is not.
+**Not covered yet.** There is no physics and no running simulation clock; 02.3 states and proves the
+energy ledger, and 02.4–03 fill it with component models. Solar elevation and sunrise/sunset — the
+weather model's daylight flag (MET-11) — belong to 03.2, not to this day boundary. The time base and
+the ledger are tested; the simulation they will carry is not.
 
 ## Layout
 
@@ -126,4 +142,6 @@ simulation it will carry is not.
 | `src/units/state-of-charge.ts` | The 0–1 SOC fraction and its two percent crossings |
 | `src/units/energy.test.ts` | Six unit and property tests over power and energy |
 | `src/units/quantity.test.ts` | Five tests over temperature and state of charge |
+| `src/balance/balance.ts` | The nine-term step ledger, its tolerance and the conversion-loss helper |
+| `src/balance/balance.test.ts` | Twelve ledger and property tests |
 | `package.json` | `@helios/engine`, TypeScript-source exports for the workspace |

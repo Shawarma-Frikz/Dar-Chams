@@ -21,15 +21,15 @@ const STATUS = [
     refs: 'FR-SIM-10 · DEC-033',
   },
   {
-    label: 'Time and units',
+    label: 'Time, units and balance',
     detail:
-      'A run steps at 5, 15, 30 or 60 minutes. Stamps are stored as instants and shown in the site zone, so a 23- or 25-hour daylight-saving day yields 92 or 100 quarter-hour steps rather than a wrong 24 hours. Power is kept in watts, energy in watt-hours, temperature in °C and state of charge as a 0–1 fraction; kW, kWh and percent exist only at named display boundaries, and a mixed-unit calculation does not compile.',
-    refs: 'FR-SIM-02 · FR-SIM-03 · DEC-037 · DEC-038',
+      'A run steps at 5, 15, 30 or 60 minutes. Stamps are stored as instants and shown in the site zone, so a 23- or 25-hour daylight-saving day yields 92 or 100 quarter-hour steps rather than a wrong 24 hours. Power is kept in watts, energy in watt-hours, temperature in °C and state of charge as a 0–1 fraction; kW, kWh and percent exist only at named display boundaries, and a mixed-unit calculation does not compile. Every step then closes a nine-term watt-hour ledger — three supply terms, six demand terms and three separately owned losses — with a signed residual bounded at ±1e-6 Wh.',
+    refs: 'FR-SIM-02 · FR-SIM-03 · DEC-037 · DEC-038 · DEC-039',
   },
   {
     label: 'Quality gates',
     detail:
-      'npm run verify runs eleven checks — the runtime pin, the document registers, the configuration, site-time and unit proofs and the CI contract — then type-check, lint, format, 53 unit and property tests, and the production build. CI runs the same six gates on Linux and Windows.',
+      'npm run verify runs twelve checks — the runtime pin, the document registers, the configuration, site-time, unit and energy-balance proofs and the CI contract — then type-check, lint, format, 65 unit and property tests, and the production build. CI runs the same six gates on Linux and Windows.',
     refs: 'NFR-06 · DEC-034',
   },
 ];
@@ -145,9 +145,9 @@ export default function OverviewPage() {
             contract (NFR-07, DEC-024).
           </p>
           <p>
-            None of those classes is in use here yet. The engine has a time base and canonical
-            units, and no physics, and this shell deliberately displays no metric: a number without
-            a class and a source would be decoration.
+            None of those classes is in use here yet. The engine has a time base, canonical units
+            and an energy-balance ledger, and no physics, and this shell deliberately displays no
+            metric: a number without a class and a source would be decoration.
           </p>
         </div>
       </section>

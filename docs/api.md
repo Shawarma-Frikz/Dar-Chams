@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.2.0 |
+| Version | 1.3.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -120,6 +120,15 @@ with the engine and not only with the application.
 | `stateOfCharge` | function | Tags a 0–1 fraction; refuses 55 where 0.55 belongs |
 | `percentFromStateOfCharge` | function | Fraction → percent at a display boundary |
 | `stateOfChargeFromPercent` | function | Percent → fraction at an input boundary |
+| `BALANCE_TERMS` | const | The nine term names in supply-then-demand order: `pv`, `gridImport`, `batteryDischarge`, `load`, `batteryCharge`, `gridExport`, `conversionLoss`, `batteryLoss`, `standbyLoss` |
+| `BALANCE_TOLERANCE_WH` | const | `1e-6`; the absolute, inclusive bound on the residual in watt-hours |
+| `BalanceError` | class | `Error` subclass carrying the step index, supply, demand, residual and tolerance |
+| `assertBalanced` | function | Settles a step and throws `BalanceError` when the residual exceeds the tolerance |
+| `balanceStep` | function | Sums the nine magnitudes into supply and demand and returns the signed residual and the balance decision |
+| `inverterConversionLoss` | function | AC energy × (1 / efficiency − 1); the DC energy an inverter consumed beyond what it delivered |
+| `BalanceTerm` | type | One of the nine ledger term names |
+| `StepBalance` | type | Supply, demand, signed residual, tolerance and `balanced` |
+| `StepTerms` | type | One non-negative watt-hour magnitude per ledger term |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
@@ -136,6 +145,15 @@ only, so a power-plus-energy expression has to be resolved deliberately rather t
 number. A branded number is still a number, so the guard covers arithmetic and assignment, not a
 call to a constructor for another quantity; `scripts/check-units.mjs` compiles a fixture where every
 mixed calculation must be refused.
+
+The ledger is the conservation law every simulated step is settled against (DEC-039). `pv`,
+`gridImport` and `batteryDischarge` are supply; `load`, `batteryCharge`, `gridExport`,
+`conversionLoss`, `batteryLoss` and `standbyLoss` are demand. Every term is a non-negative
+`WattHours` magnitude and the direction is in the name, so a reversed flow changes its term rather
+than its sign; the residual is the only signed number and is a plain `number`, not an energy.
+`balanceStep` reports, `assertBalanced` throws with the step index, and `inverterConversionLoss`
+computes one of the three losses from a declared efficiency instead of leaving it as a free
+parameter. The identity, its tolerance and its limits are in [the energy balance](energy-balance.md).
 
 ## 2 · Application configuration surface
 

@@ -6,9 +6,12 @@
  * adds the time base — absolute instants, site-zone day boundaries and a
  * uniform step grid — and the canonical units: branded watts, watt-hours,
  * degrees Celsius and state of charge, with every scale change behind a named
- * conversion (DEC-038). Physics, controllers and the running clock are still to
- * come. No React, no Next.js and no browser API may appear here; the engine
- * stays runnable in plain Node for tests and batch experiments (DEC-002).
+ * conversion (DEC-038). It also fixes the energy ledger every later component
+ * must satisfy: eight non-negative magnitudes over one step, a signed residual
+ * and an absolute tolerance (DEC-039). Physics, controllers and the running
+ * clock are still to come. No React, no Next.js and no browser API may appear
+ * here; the engine stays runnable in plain Node for tests and batch
+ * experiments (DEC-002).
  */
 
 export const ENGINE_NAME = 'helios-engine';
@@ -83,6 +86,16 @@ export type { StateOfCharge } from './units/state-of-charge.ts';
 
 export { ABSOLUTE_ZERO_CELSIUS, celsius } from './units/temperature.ts';
 export type { Celsius } from './units/temperature.ts';
+
+export {
+  BALANCE_TERMS,
+  BALANCE_TOLERANCE_WH,
+  BalanceError,
+  assertBalanced,
+  balanceStep,
+  inverterConversionLoss,
+} from './balance/balance.ts';
+export type { BalanceTerm, StepBalance, StepTerms } from './balance/balance.ts';
 
 export type {
   Appliance,

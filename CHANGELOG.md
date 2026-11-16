@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base and the canonical units.
+Phase 02 — the simulation time base, the canonical units and the energy ledger.
 
 ### Added
 
@@ -27,10 +27,17 @@ Phase 02 — the simulation time base and the canonical units.
   fixture whose eight mixed-unit calculations must each fail with a named diagnostic.
 - The schema audit refuses a `_percent` field, a SOC bound outside 0–1 and a temperature bound below
   absolute zero.
+- Energy ledger (DEC-039): nine non-negative watt-hour magnitudes per step — PV, grid import and
+  battery discharge as supply; load, battery charge, grid export, conversion loss, battery loss and
+  standby loss as demand — with the direction in the name, a signed residual bounded at ±1e-6 Wh,
+  and `assertBalanced` naming the step that fails.
+- `scripts/check-balance.mjs`, the twelfth register check, settling 1224 steps across the three
+  shipped scenarios, one Tunis day at all four timesteps and both Paris daylight-saving days, and
+  refusing ten broken ledgers; the largest residual observed is 2.27e-13 Wh.
 
 ### Changed
 
-- `npm run check` now runs eleven register checks, and the suite runs 53 tests.
+- `npm run check` now runs twelve register checks, and the suite runs 65 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.3.0 |
+| Version | 1.4.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.5, 01.6), 02.1, 02.2; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests |
-| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038 |
-| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all eleven checks |
+| Phase | 01 (tasks 01.5, 01.6), 02.1, 02.2, 02.3; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests |
+| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038; the energy ledger by DEC-039 |
+| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all twelve checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
 
 Task 01.5 asks for formatting, lint, type-check, unit-test and production-build commands, and for CI to run them on pushes and pull requests. Its acceptance condition is not "the commands exist" but "a failing check blocks a green build", so this document records the gate list, the order, the CI job and the two ways the failure path is demonstrated.
@@ -17,7 +17,7 @@ Task 01.5 asks for formatting, lint, type-check, unit-test and production-build 
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Registers | `npm run check` | The eleven document, configuration, time, unit and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
+| Registers | `npm run check` | The twelve document, configuration, time, unit, balance and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
 | Type-check | `npm run typecheck` | `tsc --noEmit` under the strict base config, including the test files and `vitest.config.ts` |
 | Lint | `npm run lint` | ESLint 9 on the flat config, including the engine boundary that forbids React, Next and `@/` imports (DEC-002) |
 | Format | `npm run format:check` | Prettier 3 over code, config and scripts; Markdown and JSON evidence are excluded by [`.prettierignore`](../.prettierignore) |
@@ -30,7 +30,7 @@ The order is deliberate. The cheap, broad checks come first — a formatting err
 
 ```text
 npm run verify
-  → npm run check        eleven checks
+  → npm run check        twelve checks
   → npm run typecheck
   → npm run lint
   → npm run format:check
@@ -40,11 +40,11 @@ npm run verify
 
 `verify` is the single command a contributor runs before a commit, and the same list the workflow runs. CI does not call `verify`, because one combined step would report six gates as one red cross; it runs the same six commands as separate steps so a failing gate is named on the pull request.
 
-The register gate is itself eleven checks. The seventh, `scripts/check-time.mjs`, holds the step grid to its arithmetic: each shipped run tiles its horizon, a site day yields the step count its real length allows at 5, 15, 30 or 60 minutes, and five broken cases — a naive instant, a partial final step, an hourly grid on a 23.5-hour day, a contradictory start offset and an unknown zone — are refused (DEC-037). The eighth, `scripts/check-units.mjs`, holds the unit vocabulary to its scales: every shipped kW and kWh boundary converts exactly, 0.55 stays a fraction and 55 is refused, °C stops at absolute zero, the schema audit refuses a percent field or a widened SOC bound, and `tsc` must reject the eight marked mixed-unit calculations in `scripts/fixtures/unit-guard.ts` and nothing else (DEC-038). The ninth, `scripts/check-docs.mjs`, holds six module READMEs (purpose, inputs, outputs, runnable tests), the API tables in both directions, the generated data dictionary, the experiment record format, the changelog and the document map to their contracts (DEC-035).
+The register gate is itself twelve checks. The seventh, `scripts/check-time.mjs`, holds the step grid to its arithmetic: each shipped run tiles its horizon, a site day yields the step count its real length allows at 5, 15, 30 or 60 minutes, and five broken cases — a naive instant, a partial final step, an hourly grid on a 23.5-hour day, a contradictory start offset and an unknown zone — are refused (DEC-037). The eighth, `scripts/check-units.mjs`, holds the unit vocabulary to its scales: every shipped kW and kWh boundary converts exactly, 0.55 stays a fraction and 55 is refused, °C stops at absolute zero, the schema audit refuses a percent field or a widened SOC bound, and `tsc` must reject the eight marked mixed-unit calculations in `scripts/fixtures/unit-guard.ts` and nothing else (DEC-038). The ninth, `scripts/check-balance.mjs`, holds the step ledger to its identity: 1224 settlements across the three shipped scenarios, one Tunis day at all four timesteps and both Paris daylight-saving days close within ±1e-6 Wh, every magnitude stays a non-negative fraction of a declared limit, every loss follows a shipped efficiency, and ten broken ledgers are refused (DEC-039). The tenth, `scripts/check-docs.mjs`, holds six module READMEs (purpose, inputs, outputs, runnable tests), the API tables in both directions, the generated data dictionary, the experiment record format, the changelog and the document map to their contracts (DEC-035).
 
 ## 2 · What the tests cover
 
-All 53 tests run against the modules the application imports — the configuration contract from 01.4 and the time and unit base from 02.1–02.2:
+All 65 tests run against the modules the application imports — the configuration contract from 01.4 and the time, unit and balance base from 02.1–02.3:
 
 | File | Tests | Subject |
 | --- | --- | --- |
@@ -52,9 +52,10 @@ All 53 tests run against the modules the application imports — the configurati
 | [`packages/engine/src/time/time.test.ts`](../packages/engine/src/time/time.test.ts) | 18 | Instants store as one absolute value and format with an explicit offset; a naive, impossible or sub-millisecond stamp is refused; Tunis yields 1440 minutes and 288/96/48/24 steps; Paris and Lord Howe keep their 23-, 25-, 23.5- and 24.5-hour days; a gap shifts forward and an overlap takes the earlier instant; a run tiles its horizon and splits at site midnight |
 | [`packages/engine/src/units/energy.test.ts`](../packages/engine/src/units/energy.test.ts) | 6 | Interval energy is power × minutes ÷ 60 in Wh; kW and kWh are display conversions only; powers and interval energies add in their own unit; non-finite input, an overflow and a negative interval are refused |
 | [`packages/engine/src/units/quantity.test.ts`](../packages/engine/src/units/quantity.test.ts) | 5 | Celsius holds down to absolute zero and refuses a colder or non-finite value; SOC stays a 0–1 fraction, crosses to percent and back, and refuses 55 where 0.55 belongs |
+| [`packages/engine/src/balance/balance.test.ts`](../packages/engine/src/balance/balance.test.ts) | 12 | Nine non-negative magnitudes close a 1750 Wh step on both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss follows the inverter efficiency; properties show the residual is supply − demand, a derived eighth term closes the step, and interval energy feeds the ledger |
 | [`src/lib/config/layers.test.ts`](../src/lib/config/layers.test.ts) | 10 | Settings recover without throwing, refuse scenario fields and never change the scenario; runtime state derives from a frozen configuration; resolution fails closed |
 
-Eight of them are properties rather than examples, run 50–300 times each:
+Eleven of them are properties rather than examples, run 50–300 times each:
 
 - the SOC invariant flags a start outside the window, and only then, for arbitrary fractions;
 - `formatIssues` renders any list of issues without throwing;
@@ -63,7 +64,10 @@ Eight of them are properties rather than examples, run 50–300 times each:
 - every step belongs to exactly one site day, and the days stay in order;
 - interval energy equals power × minutes ÷ 60 for arbitrary finite power and duration;
 - the kW/kWh and W/Wh conversions round-trip without losing value;
-- any state of charge survives the fraction → percent → fraction round-trip.
+- any state of charge survives the fraction → percent → fraction round-trip;
+- the residual is supply minus demand for arbitrary magnitudes, and `balanced` agrees with the tolerance;
+- a step closes when its eighth term is derived from the random other seven;
+- power converted to interval energy at any supported timestep settles without a residual.
 
 The tests import the same modules the application imports — the engine entry point and the `src/lib/config` files — with no mocks, so a test cannot pass against behaviour the app does not have. Fixtures are the shipped scenario files, read from `scenarios/`, not copies; a scenario that stops being valid fails the tests and the configuration check together.
 
@@ -87,7 +91,7 @@ The job does not deploy, publish or upload artefacts. It exists to answer one qu
 
 ## 4 · The check on the check
 
-`scripts/check-ci.mjs` is the tenth register check. It parses the workflow (a small reader for the YAML subset the file uses, not a regular expression), then asserts:
+`scripts/check-ci.mjs` is the eleventh register check. It parses the workflow (a small reader for the YAML subset the file uses, not a regular expression), then asserts:
 
 - triggers: `push` on `main`, `pull_request`, and a manual dispatch;
 - `permissions.contents: read`, concurrency with cancellation, a job timeout of 1–60 minutes;

@@ -1,0 +1,50 @@
+name: CI
+
+# Every gate a reader can run locally also runs here, per operating system and
+# on the Node line pinned in .nvmrc. scripts/check-ci.mjs holds this file to the
+# same list, so a gate cannot be removed from CI without failing `npm run check`.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gates:
+    name: Quality gates (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install the pinned Node line
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install from the lockfile
+        run: npm ci
+      - name: Registers, configuration and the CI contract
+        run: npm run check
+      - name: Type-check
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Format check
+        run: npm run format:check
+      - name: Unit and property tests
+        run: npm run test
+      - name: Production build
+        run: npm run build

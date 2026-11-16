@@ -197,8 +197,8 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.5</td>
-          <td><strong>Establish code quality gates</strong><p>Add formatting, lint, type-check, unit-test, and production-build commands. Add CI to run them on pushes and pull requests.</p></td>
-          <td><span class="done-label">DONE WHEN</span><p>A failing check blocks a green build; the README lists exact commands.</p></td>
+          <td><strong>Establish code quality gates</strong><p>Add formatting, lint, type-check, unit-test, and production-build commands. Add CI to run them on pushes and pull requests. The gates are <code>check</code>, <code>typecheck</code>, <code>lint</code>, <code>format:check</code>, <code>test</code> and <code>build</code>, and <code>npm run verify</code> runs them in that order and stops at the first failure. Twenty-two Vitest and fast-check tests cover the configuration layers. <code>.github/workflows/ci.yml</code> runs the same six steps on <code>ubuntu-latest</code> and <code>windows-latest</code>, with Node from <code>.nvmrc</code>, <code>npm ci</code> and actions pinned to commits; <code>scripts/check-ci.mjs</code> parses the workflow and fails if a gate, trigger or pin is removed (NFR-06, NFR-09, EX-06, DEC-034).</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>A failing check blocks a green build; the README lists exact commands. A red test was shown to stop <code>npm run verify</code> at the test gate with the build never starting, and the workflow is machine-checked so a removed gate or a swallowed failure fails the run (NFR-06).</p></td>
         </tr>
 
         <tr>

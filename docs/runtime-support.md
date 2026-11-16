@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.2.0 |
+| Version | 1.3.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.4) |
-| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032; the validator and the module policy by DEC-033 |
+| Phase | 01 (tasks 01.2–01.5) |
+| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
 
@@ -36,9 +36,11 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 **Verified on 2026-11-16, Windows 11.** A directory containing only `package.json`, `package-lock.json`, `.npmrc` and `.nvmrc` installed with `npm ci` and exit code 0. The same directory with `engines.node` raised to `>=99.0.0 <100` was refused with `EBADENGINE` and exit code 1 — the pin fails closed, as intended.
 
-Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route.
+Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0.
 
-The application dependencies arrive with the phases that need them. Installed at 01.3–01.4, all exact and recorded in the lockfile: Next.js 16.4.6, React 19.3.1 and React DOM 19.3.1; TypeScript 5.9.3, `@types/node` 26.6.6 and the React type packages; ESLint 9.39.5 with `eslint-config-next` 16.4.6 and `eslint-config-prettier` 10.1.8; Prettier 3.10.1 with `prettier-plugin-tailwindcss` 0.8.1; Tailwind CSS 4.3.5 with `@tailwindcss/postcss` 4.3.5; Ajv 8.20.0 with `ajv-formats` 3.0.1 for the scenario contract. Recharts, React Three Fiber, Vitest, fast-check and Playwright arrive in phases 01.5–08, each pinned the same way.
+**Where the gates run.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs the same six steps on `ubuntu-latest` and `windows-latest`, with Node taken from `.nvmrc` and dependencies installed with `npm ci`. The workflow is part of the repository and is itself checked: `scripts/check-ci.mjs` parses it and fails if a gate disappears, an action is referenced by tag instead of commit, or a command swallows its failure. The design and its limits are recorded in [quality gates](quality-gates.md) and DEC-034.
+
+The application dependencies arrive with the phases that need them. Installed at 01.3–01.5, all exact and recorded in the lockfile: Next.js 16.4.6, React 19.3.1 and React DOM 19.3.1; TypeScript 5.9.3, `@types/node` 26.6.6 and the React type packages; ESLint 9.39.5 with `eslint-config-next` 16.4.6 and `eslint-config-prettier` 10.1.8; Prettier 3.10.1 with `prettier-plugin-tailwindcss` 0.8.1; Tailwind CSS 4.3.5 with `@tailwindcss/postcss` 4.3.5; Ajv 8.20.0 with `ajv-formats` 3.0.1 for the scenario contract; Vitest 5.1.0 and fast-check 4.10.2 for the unit and property tests (DEC-017). Recharts, React Three Fiber and Playwright arrive in phases 04–08, each pinned the same way.
 
 **Why Node runs the TypeScript source.** The scenario validator lives in the engine so that the app, `scripts/validate-scenarios.mjs` and `scripts/check-config.mjs` execute one implementation. Node 26 strips types natively, which requires three settings rather than a build step: the root `package.json` declares `"type": "module"`, `tsconfig.base.json` sets `allowImportingTsExtensions` and `erasableSyntaxOnly`, and intra-workspace imports name the `.ts` file. Enums, namespaces and parameter properties are therefore unavailable in the engine — `erasableSyntaxOnly` rejects them at type-check time instead of letting a runtime failure appear first. Next.js transpiles the same sources for the browser, so the app needs no separate package build.
 
@@ -58,8 +60,9 @@ npm run check
 ```
 
 - On Windows, `npm` may be blocked by PowerShell execution policy (DEC-018); use `npm.cmd`, or run the same commands in Git Bash.
-- `npm run check` runs the runtime check and the six document and configuration checks. It is the single command a fresh clone needs before any work, and it becomes the CI entry point in 01.5.
-- `npm run verify` adds type-check, lint and format check to the seven checks; it is what 01.5 will run in CI.
+- `npm run check` runs the runtime check and the seven document, configuration and CI checks. It is the single command a fresh clone needs before any work, and it is the first step CI runs.
+- `npm run verify` runs the eight checks, then type-check, lint, format check, the unit and property tests, and the production build. It is the one command to run before a commit; CI runs the same six steps separately.
+- `npm run test` runs Vitest once; `npm run test:watch` keeps it open. Both run against the TypeScript sources, not a build output.
 - `npm run dev` serves the application with hot reload on `http://localhost:3000`. `npm run build` writes the static export to `out/`, and `npm run preview` serves that exact directory on `http://localhost:4173` through `scripts/serve-static.mjs`, which resolves paths inside `out/` only and refuses traversal attempts.
 - `.nvmrc` is read by `nvm-windows`, `fnm` and `nvm`; none of them is required, because `engines` plus `engine-strict` already refuse the wrong line.
 - Linux and macOS use the same three commands. The clean install is verified on Windows 11 only, which is the platform this project is graded on; NFR-09 names all three, and the setup deliberately contains no Windows-only dependency — LF endings, no `.ps1` requirement, and npm scripts that run through whichever shell npm is using.
@@ -115,5 +118,9 @@ The pins above govern the Node adapter and the web application. The embedded pat
 | The boot scenario violates the contract | `npm run build`, `npm run dev` and `npm run check` fail before any page renders | `tunis-typical-v1.json: 1 problem in the scenario layer` followed by the field path, the received value and a fix |
 | A scenario field is misspelt | The unknown key is rejected with the nearest valid name | `grid.feed_in_limt_kw  ·  schema.unknown-key` … `did you mean feed_in_limit_kw?` |
 | A numeric field has no unit suffix | `npm run check` fails on the schema audit, not at run time | `contract.unit-missing: grid.feed_in_limit → rename to feed_in_limit_kw` |
+| A test fails | `npm run verify` stops at the test gate; the build never starts | `FAIL  packages/…/x.test.ts > …` then `Tests 1 failed | 22 passed` |
+| A lint or format error | `npm run verify` stops before the tests | `eslint .` exits 1, or `prettier --check .` names the file |
+| A gate is removed from the workflow | `npm run check` fails at the CI contract | `job 1: gates must be npm run check, … , build last` |
+| A workflow action is referenced by tag | Same gate | `"actions/checkout@v4" must be pinned to a commit SHA, not a tag` |
 
 The `npm install` row is deliberate: the tool cannot distinguish an intentional dependency change from an accidental one, so the lockfile diff is what a reviewer checks. The `EPERM` row is Windows file locking on the Tailwind CSS native binary, not a permissions fault, and it leaves `node_modules` untouched apart from stopping mid-way; a re-run after stopping the server succeeds.

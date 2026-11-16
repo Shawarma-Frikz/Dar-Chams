@@ -98,7 +98,7 @@ Scopes: `engine`, `sim`, `pv`, `battery`, `loads`, `ems`, `fct`, `ui`, `twin`, `
 
 A commit that changes a signed document without renewing its digest fails `check-acceptance` by design.
 
-## 7 · Checks before every commit
+## 7 · Checks before every commit and in CI
 
 ```text
 npm run check
@@ -113,10 +113,11 @@ node scripts/check-decisions.mjs
 node scripts/check-requirements.mjs
 node scripts/check-provenance.mjs
 node scripts/check-config.mjs
+node scripts/check-ci.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-All seven must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032). The sixth runs the runtime validator the application uses at startup against the shipped scenarios and against deliberately broken documents, so the four failure classes task 01.4 names — invalid capacity, negative power, impossible SOC, missing units — are proven to stop a load with a message (DEC-033).
+All eight must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032). The sixth runs the runtime validator the application uses at startup against the shipped scenarios and against deliberately broken documents, so the four failure classes task 01.4 names — invalid capacity, negative power, impossible SOC, missing units — are proven to stop a load with a message (DEC-033). The seventh parses the CI workflow and holds it to this list: triggers, runners, the `.nvmrc` Node line, `npm ci`, commit-pinned actions, one step per gate, and no swallowed failure (DEC-034).
 
 The code gates are separate and can be run individually:
 
@@ -124,9 +125,12 @@ The code gates are separate and can be run individually:
 npm run typecheck
 npm run lint
 npm run format:check
+npm run test
 ```
 
-`npm run verify` runs the seven checks and then all three. From 01.5, CI runs that single script together with unit and property tests and the production build; a failing check blocks a green build.
+`npm run verify` runs the eight checks, then those four gates, then `npm run build`. A failure at any step stops the chain, so a red test or a lint error never reaches a build. CI runs the same six steps as separate jobs steps on `ubuntu-latest` and `windows-latest`, on a push to `main` and on every pull request, which is how a failing check blocks a green build (NFR-06). [Quality gates](quality-gates.md) records the order, the proof that the chain fails, and what is not covered.
+
+The failure path has been exercised rather than asserted: a deliberately red test made `npm run verify` exit 1 at the test gate with `1 failed | 22 passed`, and the production build never started. `scripts/check-ci.mjs` applies the same rule to the pipeline itself — remove a gate, pin an action to a tag instead of a commit, or append `|| true`, and the check fails.
 
 ## 8 · Editor setup
 

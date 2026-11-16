@@ -29,8 +29,8 @@ const STATUS = [
   {
     label: 'Quality gates',
     detail:
-      'npm run verify runs seven checks — the runtime pin, five document registers and the configuration proof — then type-check, lint and format check. CI runs the same commands from phase 01.5.',
-    refs: 'NFR-06',
+      'npm run verify runs eight checks — the runtime pin, five document registers, the configuration proof and the CI contract — then type-check, lint, format, 22 unit and property tests, and the production build. CI runs the same six gates on Linux and Windows.',
+    refs: 'NFR-06 · DEC-034',
   },
 ];
 

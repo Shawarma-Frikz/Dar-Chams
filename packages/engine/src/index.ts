@@ -78,6 +78,7 @@ export {
 export type { KilowattHours, Kilowatts, WattHours, Watts } from './units/energy.ts';
 
 export {
+  clampStateOfCharge,
   percentFromStateOfCharge,
   stateOfCharge,
   stateOfChargeFromPercent,

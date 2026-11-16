@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045 |
 
 ## Purpose
 
@@ -27,6 +27,9 @@ fixed-step clock lifecycle and a versioned SplitMix64 stream seeded by the scena
 playback pacing only and replay resets both the step cursor and random stream. It is not a UI or
 persistence layer. Task 02.6 adds typed events for the roadmap transition families and an append-only
 journal whose stable IDs derive from scenario, seed and deterministic append order.
+Task 02.7 makes energy quantities non-negative and finite, rejects negative interval energy and
+overflow, and provides an explicitly named SOC clamp for calculated battery state using validated
+minimum and maximum SOC bounds. Raw external SOC continues to fail closed.
 
 ## Inputs
 
@@ -92,7 +95,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 72 engine tests and the application's ten, 82 in total:
+`npm run test` runs 75 engine tests and the application's ten, 85 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 15 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
@@ -105,12 +108,12 @@ node scripts/validate-scenarios.mjs
   25-hour days; Lord Howe gives 94 and 98 on its half-hour days, and an hourly grid on a 23.5-hour day
   is refused; gap and overlap times resolve in the documented direction; the shipped 48-hour run is
   192 steps over two 96-step days; and two properties tile the grid and assign every step to one day.
-- [`src/units/energy.test.ts`](src/units/energy.test.ts), 6 tests — power over an interval becomes
-  watt-hours, the kW/kWh conversions round-trip, powers and interval energies add in their own unit,
-  and non-finite, overflowing or negatively timed values are refused.
-- [`src/units/quantity.test.ts`](src/units/quantity.test.ts), 5 tests — Celsius holds down to
-  absolute zero and refuses a colder or non-finite value; SOC stays a 0–1 fraction, crosses to
-  percent and back, and refuses a percentage written as a fraction.
+- [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
+  non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
+  non-finite and overflow values are refused, and properties cover wide power and interval ranges.
+- [`src/units/quantity.test.ts`](src/units/quantity.test.ts), 7 tests — Celsius holds down to
+  absolute zero; SOC stays a 0–1 fraction and crosses to percent; calculated SOC clamps within valid
+  battery windows while properties exercise boundaries and extreme finite states.
 - [`src/balance/balance.test.ts`](src/balance/balance.test.ts), 12 tests — a 1750 Wh step closes on
   both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown
   or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss
@@ -157,6 +160,7 @@ the ledger are tested; the simulation they will carry is not.
 | `src/simulation/interfaces.ts` | UI-free component inputs, outputs and ports for phase 02.4 |
 | `src/simulation/clock.ts` | Fixed-step clock lifecycle, playback speed and seeded PRNG for phase 02.5 |
 | `src/simulation/events.ts` | Typed state-transition events and deterministic append-only journal for phase 02.6 |
+| `src/units/state-of-charge.ts` | SOC fraction, percent crossings and battery-window clamp for calculated state |
 | `src/config/schema.ts` | Ajv 8.20.0, error-to-issue translation and unknown-key suggestions |
 | `src/config/invariants.ts` | The relational rules JSON Schema cannot express |
 | `src/config/units.ts` | Unit suffixes, unitless quantities and the schema audit |

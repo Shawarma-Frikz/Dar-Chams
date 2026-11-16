@@ -4,9 +4,9 @@
 | --- | --- |
 | Version | 1.0.0 |
 | Date | 2026-11-16 |
-| Phase | 02; adoption crosswalk for the Dar Chams roadmap; tasks 02.4–02.6 complete |
+| Phase | 02; adoption crosswalk for the Dar Chams roadmap; tasks 02.4–02.7 complete |
 | Authority | [Dar Chams Roadmap](../Dar_Chams_Roadmap.html), [accepted engineering roadmap](../Dar_Chams_Roadmap_and_Graphic_Charter_v2_Embedded.html), [requirements](requirements.md), [acceptance checklist](acceptance-checklist.md) |
-| Decision | DEC-041, DEC-042, DEC-043, DEC-044 |
+| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045 |
 
 The Dar Chams roadmap adds useful specificity to the existing project: physical PV geometry and plane-of-array irradiance, weather inputs and uncertainty, battery voltage and aging, tracker energy cost, explicit load priority thresholds, and a clearer evidence package. This crosswalk admits those ideas at the existing phase gates. It does not mark planned features as implemented or silently change the signed acceptance targets. The checklist and its author-bound digest remain untouched; its earlier use of Helios in the claim-gate wording refers to this same project and prohibition.
 
@@ -14,7 +14,7 @@ The Dar Chams roadmap adds useful specificity to the existing project: physical 
 
 - The deterministic, offline-capable TypeScript engine remains the source of truth. The root package and repository, `@dar-chams/engine`, static export, IndexedDB direction, scenario schema, provenance register, append-only decision log, signed acceptance checklist and machine checks remain in place.
 - The app remains simulation-first. No real plant is monitored or controlled, weather services remain optional, and sensor or Wokwi observations never become measurements of PV or battery state by implication.
-- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01 or 02.1–02.6. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events. These tasks do not implement physical models or the event timeline UI.
+- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01 or 02.1–02.7. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events; task 02.7 guards finite/non-negative energy and keeps calculated battery SOC inside its usable window. These tasks do not implement physical models or the event timeline UI.
 
 ## Adopt into the existing gates
 

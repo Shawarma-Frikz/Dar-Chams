@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal and Dar Chams identity.
+Phase 02 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards and Dar Chams identity.
 
 ### Added
 
@@ -55,10 +55,14 @@ Phase 02 — the simulation time base, canonical units, energy ledger, component
   and immutable records make event replay reproducible.
 - Eight event-journal tests cover every roadmap event family, deterministic replay, immutable records,
   transition validation, chronological ordering, SOC crossings, forecast horizons and inverter limits.
+- Task 02.7 numerical guards (DEC-045): interval energy and energy quantities reject negative
+  magnitudes, non-finite values and overflow; calculated SOC can be clamped only to a validated
+  battery window, while invalid external SOC remains rejected. Property tests cover wide numerical
+  ranges and boundary conditions.
 
 ### Changed
 
-- `npm run check` retains its twelve register checks, and the suite runs 82 tests.
+- `npm run check` retains its twelve register checks, and the suite runs 85 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

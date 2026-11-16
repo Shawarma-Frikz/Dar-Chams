@@ -44,7 +44,10 @@ export function watts(value: number): Watts {
 
 /** Tags a value already counted in watt-hours: a `_wh` field or a stored total. */
 export function wattHours(value: number): WattHours {
-  return requireFinite(value, 'energy') as WattHours;
+  const finite = requireFinite(value, 'energy');
+  if (finite < 0)
+    throw new RangeError(`energy must be a non-negative magnitude, received ${finite}`);
+  return finite as WattHours;
 }
 
 /** Tags a value already counted in kilowatts: a `_kw` scenario field. */
@@ -54,7 +57,13 @@ export function kilowatts(value: number): Kilowatts {
 
 /** Tags a value already counted in kilowatt-hours: a `_kwh` scenario field. */
 export function kilowattHours(value: number): KilowattHours {
-  return requireFinite(value, 'energy in kilowatt-hours') as KilowattHours;
+  const finite = requireFinite(value, 'energy in kilowatt-hours');
+  if (finite < 0) {
+    throw new RangeError(
+      `energy in kilowatt-hours must be a non-negative magnitude, received ${finite}`,
+    );
+  }
+  return finite as KilowattHours;
 }
 
 /** kW → W at an input boundary. */
@@ -73,12 +82,12 @@ export function kilowattsFromWatts(value: Watts): Kilowatts {
 export function wattHoursFromKilowattHours(value: KilowattHours): WattHours {
   const converted = requireFinite(value, 'kilowatt-hours') * 1000;
   if (!Number.isFinite(converted)) throw new RangeError('the converted energy overflowed');
-  return converted as WattHours;
+  return wattHours(converted);
 }
 
 /** Wh → kWh at a display boundary. */
 export function kilowattHoursFromWattHours(value: WattHours): KilowattHours {
-  return (requireFinite(value, 'watt-hours') / 1000) as KilowattHours;
+  return kilowattHours(requireFinite(value, 'watt-hours') / 1000);
 }
 
 /** W × minutes / 60 = Wh, the conversion every step uses (FR-SIM-03). */
@@ -87,9 +96,12 @@ export function intervalWattHours(power: Watts, durationMinutes: number): WattHo
   if (requireFinite(durationMinutes, 'duration') < 0) {
     throw new RangeError('an interval cannot have a negative duration');
   }
+  if (power < 0) {
+    throw new RangeError(`interval power must be a non-negative magnitude, received ${power}`);
+  }
   const energy = (power * durationMinutes) / 60;
   if (!Number.isFinite(energy)) throw new RangeError('the interval energy overflowed');
-  return energy as WattHours;
+  return wattHours(energy);
 }
 
 /** Adds powers only: an energy value is a compile error. */
@@ -103,7 +115,12 @@ export function addWatts(...values: readonly Watts[]): Watts {
 /** Adds interval energies only: a power value is a compile error. */
 export function addWattHours(...values: readonly WattHours[]): WattHours {
   let total = 0;
-  for (const value of values) total += requireFinite(value, 'energy');
+  for (const value of values) {
+    const energy = requireFinite(value, 'energy');
+    if (energy < 0)
+      throw new RangeError(`energy must be a non-negative magnitude, received ${energy}`);
+    total += energy;
+  }
   if (!Number.isFinite(total)) throw new RangeError('the energy sum overflowed');
-  return total as WattHours;
+  return wattHours(total);
 }

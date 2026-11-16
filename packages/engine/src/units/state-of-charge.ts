@@ -26,6 +26,27 @@ export function stateOfCharge(fraction: number): StateOfCharge {
   return fraction as StateOfCharge;
 }
 
+/**
+ * Clamps a finite modeled SOC to a battery's configured usable window.
+ * Use only for a calculated physical state; external inputs must use
+ * `stateOfCharge` and be rejected when invalid instead of silently repaired.
+ */
+export function clampStateOfCharge(
+  fraction: number,
+  minimum: StateOfCharge,
+  maximum: StateOfCharge,
+): StateOfCharge {
+  if (typeof fraction !== 'number' || !Number.isFinite(fraction)) {
+    throw new RangeError(`modeled state of charge must be finite, received ${String(fraction)}`);
+  }
+  const min = stateOfCharge(minimum);
+  const max = stateOfCharge(maximum);
+  if (min > max) {
+    throw new RangeError(`minimum state of charge ${min} must not exceed maximum ${max}`);
+  }
+  return stateOfCharge(Math.min(max, Math.max(min, fraction)));
+}
+
 /** 0.55 → 55, the display boundary; the caller decides how many digits to show. */
 export function percentFromStateOfCharge(value: StateOfCharge): number {
   return stateOfCharge(value) * 100;

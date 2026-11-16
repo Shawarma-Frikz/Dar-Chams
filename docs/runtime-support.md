@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.11.0 |
+| Version | 1.12.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.6), 02.1–02.6; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests; v1.10.0 records the deterministic clock and 74 tests; v1.11.0 records the event journal and 82 tests |
+| Phase | 01 (tasks 01.2–01.6), 02.1–02.7; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests; v1.10.0 records the deterministic clock and 74 tests; v1.11.0 records the event journal and 82 tests; v1.12.0 records numerical guards and 85 tests |
 | Decided by | DEC-031 (supersedes the Node version pin in DEC-018), version numbers superseded by DEC-036; the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
@@ -133,3 +133,5 @@ Re-run after task 02.4: the public engine entry imports and advances in a headle
 
 Re-run after task 02.5: scripts/check-config.mjs rejects an unsafe scenario seed, the public clock tests cover lifecycle state changes and completion, and the versioned SplitMix64 test vector is frozen. Across the same grid, seed 123456 produces identical ordered step timestamps and seeded event values at 1×, 60× and 1000×; reset rewinds the stream. All 12 register checks, type-check, lint, format check and 74 tests pass. The production app build is also confirmed with npm run build -- --webpack, which compiles and prerenders all seven routes. The default Turbopack build panicked while starting its PostCSS helper in this Windows execution environment.
 After task 02.6, all eight roadmap event kinds emit records with timestamp, source, entity ID, previous and next state, payload, deterministic sequence and stable ID. The journal rejects backward timestamps and step indices, malformed state transitions, invalid SOC crossings, reversed forecast horizons and impossible inverter payloads. Replaying the same event inputs for the same scenario and seed produces identical records and IDs. The full verification chain passes on Node 26.13.1 and npm 11.20.0 with 82 tests.
+
+After task 02.7, energy constructors and sums reject negative or non-finite Wh/kWh, interval conversion rejects negative power and overflow, and the calculated-SOC clamp validates the configured window before constraining the result. Property-based tests cover 500 wide-range energy cases and 500 SOC windows/candidates, including extrema; external SOC still fails closed. Full verification passes on Node 26.13.1 and npm 11.20.0 with 85 tests.

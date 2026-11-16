@@ -10,6 +10,7 @@ import {
   balanceStep,
   inverterConversionLoss,
 } from './balance.ts';
+import type { WattHours } from '../units/energy.ts';
 import { intervalWattHours, wattHours, watts } from '../units/energy.ts';
 
 const zero = () => wattHours(0);
@@ -62,10 +63,13 @@ describe('the energy ledger', () => {
   });
 
   it('refuses a negative magnitude: a reversed flow changes the term, not the sign', () => {
-    expect(() => balanceStep(step({ batteryCharge: wattHours(-5) }))).toThrow(
+    expect(() => wattHours(-5)).toThrow(/energy must be a non-negative magnitude/);
+    expect(() => balanceStep(step({ batteryCharge: -5 as unknown as WattHours }))).toThrow(
       /batteryCharge must be a non-negative magnitude/,
     );
-    expect(() => balanceStep(step({ gridExport: wattHours(-0.001) }))).toThrow(/gridExport/);
+    expect(() => balanceStep(step({ gridExport: -0.001 as unknown as WattHours }))).toThrow(
+      /gridExport/,
+    );
   });
 
   it('refuses a term that is not a finite number', () => {

@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.7.0 |
+| Version | 1.8.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041–DEC-044 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041–DEC-045 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -103,9 +103,9 @@ with the engine and not only with the application.
 | `Kilowatts` | type | Instantaneous power in kilowatts, an input and display scale |
 | `KilowattHours` | type | Energy in kilowatt-hours, an input and display scale |
 | `watts` | function | Tags a value already counted in W; refuses a non-finite number |
-| `wattHours` | function | Tags a value already counted in Wh; refuses a non-finite number |
+| `wattHours` | function | Tags a value already counted in Wh; refuses non-finite or negative energy |
 | `kilowatts` | function | Tags a value already counted in kW; the `_kw` scenario boundary |
-| `kilowattHours` | function | Tags a value already counted in kWh; the `_kwh` scenario boundary |
+| `kilowattHours` | function | Tags a value already counted in kWh; refuses non-finite or negative energy |
 | `intervalWattHours` | function | Power × minutes ÷ 60 → watt-hours, the per-step conversion |
 | `wattsFromKilowatts` | function | kW → W at an input boundary |
 | `kilowattsFromWatts` | function | W → kW at a display boundary |
@@ -118,6 +118,7 @@ with the engine and not only with the application.
 | `celsius` | function | Tags a value already counted in °C; refuses one below absolute zero |
 | `StateOfCharge` | type | A state of charge in the 0–1 fraction |
 | `stateOfCharge` | function | Tags a 0–1 fraction; refuses 55 where 0.55 belongs |
+| `clampStateOfCharge` | function | Clamps a finite calculated SOC to a validated battery usable window |
 | `percentFromStateOfCharge` | function | Fraction → percent at a display boundary |
 | `stateOfChargeFromPercent` | function | Percent → fraction at an input boundary |
 | `BALANCE_TERMS` | const | The nine term names in supply-then-demand order: `pv`, `gridImport`, `batteryDischarge`, `load`, `batteryCharge`, `gridExport`, `conversionLoss`, `batteryLoss`, `standbyLoss` |
@@ -192,6 +193,12 @@ Each event carries an absolute timestamp, monotonic step index, source, stable e
 next state, typed payload, deterministic sequence and ID. IDs derive from scenario ID, seed and append
 order; the journal rejects invalid transitions and out-of-order timestamps or steps and returns frozen
 snapshots. It records domain events without adding a browser store or claiming physical models.
+
+Task 02.7 rejects negative and non-finite Wh/kWh quantities, prevents signed power from becoming
+negative interval energy, and detects overflow. `clampStateOfCharge` is explicitly for calculated
+battery state: it rejects non-finite candidates and invalid configured bounds, then clamps only to
+that battery's validated usable window. External SOC input continues through the strict 0–1
+constructor and is rejected when impossible.
 
 The ledger is the conservation law every simulated step is settled against (DEC-039). `pv`,
 `gridImport` and `batteryDischarge` are supply; `load`, `batteryCharge`, `gridExport`,

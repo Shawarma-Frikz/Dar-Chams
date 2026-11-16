@@ -19,7 +19,6 @@ describe('internal power and energy units', () => {
   it('turns power over an interval into watt-hours, at the step scale', () => {
     expect(intervalWattHours(watts(2000), 15)).toBe(500);
     expect(intervalWattHours(watts(2500), 5)).toBeCloseTo(208.333333, 6);
-    expect(intervalWattHours(watts(-1000), 60)).toBe(-1000);
     expect(intervalWattHours(watts(0), 15)).toBe(0);
   });
 
@@ -37,19 +36,41 @@ describe('internal power and energy units', () => {
     expect(addWattHours()).toBe(0);
   });
 
-  it('refuses a value that is not a finite number, or a negative interval', () => {
+  it('refuses non-finite values, negative energy, negative duration and overflow', () => {
     expect(() => watts(Number.NaN)).toThrow(/finite/);
     expect(() => wattHours(Number.POSITIVE_INFINITY)).toThrow(/finite/);
+    expect(() => wattHours(-0.01)).toThrow(/non-negative magnitude/);
+    expect(() => kilowattHours(-1)).toThrow(/non-negative magnitude/);
+    expect(() => wattHoursFromKilowattHours(kilowattHours(1e308))).toThrow(/overflowed/);
+    expect(() =>
+      wattHoursFromKilowattHours(-1 as unknown as ReturnType<typeof kilowattHours>),
+    ).toThrow(/non-negative magnitude/);
     expect(() => intervalWattHours(watts(1000), Number.POSITIVE_INFINITY)).toThrow(/finite/);
     expect(() => intervalWattHours(watts(1000), -5)).toThrow(/negative/);
+    expect(() => intervalWattHours(watts(-1000), 60)).toThrow(/non-negative magnitude/);
     expect(() => kilowatts(Number.NaN)).toThrow(/finite/);
     expect(() => addWatts(watts(Number.MAX_VALUE), watts(Number.MAX_VALUE))).toThrow(/overflowed/);
+    expect(() => intervalWattHours(watts(Number.MAX_VALUE), 1440)).toThrow(/overflowed/);
   });
 
-  it('computes interval energy as power × minutes / 60 for arbitrary finite inputs', () => {
+  it('keeps arbitrary non-negative interval energies finite and non-negative', () => {
     fc.assert(
       fc.property(
-        fc.double({ min: -1e6, max: 1e6, noNaN: true }),
+        fc.double({ min: 0, max: 1e100, noNaN: true }),
+        fc.integer({ min: 0, max: 1440 }),
+        (power, minutes) => {
+          const energy = intervalWattHours(watts(power), minutes);
+          return Number.isFinite(energy) && energy >= 0;
+        },
+      ),
+      { numRuns: 500 },
+    );
+  });
+
+  it('computes non-negative interval energy as power × minutes / 60', () => {
+    fc.assert(
+      fc.property(
+        fc.double({ min: 0, max: 1e6, noNaN: true }),
         fc.integer({ min: 0, max: 1440 }),
         (power, minutes) => {
           const expected = (power * minutes) / 60;

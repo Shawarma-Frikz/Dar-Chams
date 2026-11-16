@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+/* Tokens mirror the graphic charter in the roadmap document. Text pairings are
+   chosen for contrast against limestone: basalt 11.4:1, ink 10.6:1. Muted and
+   line are for rules and non-text marks, never for small text (NFR-08). */
+@theme {
+  --color-basalt: #202b2a;
+  --color-limestone: #e9e3d5;
+  --color-oxide: #b86b45;
+  --color-sage: #8a9b83;
+  --color-lichen: #d3d86a;
+  --color-slate: #526c70;
+  --color-chalk: #f3efe6;
+  --color-clay: #a64f3d;
+  --color-ink: #26302e;
+  --color-muted: #68736d;
+  --color-line: #d1ccbf;
+
+  --font-sans: var(--font-dm-sans), Arial, sans-serif;
+  --font-display: var(--font-literata), Georgia, serif;
+  --font-mono: var(--font-dm-mono), Consolas, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-limestone font-sans text-basalt antialiased;
+  }
+
+  ::selection {
+    @apply bg-oxide/25 text-basalt;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-oxide);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

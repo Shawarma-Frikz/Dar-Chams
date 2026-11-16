@@ -17,7 +17,10 @@ const checklist = read('docs/acceptance-checklist.md');
 const lines = checklist.split(/\r?\n/);
 
 function cells(line) {
-  return line.split('|').slice(1, -1).map((c) => c.trim());
+  return line
+    .split('|')
+    .slice(1, -1)
+    .map((c) => c.trim());
 }
 
 // Row schemas are parsed from the edges (ID first, status last) because
@@ -43,11 +46,14 @@ if (!digestRow) {
   fail('header: content digest is not a sha256 hex string');
 } else {
   const recorded = digestRow[1];
-  if (checklist.split(recorded).length - 1 !== 1) fail('signature: digest hex must appear exactly once');
+  if (checklist.split(recorded).length - 1 !== 1)
+    fail('signature: digest hex must appear exactly once');
   const canonical = checklist.replace(/\r\n/g, '\n').split(recorded).join('«DIGEST»');
   const actual = crypto.createHash('sha256').update(canonical, 'utf8').digest('hex');
   if (actual !== recorded) {
-    fail('signature: content digest does not match the document; renew the digest and sign-off after any edit');
+    fail(
+      'signature: content digest does not match the document; renew the digest and sign-off after any edit',
+    );
   }
 }
 
@@ -57,7 +63,9 @@ for (const line of lines) {
   const r = row(line);
   if (/^00\.\d+$/.test(r.id)) {
     if (r.body.length < 2) {
-      fail(`${r.id}: expected 4 cells (task, criterion, artifact, status), found ${r.body.length + 2}`);
+      fail(
+        `${r.id}: expected 4 cells (task, criterion, artifact, status), found ${r.body.length + 2}`,
+      );
       continue;
     }
     taskRows.push({ id: r.id, status: clean(r.status) });
@@ -77,7 +85,9 @@ for (const line of lines) {
   const r = row(line);
   if (/^AC-\d{2}$/.test(r.id)) {
     if (r.body.length < 3) {
-      fail(`${r.id}: expected 5 cells (ID, criterion, threshold, evidence, status), found ${r.body.length + 2}`);
+      fail(
+        `${r.id}: expected 5 cells (ID, criterion, threshold, evidence, status), found ${r.body.length + 2}`,
+      );
       continue;
     }
     acRows.push({
@@ -95,7 +105,8 @@ for (const r of acRows) {
   if (!r.criterion) fail(`${r.id}: empty criterion`);
   if (!r.threshold) fail(`${r.id}: empty threshold`);
   if (!r.evidence) fail(`${r.id}: empty evidence`);
-  if (!/^(Met|Pending\b)/.test(r.status)) fail(`${r.id}: status "${r.status}" is not Met or Pending`);
+  if (!/^(Met|Pending\b)/.test(r.status))
+    fail(`${r.id}: status "${r.status}" is not Met or Pending`);
   if (/etc\.|various|appropriate|reasonable|as needed/i.test(r.threshold)) {
     fail(`${r.id}: threshold uses vague wording`);
   }
@@ -118,7 +129,15 @@ for (const [target, ids] of Object.entries(headline)) {
 }
 
 // Decision gates.
-for (const gate of ['Physics gate', 'Data gate', 'Optimizer gate', '3D gate', 'Hardware gate', 'Embedded gate', 'Claim gate']) {
+for (const gate of [
+  'Physics gate',
+  'Data gate',
+  'Optimizer gate',
+  '3D gate',
+  'Hardware gate',
+  'Embedded gate',
+  'Claim gate',
+]) {
   if (!checklist.includes(`| ${gate} |`)) fail(`section C: missing decision gate "${gate}"`);
 }
 const gateSection = checklist.split('## C · Decision gates')[1]?.split('## D · Sign-off')[0] ?? '';
@@ -138,7 +157,12 @@ else {
 }
 
 // Cross-document AC references must resolve to defined criteria.
-const sources = ['docs/00-scope-brief.md', 'docs/data-provenance.md', 'docs/decision-log.md', 'docs/metric-register.json'];
+const sources = [
+  'docs/00-scope-brief.md',
+  'docs/data-provenance.md',
+  'docs/decision-log.md',
+  'docs/metric-register.json',
+];
 const referenced = new Set();
 for (const rel of sources) {
   const text = read(rel);
@@ -148,7 +172,8 @@ for (const rel of sources) {
   for (const m of text.matchAll(/\bAC-(\d{2})\b/g)) referenced.add(m[0]);
 }
 for (const id of referenced) {
-  if (!acIds.has(id)) fail(`${id}: referenced in ${sources.join(', ')} but not defined in the checklist`);
+  if (!acIds.has(id))
+    fail(`${id}: referenced in ${sources.join(', ')} but not defined in the checklist`);
 }
 
 // Threshold rules paragraph and provisional markers must stay consistent.
@@ -167,7 +192,9 @@ if (problems.length) {
 console.log('acceptance checklist: OK');
 console.log(`  signature: content digest valid — signed content is unmodified`);
 console.log(`  tasks: ${taskRows.length}/7 phase-00 rows Met`);
-console.log(`  criteria: ${acRows.length} defined, ${referenced.size} cross-document references resolve`);
+console.log(
+  `  criteria: ${acRows.length} defined, ${referenced.size} cross-document references resolve`,
+);
 console.log(`  task 00.6 targets: ${Object.keys(headline).length}/6 covered`);
 console.log(`  provisional thresholds: ${provisional.join(', ') || 'none'} (frozen per task 11.1)`);
 console.log(`  decision gates: ${gateCount} present, sign-off complete`);

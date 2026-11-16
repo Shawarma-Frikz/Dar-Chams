@@ -19,7 +19,9 @@ const fail = (msg) => problems.push(msg);
 const parseVer = (s) => {
   const m = /^v?(\d+)(?:\.(\d+|x|\*))?(?:\.(\d+|x|\*))?$/.exec(String(s).trim());
   if (!m) return null;
-  return [m[1], m[2], m[3]].map((p) => (p === undefined || p === 'x' || p === '*' ? null : Number(p)));
+  return [m[1], m[2], m[3]].map((p) =>
+    p === undefined || p === 'x' || p === '*' ? null : Number(p),
+  );
 };
 const fill = (v) => v.map((x) => (x === null ? 0 : x));
 const cmp = (a, b) => {
@@ -51,7 +53,13 @@ const satisfies = (version, range) => {
   if (!ver) return false;
   return String(range)
     .split('||')
-    .some((clause) => clause.trim().split(/\s+/).filter(Boolean).every((t) => testToken(ver, t)));
+    .some((clause) =>
+      clause
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .every((t) => testToken(ver, t)),
+    );
 };
 
 const installedNpm = () => {
@@ -119,8 +127,10 @@ try {
   fail('package-lock.json: missing or not valid JSON; run npm install --package-lock-only');
 }
 if (lock) {
-  if (!(lock.lockfileVersion >= 3)) fail(`lockfile: version ${lock.lockfileVersion} is older than 3`);
-  if (lock.name !== pkg.name) fail(`lockfile: name "${lock.name}" does not match package.json "${pkg.name}"`);
+  if (!(lock.lockfileVersion >= 3))
+    fail(`lockfile: version ${lock.lockfileVersion} is older than 3`);
+  if (lock.name !== pkg.name)
+    fail(`lockfile: name "${lock.name}" does not match package.json "${pkg.name}"`);
   if (lock.version !== pkg.version) {
     fail(`lockfile: version "${lock.version}" does not match package.json "${pkg.version}"`);
   }
@@ -133,14 +143,93 @@ if (lock) {
 
 // Exact-version policy across every dependency block.
 const blocks = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
+const EXACT = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 let pinned = 0;
 for (const block of blocks) {
   for (const [name, spec] of Object.entries(pkg[block] ?? {})) {
-    if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(String(spec))) {
+    if (!EXACT.test(String(spec))) {
       fail(`package.json: ${block}.${name} must be an exact version, found "${spec}"`);
     } else pinned += 1;
   }
 }
+
+// Workspace manifests inherit the runtime pin and the exact-version policy,
+// and each one must be present in the committed lockfile.
+const workspacePatterns = Array.isArray(pkg.workspaces) ? pkg.workspaces : [];
+if (!workspacePatterns.length) fail('package.json: workspaces is missing');
+let workspaceCount = 0;
+for (const pattern of workspacePatterns) {
+  if (!pattern.endsWith('/*')) {
+    fail(`package.json: workspace pattern "${pattern}" is not a single-level glob`);
+    continue;
+  }
+  const parent = pattern.slice(0, -2);
+  const base = path.join(root, parent);
+  if (!fs.existsSync(base)) {
+    fail(`workspaces: directory "${parent}" does not exist`);
+    continue;
+  }
+  for (const entry of fs.readdirSync(base, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const rel = `${parent}/${entry.name}`;
+    const manifestPath = path.join(root, rel, 'package.json');
+    if (!fs.existsSync(manifestPath)) continue;
+    workspaceCount += 1;
+    let manifest;
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch (error) {
+      fail(`${rel}/package.json: not valid JSON (${error.message})`);
+      continue;
+    }
+    if (manifest.private !== true) {
+      fail(`${rel}/package.json: workspace packages must set "private": true`);
+    }
+    if (manifest.engines?.node !== pkg.engines?.node) {
+      fail(`${rel}/package.json: engines.node must match the root pin "${pkg.engines?.node}"`);
+    }
+    if (manifest.engines?.npm && manifest.engines.npm !== pkg.engines?.npm) {
+      fail(`${rel}/package.json: engines.npm must match the root pin "${pkg.engines?.npm}"`);
+    }
+    for (const block of blocks) {
+      for (const [name, spec] of Object.entries(manifest[block] ?? {})) {
+        if (!EXACT.test(String(spec))) {
+          fail(`${rel}/package.json: ${block}.${name} must be an exact version, found "${spec}"`);
+        }
+      }
+    }
+    if (lock && !lock.packages?.[rel]) {
+      fail(`lockfile: workspace "${rel}" is missing; run npm install`);
+    }
+  }
+}
+if (!workspaceCount) fail('workspaces: no package manifests found');
+
+// Overrides must be exact versions too, and the lockfile must actually
+// contain the version the override asks for — otherwise the pin is a wish.
+let overrideCount = 0;
+const checkOverrides = (node, trail) => {
+  for (const [name, value] of Object.entries(node ?? {})) {
+    if (typeof value === 'string') {
+      overrideCount += 1;
+      if (!EXACT.test(value)) {
+        fail(`package.json: overrides.${trail}${name} must be an exact version, found "${value}"`);
+      } else if (
+        lock &&
+        !Object.entries(lock.packages ?? {}).some(
+          ([key, entry]) => entry?.version === value && key.endsWith(`node_modules/${name}`),
+        )
+      ) {
+        fail(`lockfile: no "${name}@${value}" entry for the override; regenerate the lockfile`);
+      }
+    } else if (value && typeof value === 'object') {
+      checkOverrides(value, `${trail}${name}.`);
+    } else {
+      fail(`package.json: overrides.${trail}${name} must be a version or an object`);
+    }
+  }
+};
+checkOverrides(pkg.overrides, '');
 
 // Licence consistency.
 if (pkg.license !== 'MIT') fail(`package.json: license must be MIT, found "${pkg.license}"`);
@@ -161,5 +250,10 @@ console.log(`  node: ${process.version} satisfies engines.node "${pkg.engines.no
 console.log(`  npm: ${npmVersion} pinned by packageManager "npm@${declared[1]}"`);
 console.log(`  .nvmrc: ${nvmrc} agrees with engines and the running major line`);
 console.log('  .npmrc: engine-strict, save-exact and package-lock are set');
-console.log(`  lockfile: v${lock.lockfileVersion}, name/version/engines match, ${pinned} dependency entries pinned exactly`);
+console.log(
+  `  lockfile: v${lock.lockfileVersion}, name/version/engines match, ${pinned} dependency entries pinned exactly`,
+);
+console.log(
+  `  workspaces: ${workspaceCount} package manifest(s) match the pin, ${overrideCount} override(s) installed exactly`,
+);
 console.log('  licence: MIT in package.json and LICENSE');

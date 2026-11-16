@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.5.0 |
+| Version | 0.6.0 |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0 records the phase-01.1 repository decisions; v0.5.0 records the phase-01.2 runtime pin |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3 |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
-**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin.
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin. 0.6.0 adds DEC-032: the application shell, its exact stack, the engine workspace and the static-export workarounds.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -44,6 +44,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-029 | MIT licence | Accepted | 2026-11-16 |
 | DEC-030 | Repository conventions: Conventional Commits, short-lived branches, evidence-aware ignores | Accepted | 2026-11-16 |
 | DEC-031 | Pinned Node 26 LTS, exact versions, recorded support baseline | Accepted | 2026-11-16 |
+| DEC-032 | Application shell: Next.js 16 static export, React 19, TypeScript 5.9, ESLint 9 | Accepted | 2026-11-16 |
 
 ---
 
@@ -317,3 +318,13 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** Staying on Node 24 — it has moved to maintenance, and pinning `engines` to a line the grading machine cannot satisfy would make `engine-strict` block every install exactly where the project is evaluated. A range policy with a lockfile — the lockfile pins the tree, but a range still lets a regeneration move versions silently, which is what the pin exists to prevent. Corepack with pnpm or yarn — a second toolchain for no benefit, already rejected in DEC-018. A prose version note with no `.nvmrc` — the pin would not survive a fresh clone. Docker — excluded by CON-04.
 
 **Consequences.** DEC-018's version pin is superseded; its npm choice and its Windows `npm.cmd` note remain in force and are restated in `docs/runtime-support.md` §2. Node 26 is the Active LTS line until October 2027, so an upgrade needs a new entry and a re-tested clean install. The lockfile is empty of dependencies at this phase because 01.2 pins the mechanism; 01.3–01.5 add the stack with exact versions. A floating spec or an uncommitted lockfile now fails `npm run check`, which becomes the CI entry point in 01.5.
+
+## DEC-032 · Application shell: Next.js 16 static export, React 19, TypeScript 5.9, ESLint 9
+
+**Context.** Task 01.3 asks for a shell that starts, type-checks, lints and formats, with simulation kept out of the interface. The versions cannot be chosen one at a time: the lint plugins narrow which TypeScript and ESLint majors are supported, the export mode rules out a request-time server, and the design charter fixes the palette and the three typefaces. The shell must also display no fabricated value, because no engine exists yet.
+
+**Decision.** Next.js 16.4.6 App Router with React 19.3.1, TypeScript 5.9.3 in strict mode, ESLint 9.39.5 on the flat config exported by `eslint-config-next`, Prettier 3.10.1 with `prettier-plugin-tailwindcss` 0.8.1, and Tailwind CSS 4.3.5 configured through `@theme` tokens that carry the graphic-charter palette. The build is a static export (`output: 'export'`, `images.unoptimized`, `trailingSlash`), fonts are self-hosted at build time by `next/font`, and six routes share one layout. The engine is an npm workspace package, `packages/engine` (`@helios/engine`), exporting TypeScript source through `exports` and transpiled by Next; ESLint forbids it from importing React, Next or the application. `npm run verify` runs the six document checks, type-check, lint and format check. A scoped override pins `minimatch` 11.0.8 under `@typescript-eslint/typescript-estree`.
+
+**Alternatives rejected.** TypeScript 7.0.2 — `typescript-eslint` peers on `<6.1.0`, so the newest compiler would ship with unsupported lint. ESLint 10.15.0 — `eslint-plugin-react` and `eslint-plugin-jsx-a11y` still peer on `^9`; npm warns, and an untested lint is worse than a pinned one. Tailwind 3 with a content-glob config — v4 maps the charter tokens once in `@theme` and needs no scan configuration. A second app package or a task runner — one application and one package do not justify a monorepo orchestrator; npm workspaces are enough. `next start` — unavailable with `output: 'export'`, so the preview script serves the real artifact instead. A global minimatch override — wider blast radius for a dev-only advisory; the scoped override changes only the offending chain. Accepting the seven moderate advisories — `npm audit` would stay noisy on the one chain CI runs.
+
+**Consequences.** Every version is exact and checked by `scripts/check-runtime.mjs`, including workspace manifests and the override, so a TypeScript 6 or ESLint 10 upgrade is a recorded decision, not an accident. Link prefetch is disabled: this Next version requests a page payload at a dotted path that the export writes as a directory, producing five harmless 404s per load; navigation still fetches the exported `index.txt` payload, and prefetch returns when the two paths agree. `trailingSlash: true` makes `/twin/` canonical, which static hosts serve through directory indexes. The engine entry point is TypeScript source, so the app cannot import a stale build; the boundary is enforced by lint rather than by convention. No route displays a metric: each one names its planned contents and requirement references, so a screenshot cannot be read as a result. The override is removed when `@typescript-eslint/typescript-estree` depends on minimatch 11 or later.

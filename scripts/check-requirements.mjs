@@ -19,7 +19,10 @@ const checklist = read('docs/acceptance-checklist.md');
 const rows = requirements.split(/\r?\n/).filter((l) => l.trim().startsWith('|'));
 
 function cells(line) {
-  return line.split('|').slice(1, -1).map((c) => c.trim());
+  return line
+    .split('|')
+    .slice(1, -1)
+    .map((c) => c.trim());
 }
 
 const reqRows = [];
@@ -30,7 +33,9 @@ for (const line of rows) {
   const c = cells(line);
   if (/^FR-[A-Z]+-\d{2}$/.test(c[0]) || /^NFR-\d{2}$/.test(c[0])) {
     if (c.length !== 6) {
-      fail(`${c[0]}: expected 6 cells (ID, requirement, priority, verify, depends on, phase), found ${c.length}`);
+      fail(
+        `${c[0]}: expected 6 cells (ID, requirement, priority, verify, depends on, phase), found ${c.length}`,
+      );
       continue;
     }
     reqRows.push({ id: c[0], text: c[1], pri: c[2], verify: c[3], deps: c[4], phase: c[5] });
@@ -65,7 +70,10 @@ function checkSequence(prefix, list) {
 }
 checkSequence('CON', conRows);
 checkSequence('EX', exRows);
-checkSequence('NFR', reqRows.filter((r) => r.id.startsWith('NFR')));
+checkSequence(
+  'NFR',
+  reqRows.filter((r) => r.id.startsWith('NFR')),
+);
 
 // Required fields and controlled vocabularies.
 const verified = new Set(['T', 'A', 'I', 'D']);
@@ -92,12 +100,21 @@ for (const e of exRows) {
 const known = new Set([...reqRows.map((r) => r.id), ...exRows.map((e) => e.id), 'SCN']);
 const graph = new Map();
 for (const r of reqRows) {
-  const deps = r.deps === '—' ? [] : r.deps.split(',').map((d) => d.trim()).filter(Boolean);
+  const deps =
+    r.deps === '—'
+      ? []
+      : r.deps
+          .split(',')
+          .map((d) => d.trim())
+          .filter(Boolean);
   for (const d of deps) {
     if (!known.has(d)) fail(`${r.id}: unknown dependency "${d}"`);
     if (d === r.id) fail(`${r.id}: depends on itself`);
   }
-  graph.set(r.id, deps.filter((d) => d.startsWith('FR-') || d.startsWith('NFR-')));
+  graph.set(
+    r.id,
+    deps.filter((d) => d.startsWith('FR-') || d.startsWith('NFR-')),
+  );
 }
 
 // Cycle detection (DFS, three colours).
@@ -125,8 +142,20 @@ for (const c of conRows) {
 
 // Vague wording.
 const banned = [
-  'smart', 'modern', 'robust', 'user-friendly', 'intuitive', 'seamless', 'powerful',
-  'state-of-the-art', 'various', 'appropriate', 'reasonable', 'as needed', 'if possible', 'nice',
+  'smart',
+  'modern',
+  'robust',
+  'user-friendly',
+  'intuitive',
+  'seamless',
+  'powerful',
+  'state-of-the-art',
+  'various',
+  'appropriate',
+  'reasonable',
+  'as needed',
+  'if possible',
+  'nice',
 ];
 for (const r of reqRows) {
   const lower = r.text.toLowerCase();
@@ -169,7 +198,8 @@ function declared(label) {
 function expect(label, actual) {
   const value = declared(label);
   if (value === null) fail(`section 13: missing declared count for "${label}"`);
-  else if (value !== actual) fail(`section 13: "${label}" declares ${value}, register has ${actual}`);
+  else if (value !== actual)
+    fail(`section 13: "${label}" declares ${value}, register has ${actual}`);
 }
 expect('Functional requirements', fr);
 expect('Non-functional requirements', nfr);
@@ -178,7 +208,9 @@ expect('External dependencies', exRows.length);
 const prioDecl = requirements.match(/\| Priorities \| (\d+) Must, (\d+) Should, (\d+) Could \|/);
 if (!prioDecl) fail('section 13: missing declared priority mix');
 else if (+prioDecl[1] !== must || +prioDecl[2] !== should || +prioDecl[3] !== could) {
-  fail(`section 13: priority mix declares ${prioDecl[1]}/${prioDecl[2]}/${prioDecl[3]}, register has ${must}/${should}/${could}`);
+  fail(
+    `section 13: priority mix declares ${prioDecl[1]}/${prioDecl[2]}/${prioDecl[3]}, register has ${must}/${should}/${could}`,
+  );
 }
 const gateDecl = requirements.match(/\| Project-level gates \| (\d+) criteria/);
 if (!gateDecl) fail('section 13: missing declared gate count');
@@ -194,7 +226,9 @@ if (problems.length) {
 }
 
 console.log(`requirements register: OK`);
-console.log(`  ${fr} FR, ${nfr} NFR, ${conRows.length} constraints, ${exRows.length} external dependencies`);
+console.log(
+  `  ${fr} FR, ${nfr} NFR, ${conRows.length} constraints, ${exRows.length} external dependencies`,
+);
 console.log(`  priorities: ${must} M, ${should} S, ${could} C`);
 console.log(`  dependencies: ${[...graph.values()].flat().length} edges, 0 unresolved, 0 cycles`);
 console.log(`  Must coverage: ${must}/${must} mapped in scope brief section 6`);

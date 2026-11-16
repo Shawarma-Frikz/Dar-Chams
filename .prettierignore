@@ -1,0 +1,15 @@
+# Generated output and dependencies
+.next/
+out/
+node_modules/
+package-lock.json
+
+# Evidence: prose, registers and scenarios are hand-formatted and, for the
+# checklist, bound to a content digest (docs/conventions.md section 5).
+*.md
+docs/
+scenarios/
+*.html
+
+# Embedded build output
+.pio/

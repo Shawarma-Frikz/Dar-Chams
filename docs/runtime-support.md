@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.2) |
-| Decided by | DEC-031 (supersedes the Node version pin in DEC-018) |
+| Phase | 01 (tasks 01.2–01.3) |
+| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
 
@@ -24,6 +24,8 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 | Dependency policy | exact versions only, no `^`, `~`, `*`, `latest`, `workspace:` or URL specs | `.npmrc` `save-exact=true` | the checker rejects a floating spec in any dependency block |
 | Install path | `npm ci` from the committed lockfile | [`package-lock.json`](../package-lock.json), lockfile v3 | `npm ci` refuses a lockfile that disagrees with the manifest |
 | Lockfile hygiene | committed, reviewed like code | `.gitignore` keeps the rest of `node_modules/` out | check fails if the lockfile is missing, old, or out of sync |
+| Workspace pin | `packages/engine` repeats `engines.node` and the exact-version policy | [`packages/engine/package.json`](../packages/engine/package.json) | check fails on a different pin, a public workspace package or a missing lockfile entry |
+| Override | `minimatch` 11.0.8 under `@typescript-eslint/typescript-estree` | `package.json` `overrides` | check fails on a floating override or one the lockfile does not contain |
 
 **Rules that follow from the pin.**
 
@@ -34,7 +36,13 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 **Verified on 2026-11-16, Windows 11.** A directory containing only `package.json`, `package-lock.json`, `.npmrc` and `.nvmrc` installed with `npm ci` and exit code 0. The same directory with `engines.node` raised to `>=99.0.0 <100` was refused with `EBADENGINE` and exit code 1 — the pin fails closed, as intended.
 
-The application dependencies (Next.js, React, TypeScript, Tailwind, Recharts, React Three Fiber, Vitest, fast-check, Playwright) arrive in 01.3–01.5. This phase pins the mechanism; each later addition is exact and lands with its lockfile entry.
+Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files.
+
+The application dependencies arrive with the phases that need them. Installed at 01.3, all exact and recorded in the lockfile: Next.js 16.4.6, React 19.3.1 and React DOM 19.3.1; TypeScript 5.9.3, `@types/node` 26.6.6 and the React type packages; ESLint 9.39.5 with `eslint-config-next` 16.4.6 and `eslint-config-prettier` 10.1.8; Prettier 3.10.1 with `prettier-plugin-tailwindcss` 0.8.1; Tailwind CSS 4.3.5 with `@tailwindcss/postcss` 4.3.5. Recharts, React Three Fiber, Vitest, fast-check and Playwright arrive in phases 01.5–08, each pinned the same way.
+
+**Why TypeScript 5.9 and not 7.** `typescript-eslint`, which carries the Next.js lint rules, peers on `typescript >=4.8.4 <6.1.0` at the versions installed. A TypeScript 7 compiler would leave lint unsupported. **Why ESLint 9 and not 10.** `eslint-plugin-react` and `eslint-plugin-jsx-a11y`, pulled in by `eslint-config-next`, peer on `eslint ^9`. Both gaps are recorded in DEC-032 and close when the plugins widen their ranges; until then the newest supported pair is the pinned one. npm prints a deprecation notice for ESLint 9.39.5 as the older line, which is expected rather than an error.
+
+**Why the override exists.** `@typescript-eslint/typescript-estree` 8.72.2 depends on `minimatch` 10.2.6, which carries seven moderate advisories. `npm audit` reports them as dev-only; `npm audit --omit=dev` is clean. The override moves only that chain to `minimatch` 11.0.8, and the lockfile proves the resolved version. Remove the override when the dependency itself moves to 11.
 
 ## 2 · Install commands
 
@@ -47,6 +55,8 @@ npm run check
 
 - On Windows, `npm` may be blocked by PowerShell execution policy (DEC-018); use `npm.cmd`, or run the same commands in Git Bash.
 - `npm run check` runs the runtime check and the five document checks. It is the single command a fresh clone needs before any work, and it becomes the CI entry point in 01.5.
+- `npm run verify` adds type-check, lint and format check to the six checks; it is what 01.5 will run in CI.
+- `npm run dev` serves the application with hot reload on `http://localhost:3000`. `npm run build` writes the static export to `out/`, and `npm run preview` serves that exact directory on `http://localhost:4173` through `scripts/serve-static.mjs`, which resolves paths inside `out/` only and refuses traversal attempts.
 - `.nvmrc` is read by `nvm-windows`, `fnm` and `nvm`; none of them is required, because `engines` plus `engine-strict` already refuse the wrong line.
 - Linux and macOS use the same three commands. The clean install is verified on Windows 11 only, which is the platform this project is graded on; NFR-09 names all three, and the setup deliberately contains no Windows-only dependency — LF endings, no `.ps1` requirement, and npm scripts that run through whichever shell npm is using.
 
@@ -94,6 +104,9 @@ The pins above govern the Node adapter and the web application. The embedded pat
 | `.nvmrc` drifts from `engines` | Check fails | `.nvmrc: … does not satisfy engines.node` |
 | Lockfile missing or stale | Check fails, and `npm ci` refuses to resolve | `lockfile: … regenerate the lockfile` |
 | A floating version appears | Check fails | `must be an exact version, found "^1.2.3"` |
+| A workspace manifest drifts from the pin | Check fails | `packages/engine/package.json: engines.node must match the root pin` |
+| An override is floating or unresolved | Check fails | `overrides.… must be an exact version` or `lockfile: no "…" entry for the override` |
 | Someone runs `npm install` on a clean clone | Works, but rewrites the lockfile — review the diff before committing | none; the diff is the signal |
+| `npm ci` runs while `npm run dev` or `next build` is open | Install aborts before touching the lockfile | `EPERM … unlink node_modules/lightningcss-win32-x64-msvc/…` — stop the server and re-run |
 
-The last row is deliberate: the tool cannot distinguish an intentional dependency change from an accidental one, so the lockfile diff is what a reviewer checks.
+The `npm install` row is deliberate: the tool cannot distinguish an intentional dependency change from an accidental one, so the lockfile diff is what a reviewer checks. The `EPERM` row is Windows file locking on the Tailwind CSS native binary, not a permissions fault, and it leaves `node_modules` untouched apart from stopping mid-way; a re-run after stopping the server succeeds.

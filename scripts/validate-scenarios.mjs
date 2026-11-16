@@ -25,9 +25,23 @@ const PROFILES = ['always_on', 'duty_cycle', 'schedule', 'flexible_window'];
 const PROVENANCE = ['synthetic-design', 'dataset-derived', 'measured'];
 const TIMESTEPS = [5, 15, 30, 60];
 const REQUIRED = [
-  'schema_version', 'id', 'name', 'description', 'created', 'provenance', 'site',
-  'mode', 'simulation', 'pv', 'inverter', 'battery', 'grid', 'tariff', 'weather',
-  'household', 'policies',
+  'schema_version',
+  'id',
+  'name',
+  'description',
+  'created',
+  'provenance',
+  'site',
+  'mode',
+  'simulation',
+  'pv',
+  'inverter',
+  'battery',
+  'grid',
+  'tariff',
+  'weather',
+  'household',
+  'policies',
 ];
 
 const fail = (file, message) => errors.push(`${file}: ${message}`);
@@ -51,7 +65,8 @@ function checkAppliance(file, appliance, roomIds, seenIds) {
     fail(file, `${label}: rated_power_w must be > 0`);
   }
   if (!PRIORITIES.includes(appliance.priority)) fail(file, `${label}: invalid priority`);
-  if (typeof appliance.controllable !== 'boolean') fail(file, `${label}: controllable must be boolean`);
+  if (typeof appliance.controllable !== 'boolean')
+    fail(file, `${label}: controllable must be boolean`);
   if (!PROFILES.includes(appliance.profile)) fail(file, `${label}: invalid profile`);
   if ('note' in appliance && !isText(appliance.note)) fail(file, `${label}: note must be text`);
 
@@ -63,7 +78,11 @@ function checkAppliance(file, appliance, roomIds, seenIds) {
       }
       break;
     case 'duty_cycle':
-      if (!(isFiniteNumber(appliance.duty_cycle) && appliance.duty_cycle > 0 && appliance.duty_cycle <= 1)) {
+      if (!(
+        isFiniteNumber(appliance.duty_cycle) &&
+        appliance.duty_cycle > 0 &&
+        appliance.duty_cycle <= 1
+      )) {
         fail(file, `${label}: duty_cycle must be in (0, 1]`);
       }
       if (has('schedule') || has('flexibility')) {
@@ -85,7 +104,11 @@ function checkAppliance(file, appliance, roomIds, seenIds) {
       }
       if (!isClock(f.earliest)) fail(file, `${label}: flexibility.earliest must be HH:MM`);
       if (!isClock(f.latest)) fail(file, `${label}: flexibility.latest must be HH:MM`);
-      if (!(isInteger(f.duration_minutes) && f.duration_minutes > 0 && f.duration_minutes <= 1440)) {
+      if (!(
+        isInteger(f.duration_minutes) &&
+        f.duration_minutes > 0 &&
+        f.duration_minutes <= 1440
+      )) {
         fail(file, `${label}: flexibility.duration_minutes must be an integer in 1..1440`);
       }
       if (typeof f.non_interruptible !== 'boolean') {
@@ -108,8 +131,10 @@ function checkScenario(file, s) {
   if (!isScenarioId(s.id)) fail(file, 'id must match ^[a-z][a-z0-9-]*$');
   if (path.basename(file, '.json') !== s.id) fail(file, `file name must equal id ("${s.id}.json")`);
   if (!isText(s.name) || !isText(s.description)) fail(file, 'name and description are required');
-  if (typeof s.created !== 'string' || Number.isNaN(Date.parse(s.created))) fail(file, 'created must be a date');
-  if (!s.provenance || !PROVENANCE.includes(s.provenance.class)) fail(file, 'invalid provenance.class');
+  if (typeof s.created !== 'string' || Number.isNaN(Date.parse(s.created)))
+    fail(file, 'created must be a date');
+  if (!s.provenance || !PROVENANCE.includes(s.provenance.class))
+    fail(file, 'invalid provenance.class');
   if (!s.provenance || !isText(s.provenance.notes)) fail(file, 'provenance.notes is required');
 
   const site = s.site ?? {};
@@ -121,40 +146,60 @@ function checkScenario(file, s) {
 
   const sim = s.simulation ?? {};
   if (!TIMESTEPS.includes(sim.timestep_minutes)) fail(file, 'unsupported timestep_minutes');
-  if (typeof sim.start !== 'string' || Number.isNaN(Date.parse(sim.start))) fail(file, 'invalid simulation.start');
+  if (typeof sim.start !== 'string' || Number.isNaN(Date.parse(sim.start)))
+    fail(file, 'invalid simulation.start');
   if (!(isInteger(sim.horizon_hours) && sim.horizon_hours >= 1 && sim.horizon_hours <= 168)) {
     fail(file, 'simulation.horizon_hours must be an integer in 1..168');
   }
-  if (!(isInteger(sim.seed) && sim.seed >= 0)) fail(file, 'simulation.seed must be a non-negative integer');
+  if (!(isInteger(sim.seed) && sim.seed >= 0))
+    fail(file, 'simulation.seed must be a non-negative integer');
   if (!(isFiniteNumber(sim.default_speed_multiplier) && sim.default_speed_multiplier >= 1)) {
     fail(file, 'simulation.default_speed_multiplier must be >= 1');
   }
 
   const pv = s.pv ?? {};
-  if (!(isFiniteNumber(pv.installed_dc_kwp) && pv.installed_dc_kwp > 0)) fail(file, 'pv.installed_dc_kwp must be > 0');
-  if (!(isInteger(pv.panel_count) && pv.panel_count > 0)) fail(file, 'pv.panel_count must be a positive integer');
+  if (!(isFiniteNumber(pv.installed_dc_kwp) && pv.installed_dc_kwp > 0))
+    fail(file, 'pv.installed_dc_kwp must be > 0');
+  if (!(isInteger(pv.panel_count) && pv.panel_count > 0))
+    fail(file, 'pv.panel_count must be a positive integer');
   if (!inRange(pv.tilt_deg, 0, 90)) fail(file, 'pv.tilt_deg out of range');
   if (!inRange(pv.azimuth_deg, 0, 360)) fail(file, 'pv.azimuth_deg out of range');
   if (!inRange(pv.soiling_loss, 0, 1)) fail(file, 'pv.soiling_loss out of range');
   if (!inRange(pv.mismatch_loss, 0, 1)) fail(file, 'pv.mismatch_loss out of range');
   if (!inRange(pv.availability, 0, 1)) fail(file, 'pv.availability out of range');
-  if (!pv.tracker || typeof pv.tracker.enabled !== 'boolean') fail(file, 'pv.tracker.enabled must be boolean');
-  else if (pv.tracker.enabled && ![1, 2].includes(pv.tracker.axes)) fail(file, 'enabled tracker needs 1 or 2 axes');
-  for (const [i, w] of (pv.shading_windows ?? []).entries()) checkWindow(file, `pv.shading_windows[${i}]`, w);
+  if (!pv.tracker || typeof pv.tracker.enabled !== 'boolean')
+    fail(file, 'pv.tracker.enabled must be boolean');
+  else if (pv.tracker.enabled && ![1, 2].includes(pv.tracker.axes))
+    fail(file, 'enabled tracker needs 1 or 2 axes');
+  for (const [i, w] of (pv.shading_windows ?? []).entries())
+    checkWindow(file, `pv.shading_windows[${i}]`, w);
 
   const inverter = s.inverter ?? {};
-  if (!(isFiniteNumber(inverter.rated_ac_kw) && inverter.rated_ac_kw > 0)) fail(file, 'inverter.rated_ac_kw must be > 0');
-  if (!inRange(inverter.efficiency, 0, 1) || inverter.efficiency === 0) fail(file, 'inverter.efficiency must be in (0, 1]');
-  if (!isFiniteNumber(inverter.standby_w) || inverter.standby_w < 0) fail(file, 'inverter.standby_w must be >= 0');
+  if (!(isFiniteNumber(inverter.rated_ac_kw) && inverter.rated_ac_kw > 0))
+    fail(file, 'inverter.rated_ac_kw must be > 0');
+  if (!inRange(inverter.efficiency, 0, 1) || inverter.efficiency === 0)
+    fail(file, 'inverter.efficiency must be in (0, 1]');
+  if (!isFiniteNumber(inverter.standby_w) || inverter.standby_w < 0)
+    fail(file, 'inverter.standby_w must be >= 0');
 
   const battery = s.battery ?? {};
-  if (!['lfp', 'nmc', 'lead_acid'].includes(battery.chemistry)) fail(file, 'invalid battery.chemistry');
-  if (!inRange(battery.min_soc, 0, 1) || !inRange(battery.max_soc, 0, 1)) fail(file, 'battery SOC bounds out of range');
+  if (!['lfp', 'nmc', 'lead_acid'].includes(battery.chemistry))
+    fail(file, 'invalid battery.chemistry');
+  if (!inRange(battery.min_soc, 0, 1) || !inRange(battery.max_soc, 0, 1))
+    fail(file, 'battery SOC bounds out of range');
   if (!inRange(battery.initial_soc, 0, 1)) fail(file, 'battery.initial_soc out of range');
-  if (isFiniteNumber(battery.min_soc) && isFiniteNumber(battery.max_soc) && !(battery.min_soc < battery.max_soc)) {
+  if (
+    isFiniteNumber(battery.min_soc) &&
+    isFiniteNumber(battery.max_soc) &&
+    !(battery.min_soc < battery.max_soc)
+  ) {
     fail(file, 'battery.min_soc must be below max_soc');
   }
-  if (isFiniteNumber(battery.min_soc) && isFiniteNumber(battery.max_soc) && isFiniteNumber(battery.initial_soc)) {
+  if (
+    isFiniteNumber(battery.min_soc) &&
+    isFiniteNumber(battery.max_soc) &&
+    isFiniteNumber(battery.initial_soc)
+  ) {
     if (battery.initial_soc < battery.min_soc || battery.initial_soc > battery.max_soc) {
       fail(file, 'battery.initial_soc must lie inside the usable window');
     }
@@ -162,15 +207,19 @@ function checkScenario(file, s) {
   if (!(isFiniteNumber(battery.nominal_capacity_kwh) && battery.nominal_capacity_kwh > 0)) {
     fail(file, 'battery.nominal_capacity_kwh must be > 0');
   }
-  if (!(isFiniteNumber(battery.max_charge_kw) && battery.max_charge_kw > 0)) fail(file, 'battery.max_charge_kw must be > 0');
-  if (!(isFiniteNumber(battery.max_discharge_kw) && battery.max_discharge_kw > 0)) fail(file, 'battery.max_discharge_kw must be > 0');
+  if (!(isFiniteNumber(battery.max_charge_kw) && battery.max_charge_kw > 0))
+    fail(file, 'battery.max_charge_kw must be > 0');
+  if (!(isFiniteNumber(battery.max_discharge_kw) && battery.max_discharge_kw > 0))
+    fail(file, 'battery.max_discharge_kw must be > 0');
   if (!inRange(battery.round_trip_efficiency, 0, 1) || battery.round_trip_efficiency === 0) {
     fail(file, 'battery.round_trip_efficiency must be in (0, 1]');
   }
 
   const grid = s.grid ?? {};
-  if (!(isFiniteNumber(grid.import_limit_kw) && grid.import_limit_kw >= 0)) fail(file, 'grid.import_limit_kw invalid');
-  if (!(isFiniteNumber(grid.export_limit_kw) && grid.export_limit_kw >= 0)) fail(file, 'grid.export_limit_kw invalid');
+  if (!(isFiniteNumber(grid.import_limit_kw) && grid.import_limit_kw >= 0))
+    fail(file, 'grid.import_limit_kw invalid');
+  if (!(isFiniteNumber(grid.export_limit_kw) && grid.export_limit_kw >= 0))
+    fail(file, 'grid.export_limit_kw invalid');
   if (s.mode === 'off_grid' && (grid.import_limit_kw !== 0 || grid.export_limit_kw !== 0)) {
     fail(file, 'off_grid requires zero import and export limits');
   }
@@ -181,16 +230,20 @@ function checkScenario(file, s) {
   }
 
   const tariff = s.tariff ?? {};
-  if (!/^[A-Z]{3}$/.test(tariff.currency ?? '')) fail(file, 'tariff.currency must be ISO-4217 letters');
+  if (!/^[A-Z]{3}$/.test(tariff.currency ?? ''))
+    fail(file, 'tariff.currency must be ISO-4217 letters');
   if (typeof tariff.verified !== 'boolean') fail(file, 'tariff.verified must be boolean');
   if (!isText(tariff.source)) fail(file, 'tariff.source is required');
-  if (!Array.isArray(tariff.import_bands) || tariff.import_bands.length === 0) fail(file, 'tariff.import_bands must not be empty');
+  if (!Array.isArray(tariff.import_bands) || tariff.import_bands.length === 0)
+    fail(file, 'tariff.import_bands must not be empty');
   if (tariff.verified === true) {
     const bands = tariff.import_bands ?? [];
     bands.forEach((b, i) => {
-      if (!isFiniteNumber(b.price_tnd_per_kwh)) fail(file, `tariff.import_bands[${i}].price_tnd_per_kwh must be numeric when verified`);
+      if (!isFiniteNumber(b.price_tnd_per_kwh))
+        fail(file, `tariff.import_bands[${i}].price_tnd_per_kwh must be numeric when verified`);
     });
-    if (!isFiniteNumber(tariff.fixed_monthly_tnd)) fail(file, 'tariff.fixed_monthly_tnd must be numeric when verified');
+    if (!isFiniteNumber(tariff.fixed_monthly_tnd))
+      fail(file, 'tariff.fixed_monthly_tnd must be numeric when verified');
     if (!isFiniteNumber(tariff.export_compensation_tnd_per_kwh)) {
       fail(file, 'tariff.export_compensation_tnd_per_kwh must be numeric when verified');
     }
@@ -207,7 +260,8 @@ function checkScenario(file, s) {
   const rooms = household.rooms ?? [];
   const appliances = household.appliances ?? [];
   if (!Array.isArray(rooms) || rooms.length === 0) fail(file, 'household.rooms must not be empty');
-  if (!Array.isArray(appliances) || appliances.length === 0) fail(file, 'household.appliances must not be empty');
+  if (!Array.isArray(appliances) || appliances.length === 0)
+    fail(file, 'household.appliances must not be empty');
   const roomIds = new Set();
   for (const room of rooms) {
     if (!isEntityId(room.id)) fail(file, `room "${room.id}" has an invalid id`);
@@ -219,12 +273,16 @@ function checkScenario(file, s) {
   for (const appliance of appliances) checkAppliance(file, appliance, roomIds, applianceIds);
 
   const policies = s.policies ?? {};
-  if (!inRange(policies.baseline?.reserve_soc, 0, 1)) fail(file, 'policies.baseline.reserve_soc out of range');
-  if (!inRange(policies.scheduler?.reserve_soc, 0, 1)) fail(file, 'policies.scheduler.reserve_soc out of range');
+  if (!inRange(policies.baseline?.reserve_soc, 0, 1))
+    fail(file, 'policies.baseline.reserve_soc out of range');
+  if (!inRange(policies.scheduler?.reserve_soc, 0, 1))
+    fail(file, 'policies.scheduler.reserve_soc out of range');
   const order = policies.baseline?.shed_order ?? [];
-  if (!Array.isArray(order) || order.length === 0) fail(file, 'policies.baseline.shed_order must not be empty');
+  if (!Array.isArray(order) || order.length === 0)
+    fail(file, 'policies.baseline.shed_order must not be empty');
   else {
-    if (order.some((p) => !PRIORITIES.includes(p))) fail(file, 'shed_order contains an unknown priority');
+    if (order.some((p) => !PRIORITIES.includes(p)))
+      fail(file, 'shed_order contains an unknown priority');
     if (new Set(order).size !== order.length) fail(file, 'shed_order must not repeat a priority');
   }
   if (!(isInteger(policies.scheduler?.horizon_hours) && policies.scheduler.horizon_hours >= 1)) {

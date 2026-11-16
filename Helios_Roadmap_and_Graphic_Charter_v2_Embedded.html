@@ -185,8 +185,8 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.3</td>
-          <td><strong>Create the application shell</strong><p>Set up Next.js, React, TypeScript, linting, formatting, and a minimal route structure. Keep simulation logic in a separate package/module.</p></td>
-          <td><span class="done-label">DONE WHEN</span><p>The app starts and the TypeScript/lint checks pass.</p></td>
+          <td><strong>Create the application shell</strong><p>Set up Next.js, React, TypeScript, linting, formatting, and a minimal route structure. Keep simulation logic in a separate package/module. Next.js 16.4.6 App Router, React 19.3.1 and TypeScript 5.9.3 in strict mode share one ESLint 9 flat config and one Prettier 3 rule set; Tailwind CSS 4 carries the graphic-charter palette as theme tokens, and six routes share one layout. The engine is the separate workspace package <code>@helios/engine</code> in <code>packages/engine</code>, and lint forbids it from importing React, Next or the application (FR-SIM-01, NFR-06, DEC-002, DEC-032).</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The app starts and the TypeScript/lint checks pass: <code>npm run dev</code> serves it, <code>npm run build</code> writes the static export to <code>out/</code>, and type-check, lint and format check pass (NFR-06).</p></td>
         </tr>
 
         <tr>

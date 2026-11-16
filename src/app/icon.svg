@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Helios">
+  <rect width="64" height="64" rx="12" fill="#202b2a"/>
+  <path d="M10 48Q32 8 54 48" fill="none" stroke="#b86b45" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="28" r="3" fill="#8a9b83"/>
+  <path d="M18 48v-12h12v12M28 48v-6h8v6" fill="none" stroke="#e9e3d5" stroke-width="3" stroke-linecap="round"/>
+</svg>

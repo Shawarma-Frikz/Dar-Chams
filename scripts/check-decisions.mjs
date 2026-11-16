@@ -18,7 +18,10 @@ const scopeBrief = read('docs/00-scope-brief.md');
 const lines = log.split(/\r?\n/);
 
 function cells(line) {
-  return line.split('|').slice(1, -1).map((c) => c.trim());
+  return line
+    .split('|')
+    .slice(1, -1)
+    .map((c) => c.trim());
 }
 
 // Header fields.
@@ -102,7 +105,13 @@ for (const m of log.matchAll(/\bDEC-(\d{3})\b/g)) {
 
 // Outgoing references: requirements, provenance, register and scope brief
 // must not cite decisions that do not exist.
-const externalSources = ['docs/requirements.md', 'docs/data-provenance.md', 'docs/metric-register.json', 'docs/00-scope-brief.md', 'docs/acceptance-checklist.md'];
+const externalSources = [
+  'docs/requirements.md',
+  'docs/data-provenance.md',
+  'docs/metric-register.json',
+  'docs/00-scope-brief.md',
+  'docs/acceptance-checklist.md',
+];
 for (const rel of externalSources) {
   const text = read(rel);
   for (const m of text.matchAll(/\bDEC-(\d{3})\b/g)) {
@@ -114,14 +123,16 @@ for (const rel of externalSources) {
 // brief assumption table.
 const assumptionIds = new Set([...scopeBrief.matchAll(/^\| (AS-\d{2}) \|/gm)].map((m) => m[1]));
 for (const m of requirements.matchAll(/\bAS-(\d{2})\b/g)) {
-  if (!assumptionIds.has(`AS-${m[1]}`)) fail(`AS-${m[1]}: referenced in requirements but not defined in the scope brief`);
+  if (!assumptionIds.has(`AS-${m[1]}`))
+    fail(`AS-${m[1]}: referenced in requirements but not defined in the scope brief`);
 }
 
 // Requirement references in the decision log must resolve to the register.
 const reqIds = new Set();
 for (const m of requirements.matchAll(/\b((?:FR-[A-Z]+|NFR|CON|EX)-\d{2})\b/g)) reqIds.add(m[1]);
 for (const m of log.matchAll(/\b((?:FR-[A-Z]+|NFR)-\d{2})\b/g)) {
-  if (!reqIds.has(m[1])) fail(`${m[1]}: referenced in the decision log but not in the requirements register`);
+  if (!reqIds.has(m[1]))
+    fail(`${m[1]}: referenced in the decision log but not in the requirements register`);
 }
 
 if (problems.length) {

@@ -65,7 +65,8 @@ metrics.forEach((m, i) => {
   if (byId.has(m.id)) fail(`duplicate ID: ${m.id}`);
   byId.set(m.id, m);
   if (m.label) {
-    if (seenLabels.has(m.label)) fail(`${m.id}: label "${m.label}" duplicates ${seenLabels.get(m.label)}`);
+    if (seenLabels.has(m.label))
+      fail(`${m.id}: label "${m.label}" duplicates ${seenLabels.get(m.label)}`);
     seenLabels.set(m.label, m.id);
   }
 });
@@ -94,7 +95,8 @@ for (const m of metrics) {
   const classes = Array.isArray(m.classes) ? m.classes : [];
   if (classes.length === 0) fail(`${where}: at least one class is required`);
   for (const c of classes) {
-    if (!Object.hasOwn(CLASS_WORDS, c)) fail(`${where}: class "${c}" is not one of M, X, S, F, E, D, C`);
+    if (!Object.hasOwn(CLASS_WORDS, c))
+      fail(`${where}: class "${c}" is not one of M, X, S, F, E, D, C`);
   }
 
   const availability = String(m.availability ?? '');
@@ -103,7 +105,8 @@ for (const m of metrics) {
     fail(`${where}: availability must be always, conditional:<gate> or disabled:<gate>`);
   } else if (kind !== 'always') {
     const gate = availability.slice(kind.length + 1);
-    if (!GATE.test(gate)) fail(`${where}: availability gate "${gate}" is not a dotted scenario field`);
+    if (!GATE.test(gate))
+      fail(`${where}: availability gate "${gate}" is not a dotted scenario field`);
   }
   if (kind === 'disabled' && !m.reason) fail(`${where}: a disabled metric must state a reason`);
 
@@ -111,7 +114,9 @@ for (const m of metrics) {
   // measured value exists until the node is attached (DEC-027).
   if (classes.includes('M')) {
     if (kind === 'always') {
-      fail(`${where}: class M must be conditional or disabled until the bench node is attached (DEC-027)`);
+      fail(
+        `${where}: class M must be conditional or disabled until the bench node is attached (DEC-027)`,
+      );
     } else if (!availability.slice(kind.length + 1).startsWith('hardware.')) {
       fail(`${where}: class M requires a hardware.* availability gate (DEC-027)`);
     }
@@ -189,7 +194,9 @@ function renderTable() {
   ];
   for (const group of order) {
     lines.push(`#### ${group}`, '');
-    lines.push('| ID | Metric | Unit | Class | Source / formula | Inputs | Availability | Display |');
+    lines.push(
+      '| ID | Metric | Unit | Class | Source / formula | Inputs | Availability | Display |',
+    );
     lines.push('| --- | --- | --- | --- | --- | --- | --- | --- |');
     for (const m of metrics.filter((x) => x.group === group)) {
       lines.push(
@@ -214,7 +221,8 @@ if (startAt === -1 || endAt === -1 || endAt < startAt) {
   const generated = renderTable();
   if (current !== generated) {
     if (process.argv.includes('--write')) {
-      const next = doc.slice(0, startAt + START.length) + '\n' + generated + '\n' + doc.slice(endAt);
+      const next =
+        doc.slice(0, startAt + START.length) + '\n' + generated + '\n' + doc.slice(endAt);
       fs.writeFileSync(docPath, next);
       console.log('provenance register: table regenerated in docs/data-provenance.md');
     } else {
@@ -256,7 +264,9 @@ if (condDecl !== null && condDecl !== counts.conditional) {
   fail(`document: "Conditional" declares ${condDecl}, register has ${counts.conditional}`);
 }
 if (disabledDecl !== null && disabledDecl !== counts.disabled) {
-  fail(`document: "Disabled by a data gate" declares ${disabledDecl}, register has ${counts.disabled}`);
+  fail(
+    `document: "Disabled by a data gate" declares ${disabledDecl}, register has ${counts.disabled}`,
+  );
 }
 
 const CLASS_ROWS = {
@@ -292,7 +302,9 @@ const groups = new Set(metrics.map((m) => m.group)).size;
 
 console.log('provenance register: OK');
 console.log(`  ${counts.total} metrics in ${groups} groups; classes: ${classSummary}`);
-console.log(`  availability: ${counts.always} always, ${counts.conditional} conditional, ${counts.disabled} disabled`);
+console.log(
+  `  availability: ${counts.always} always, ${counts.conditional} conditional, ${counts.disabled} disabled`,
+);
 console.log(`  derived inputs: ${inputEdges} edges, 0 unresolved, 0 cycles`);
 console.log(`  register table: in sync with docs/data-provenance.md`);
 console.log(`  labels: no measurement wording`);

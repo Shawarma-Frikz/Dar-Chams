@@ -24,7 +24,7 @@ This document records how the repository is kept reproducible: the licence, what
 
 ## 2 · Branches
 
-- `main` is the only long-lived branch and must always pass the five checks in section 7.
+- `main` is the only long-lived branch and must always pass the checks in section 7.
 - Work happens on short-lived branches that name the phase: `<type>/<phase>-<slug>`, for example `feat/01-scaffold`, `docs/01-conventions`, `fix/03-irradiance-sign`.
 - `<type>` is one of the commit types in section 3, so the branch name predicts the commit type.
 - Merge into `main` as a single squashed commit once CI exists (01.5), so one phase-visible change is one commit. Before CI, a fast-forward or one squashed commit achieves the same.
@@ -115,7 +115,17 @@ node scripts/check-provenance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-All six must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile or a floating dependency spec (DEC-031). From 01.5, CI runs the same script together with formatting, lint, type-check, unit and property tests, and the production build; a failing check blocks a green build.
+All six must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032).
+
+The code gates are separate and can be run individually:
+
+```text
+npm run typecheck
+npm run lint
+npm run format:check
+```
+
+`npm run verify` runs the six checks and then all three. From 01.5, CI runs that single script together with unit and property tests and the production build; a failing check blocks a green build.
 
 ## 8 · Editor setup
 

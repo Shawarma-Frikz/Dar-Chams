@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.4) |
-| Decided by | DEC-033 |
+| Phase | 01 (task 01.4), 02.1; v1.1.0 adds the two site-time invariants |
+| Decided by | DEC-033; the site time contract by DEC-037 |
 | Checked by | `node scripts/check-config.mjs`, or `npm run check` for all checks |
 | Related | FR-SIM-10 · FR-SIM-07 · [Scenario conventions](../scenarios/README.md) · [Requirements](requirements.md) · [Decision log](decision-log.md) |
 
@@ -91,6 +91,8 @@ Each class is injected by `scripts/check-config.mjs` on every run, and the scrip
 | **Missing units** | `pv.tilt: 30` | Unknown key + suggestion | `did you mean "tilt_deg"?` and that field names carry their unit |
 | **Missing room** | an appliance pointing at `garage` | Relational invariant | The rooms that do exist |
 | **Unschedulable load** | a 900-minute task in a 9-hour window | Relational invariant | That the task cannot finish inside its window |
+| **Unknown timezone** | `site.timezone: Mars/Olympus` | Site-time invariant (DEC-037) | That the zone must be an IANA name the runtime knows, with `Africa/Tunis` as the example |
+| **Contradictory offset** | a start at `+02:00` where the site zone was at `+01:00` | Site-time invariant (DEC-037) | The offset the zone actually had at that instant, and the corrected start |
 
 ## 6 · Units
 
@@ -116,16 +118,16 @@ Runtime state has no policy to state because it is never an input: `createRuntim
 ```text
 config: OK
   scenarios: 3 of 3 valid through the runtime validator (schema + relations)
-  failures: 8 injected, each rejected with a path, a value and a fix
+  failures: 10 injected, each rejected with a path, a value and a fix
   units: every numeric property in the contract names its unit (audit self-tested)
   layers: defaults valid, settings refuse scenario fields, scenario frozen, runtime derived
 ```
 
-Beyond the eight injections it asserts that: the shipped defaults validate; a settings document carrying `battery` is reported as a layer violation; a settings document from another schema version is discarded with a reason; a presentation preference leaves the scenario byte-identical; the resolved scenario is frozen at every depth; and the runtime state starts from the scenario's own instant and speed. The harness itself was verified by corrupting one expected path and observing exit code 1 — a check that cannot fail proves nothing.
+Beyond the ten injections it asserts that: the shipped defaults validate; a settings document carrying `battery` is reported as a layer violation; a settings document from another schema version is discarded with a reason; a presentation preference leaves the scenario byte-identical; the resolved scenario is frozen at every depth; and the runtime state starts from the scenario's own instant and speed. The harness itself was verified by corrupting one expected path and observing exit code 1 — a check that cannot fail proves nothing.
 
 ## 9 · What this does not cover yet
 
 - **No settings store.** Nothing persists a preference until phase 09; the contract and its recovery rule exist so that phase cannot invent a second mechanism.
-- **No runtime store.** Advancing a run is phase 02's work; `runtime.ts` only fixes the direction of the dependency.
+- **No runtime store.** Advancing a run is the simulation clock's work in 02.5; `runtime.ts` only fixes the direction of the dependency.
 - **No clamping.** FR-SIM-07's documented clamp rules for numerically extreme but structurally valid input belong to phase 02.7, and are a different problem from a configuration that contradicts itself.
 - **No editor.** FR-UX-06's scenario editor consumes this validator in phase 09.6; it will render the same `ConfigIssue` objects rather than new messages.

@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.5.0 |
+| Version | 1.6.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.6); v1.5.0 corrects the pin after the first CI run (DEC-036) |
+| Phase | 01 (tasks 01.2–01.6), 02.1; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check |
 | Decided by | DEC-031 (supersedes the Node version pin in DEC-018), version numbers superseded by DEC-036; the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
@@ -36,7 +36,7 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 **Verified on 2026-11-16, Windows 11.** A directory containing only `package.json`, `package-lock.json`, `.npmrc` and `.nvmrc` installed with `npm ci` and exit code 0. The same directory with `engines.node` raised to `>=99.0.0 <100` was refused with `EBADENGINE` and exit code 1 — the pin fails closed, as intended.
 
-Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0. Re-run after 01.6 with the documentation check: `npm run verify` runs nine checks, four code gates, 22 tests and the production build, and exits 0. Re-verified at the corrected pin on 2026-11-16: `npm ci` with npm 11.20.0 installs 398 packages and audits 406 with 0 vulnerabilities, the lockfile diff being the root `engines` entry alone, and `npm run verify` again runs nine checks, four code gates, 22 tests and the build, exiting 0 with `runtime: OK` reporting npm 11.20.0 against `packageManager "npm@11.20.0"`. The first CI run had failed at `npm ci` because Node 26.2.0 bundles npm 11.13.0 and `engine-strict` refused it before any gate; DEC-036 moves the pin to the LTS patch that ships the declared npm.
+Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0. Re-run after 01.6 with the documentation check: `npm run verify` runs nine checks, four code gates, 22 tests and the production build, and exits 0. Re-verified at the corrected pin on 2026-11-16: `npm ci` with npm 11.20.0 installs 398 packages and audits 406 with 0 vulnerabilities, the lockfile diff being the root `engines` entry alone, and `npm run verify` again runs nine checks, four code gates, 22 tests and the build, exiting 0 with `runtime: OK` reporting npm 11.20.0 against `packageManager "npm@11.20.0"`. The first CI run had failed at `npm ci` because Node 26.2.0 bundles npm 11.13.0 and `engine-strict` refused it before any gate; DEC-036 moves the pin to the LTS patch that ships the declared npm. Re-run after 02.1 with the time base and the tenth check: under npm 11.20.0, `npm run check` passes ten checks, and type-check, lint, format check, 47 tests and the production build each exit 0; the overview was captured at 1366 px and in a 390 px iframe with no horizontal overflow.
 
 **Where the gates run.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs the same six steps on `ubuntu-latest` and `windows-latest`, with Node taken from `.nvmrc` and dependencies installed with `npm ci`. The workflow is part of the repository and is itself checked: `scripts/check-ci.mjs` parses it and fails if a gate disappears, an action is referenced by tag instead of commit, or a command swallows its failure. The design and its limits are recorded in [quality gates](quality-gates.md) and DEC-034.
 
@@ -60,8 +60,8 @@ npm run check
 ```
 
 - On Windows, `npm` may be blocked by PowerShell execution policy (DEC-018); use `npm.cmd`, or run the same commands in Git Bash.
-- `npm run check` runs the runtime check and the eight document, configuration and documentation checks. It is the single command a fresh clone needs before any work, and it is the first step CI runs.
-- `npm run verify` runs the nine checks, then type-check, lint, format check, the unit and property tests, and the production build. It is the one command to run before a commit; CI runs the same six steps separately.
+- `npm run check` runs the runtime check plus nine document, configuration, time and documentation checks. It is the single command a fresh clone needs before any work, and it is the first step CI runs.
+- `npm run verify` runs the ten checks, then type-check, lint, format check, the unit and property tests, and the production build. It is the one command to run before a commit; CI runs the same six steps separately.
 - `npm run test` runs Vitest once; `npm run test:watch` keeps it open. Both run against the TypeScript sources, not a build output.
 - `npm run dev` serves the application with hot reload on `http://localhost:3000`. `npm run build` writes the static export to `out/`, and `npm run preview` serves that exact directory on `http://localhost:4173` through `scripts/serve-static.mjs`, which resolves paths inside `out/` only and refuses traversal attempts.
 - `.nvmrc` is read by `nvm-windows`, `fnm` and `nvm`; none of them is required, because `engines` plus `engine-strict` already refuse the wrong line.
@@ -78,7 +78,7 @@ The application is a static client-side bundle with a Web Worker, WebGL2 and Ind
 | **3 — degraded** | Tier 1 browsers without WebGL2, or with reduced motion requested | 2D system map only; no 3D, no state lost (FR-UX-10, FR-TWN-05) |
 | **Not supported** | Internet Explorer, browsers without ES2022 module workers or IndexedDB | Out of scope; no polyfill is planned |
 
-**Required capabilities.** ES2022 modules and module Web Workers, IndexedDB, WebGL2 (3D only), `structuredClone`, `ResizeObserver`, CSS Grid, `Intl.NumberFormat` for TND and dates, and `prefers-reduced-motion`. A browser missing a capability from the 2D path is unsupported; a browser missing only WebGL2 falls to Tier 3.
+**Required capabilities.** ES2022 modules and module Web Workers, IndexedDB, WebGL2 (3D only), `structuredClone`, `ResizeObserver`, CSS Grid, `Intl.NumberFormat` for TND and `Intl.DateTimeFormat` with IANA time zones for site-day walls and daylight-saving transitions, and `prefers-reduced-motion`. A browser missing a capability from the 2D path is unsupported; a browser missing only WebGL2 falls to Tier 3.
 
 **How this is checked.** Phase 08 and phase 09 record screenshots and a manual matrix for the four interface views; AC-17 verifies that every critical state and control exists in the 2D map, that status is not conveyed by colour alone, and that the interface is keyboard operable. A capability probe runs at start-up and selects 2D automatically when WebGL2 is absent; it reports why in the interface rather than failing silently.
 
@@ -117,9 +117,10 @@ The pins above govern the Node adapter and the web application. The embedded pat
 | Someone runs `npm install` on a clean clone | Works, but rewrites the lockfile — review the diff before committing | none; the diff is the signal |
 | `npm ci` runs while `npm run dev` or `next build` is open | Install aborts before touching the lockfile | `EPERM … unlink node_modules/lightningcss-win32-x64-msvc/…` — stop the server and re-run |
 | The boot scenario violates the contract | `npm run build`, `npm run dev` and `npm run check` fail before any page renders | `tunis-typical-v1.json: 1 problem in the scenario layer` followed by the field path, the received value and a fix |
+| The site timezone is unknown or the start offset contradicts it | Same three commands fail at load | `site.timezone  ·  relation.timezone` with an IANA example, or `simulation.start  ·  relation.start-offset` naming the offset that zone had at that instant (DEC-037) |
 | A scenario field is misspelt | The unknown key is rejected with the nearest valid name | `grid.feed_in_limt_kw  ·  schema.unknown-key` … `did you mean feed_in_limit_kw?` |
 | A numeric field has no unit suffix | `npm run check` fails on the schema audit, not at run time | `contract.unit-missing: grid.feed_in_limit → rename to feed_in_limit_kw` |
-| A test fails | `npm run verify` stops at the test gate; the build never starts | `FAIL  packages/…/x.test.ts > …` then `Tests 1 failed | 22 passed` |
+| A test fails | `npm run verify` stops at the test gate; the build never starts | `FAIL  packages/…/x.test.ts > …` followed by a non-zero test exit |
 | A lint or format error | `npm run verify` stops before the tests | `eslint .` exits 1, or `prettier --check .` names the file |
 | A gate is removed from the workflow | `npm run check` fails at the CI contract | `job 1: gates must be npm run check, … , build last` |
 | A workflow action is referenced by tag | Same gate | `"actions/checkout@v4" must be pinned to a commit SHA, not a tag` |

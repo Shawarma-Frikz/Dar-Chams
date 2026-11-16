@@ -2,13 +2,13 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.1 |
+| Version | 1.2.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.1, 01.6); v1.1.0 adds the documentation check; v1.1.1 tracks the corrected runtime pin |
+| Phase | 01 (tasks 01.1, 01.6), 02.1; v1.1.0 adds the documentation check; v1.1.1 tracks the corrected runtime pin; v1.2.0 adds the time check |
 | Licence | MIT — [`LICENSE`](../LICENSE) (DEC-029) |
 | Commit style | Conventional Commits (DEC-030) |
 | Runtime | Node 26.13.1, npm 11.20.0, exact versions and a committed lockfile — [`runtime-support.md`](runtime-support.md) (DEC-031, DEC-036) |
-| Checked by | `npm run check` — the nine checkers — before every commit; CI from 01.5 |
+| Checked by | `npm run check` — the ten checkers — before every commit; CI from 01.5 |
 
 This document records how the repository is kept reproducible: the licence, what enters Git, how branches and commits are named, and which files are treated as evidence rather than output. Task 01.1 also asks for a clean clone that installs with documented commands; that half is satisfied by 01.2 and 01.3, when `package.json` and the README quick start exist.
 
@@ -113,12 +113,13 @@ node scripts/check-decisions.mjs
 node scripts/check-requirements.mjs
 node scripts/check-provenance.mjs
 node scripts/check-config.mjs
+node scripts/check-time.mjs
 node scripts/check-docs.mjs
 node scripts/check-ci.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-All nine must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032). The sixth runs the runtime validator the application uses at startup against the shipped scenarios and against deliberately broken documents, so the four failure classes task 01.4 names — invalid capacity, negative power, impossible SOC, missing units — are proven to stop a load with a message (DEC-033). The seventh checks the documentation system: six module READMEs carry purpose, inputs, outputs and a runnable test command, the API tables match the engine and application exports in both directions, the data dictionary matches the schema, the experiment format and the changelog headings are fixed, and every document has a row in the map (DEC-035). The eighth parses the CI workflow and holds it to this list: triggers, runners, the `.nvmrc` Node line, `npm ci`, commit-pinned actions, one step per gate, and no swallowed failure (DEC-034).
+All ten must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032). The sixth runs the runtime validator the application uses at startup against the shipped scenarios and against deliberately broken documents, so the four failure classes task 01.4 names — invalid capacity, negative power, impossible SOC, missing units — are proven to stop a load with a message (DEC-033). The seventh checks the time base: every shipped run steps the horizon exactly, a site day yields the step count its own length allows at each timestep, the daylight-saving transitions resolve the way the zone does, and a naive instant, a partial final step, an indivisible day, an unknown zone or a contradictory start offset is refused (DEC-037). The eighth checks the documentation system: six module READMEs carry purpose, inputs, outputs and a runnable test command, the API tables match the engine and application exports in both directions, the data dictionary matches the schema, the experiment format and the changelog headings are fixed, and every document has a row in the map (DEC-035). The ninth parses the CI workflow and holds it to this list: triggers, runners, the `.nvmrc` Node line, `npm ci`, commit-pinned actions, one step per gate, and no swallowed failure (DEC-034).
 
 The code gates are separate and can be run individually:
 
@@ -129,9 +130,9 @@ npm run format:check
 npm run test
 ```
 
-`npm run verify` runs the nine checks, then those four gates, then `npm run build`. A failure at any step stops the chain, so a red test or a lint error never reaches a build. CI runs the same six steps as separate jobs steps on `ubuntu-latest` and `windows-latest`, on a push to `main` and on every pull request, which is how a failing check blocks a green build (NFR-06). [Quality gates](quality-gates.md) records the order, the proof that the chain fails, and what is not covered.
+`npm run verify` runs the ten checks, then those four gates, then `npm run build`. A failure at any step stops the chain, so a red test or a lint error never reaches a build. CI runs the same six steps as separate jobs steps on `ubuntu-latest` and `windows-latest`, on a push to `main` and on every pull request, which is how a failing check blocks a green build (NFR-06). [Quality gates](quality-gates.md) records the order, the proof that the chain fails, and what is not covered.
 
-The failure path has been exercised rather than asserted: a deliberately red test made `npm run verify` exit 1 at the test gate with `1 failed | 22 passed`, and the production build never started. `scripts/check-ci.mjs` applies the same rule to the pipeline itself — remove a gate, pin an action to a tag instead of a commit, or append `|| true`, and the check fails.
+The failure path has been exercised rather than asserted: a deliberately red test made `npm run verify` exit 1 at the test gate, with the other tests passing, and the production build never started. `scripts/check-ci.mjs` applies the same rule to the pipeline itself — remove a gate, pin an action to a tag instead of a commit, or append `|| true`, and the check fails.
 
 ## 8 · Editor setup
 
@@ -143,4 +144,4 @@ The failure path has been exercised rather than asserted: a deliberately red tes
 
 ## 9 · Writing documentation
 
-The documentation system has its own contract: a document map that names every file, four required sections in every module README, API tables that must match the exports, a data dictionary generated from the schema, a fixed experiment record, and a changelog ordered by release. [Documentation conventions](documentation.md) states the rules; `node scripts/check-docs.mjs`, the seventh register check, enforces them and demonstrates seven failure modes (DEC-035).
+The documentation system has its own contract: a document map that names every file, four required sections in every module README, API tables that must match the exports, a data dictionary generated from the schema, a fixed experiment record, and a changelog ordered by release. [Documentation conventions](documentation.md) states the rules; `node scripts/check-docs.mjs`, the eighth register check, enforces them and demonstrates seven failure modes (DEC-035).

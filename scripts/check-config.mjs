@@ -149,6 +149,24 @@ const cases = [
     code: 'relation.flexibility-window',
     contains: ['unschedulable'],
   },
+  {
+    label: 'unknown site timezone',
+    check: broken((document) => {
+      document.site.timezone = 'Mars/Olympus';
+    }),
+    path: 'site.timezone',
+    code: 'relation.timezone',
+    contains: ['IANA', 'Africa/Tunis'],
+  },
+  {
+    label: 'start offset contradicts the site timezone',
+    check: broken((document) => {
+      document.simulation.start = '2026-06-21T00:00:00+02:00';
+    }),
+    path: 'simulation.start',
+    code: 'relation.start-offset',
+    contains: ['offset', 'Africa/Tunis'],
+  },
 ];
 
 for (const testCase of cases) {

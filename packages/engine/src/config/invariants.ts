@@ -11,11 +11,83 @@
 import type { ConfigIssue } from './issues.ts';
 import { describeValue } from './issues.ts';
 import type { Scenario } from './scenario.ts';
+import type { Instant } from '../time/instant.ts';
+import { parseInstant } from '../time/instant.ts';
+import { formatZonedInstant, isTimeZone, zoneOffsetMinutes } from '../time/zone.ts';
 
 const toMinutes = (clock: string): number => {
   const [hours = '0', minutes = '0'] = clock.split(':');
   return Number(hours) * 60 + Number(minutes);
 };
+
+/** The offset written in an ISO instant, in minutes east of UTC. */
+const writtenOffsetMinutes = (text: string): number => {
+  const match = /(Z|([+-])(\d{2}):(\d{2}))$/.exec(text);
+  if (!match || match[1] === 'Z') return 0;
+  const hours = Number(match[3]);
+  const minutes = Number(match[4]);
+  return (match[2] === '-' ? -1 : 1) * (hours * 60 + minutes);
+};
+
+const offsetLabel = (minutes: number): string => {
+  if (minutes === 0) return 'Z';
+  const sign = minutes < 0 ? '-' : '+';
+  const absolute = Math.abs(minutes);
+  return `${sign}${String(Math.floor(absolute / 60)).padStart(2, '0')}:${String(absolute % 60).padStart(2, '0')}`;
+};
+
+/**
+ * A timestamp is only a timezone-aware instant if its zone exists and the
+ * offset it carries is the offset that zone had at that moment. A wrong offset
+ * still names an instant, but not the local time the author meant.
+ */
+function checkSiteTime(scenario: Scenario, issues: ConfigIssue[]): void {
+  const { timezone } = scenario.site;
+  if (!isTimeZone(timezone)) {
+    issues.push({
+      layer: 'scenario',
+      path: 'site.timezone',
+      code: 'relation.timezone',
+      message: 'is not an IANA timezone this runtime knows',
+      received: describeValue(timezone),
+      expected: 'an IANA identifier such as "Africa/Tunis"',
+      hint: 'the site zone is the only zone a run displays; an abbreviation such as CET or a city name is not an identifier',
+    });
+    return;
+  }
+
+  const written = scenario.simulation.start;
+  let start: Instant;
+  try {
+    start = parseInstant(written);
+  } catch (error) {
+    issues.push({
+      layer: 'scenario',
+      path: 'simulation.start',
+      code: 'relation.start-instant',
+      message: 'is not an instant the engine can read',
+      received: describeValue(written),
+      expected:
+        'an ISO 8601 instant with an explicit offset, for example 2026-06-21T00:00:00+01:00',
+      hint: error instanceof Error ? error.message : 'append Z or a numeric offset',
+    });
+    return;
+  }
+
+  const declared = writtenOffsetMinutes(written);
+  const actual = zoneOffsetMinutes(start, timezone);
+  if (declared !== actual) {
+    issues.push({
+      layer: 'scenario',
+      path: 'simulation.start',
+      code: 'relation.start-offset',
+      message: "does not carry the site timezone's offset at that instant",
+      received: describeValue(written),
+      expected: `an instant with offset ${offsetLabel(actual)} for ${timezone}, for example ${formatZonedInstant(start, timezone)}`,
+      hint: 'the written offset and the site timezone must agree, or the run starts at a local time nobody intended',
+    });
+  }
+}
 
 function checkBatteryWindow(scenario: Scenario, issues: ConfigIssue[]): void {
   const { min_soc: min, max_soc: max, initial_soc: initial } = scenario.battery;
@@ -146,6 +218,7 @@ function checkTariffBands(scenario: Scenario, issues: ConfigIssue[]): void {
 /** Returns every relational problem; an empty array means the document is coherent. */
 export function checkScenarioInvariants(scenario: Scenario): ConfigIssue[] {
   const issues: ConfigIssue[] = [];
+  checkSiteTime(scenario, issues);
   checkBatteryWindow(scenario, issues);
   checkHousehold(scenario, issues);
   checkTariffBands(scenario, issues);

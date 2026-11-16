@@ -10,7 +10,22 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Nothing yet.
+Phase 02.1 — the simulation time base.
+
+### Added
+
+- Engine time base (DEC-037): timestamps stored as epoch instants and rendered in the site's IANA
+  zone, site-day boundaries that keep daylight-saving days at their real 23–25 hours, a configurable
+  whole-minute step grid of 5, 15, 30 or 60 minutes, and power and energy kept in W and Wh with
+  kW and kWh as display conversions.
+- `scripts/check-time.mjs`, the tenth register check, proving the step count for Tunis, both Paris
+  transitions and both Lord Howe half-hour transitions, and rejecting five broken cases.
+
+### Changed
+
+- `npm run check` now runs ten register checks, and the suite runs 47 tests.
+- Scenario validation refuses a site timezone the runtime does not know and a start offset that
+  contradicts the zone at that instant.
 
 ## [0.1.0] — 2026-11-16
 

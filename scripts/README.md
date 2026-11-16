@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1.0 |
-| Phase | 01 (task 01.6); one script per phase-00 register |
+| Version | 0.2.0 |
+| Phase | 01 (task 01.6); v0.2.0 adds the phase-02.1 time proof |
 | Runtime | Node 26 type stripping; no third-party dependency in any checker |
 | Checked by | `npm run check` |
-| Decisions | DEC-023, DEC-030, DEC-034, DEC-035 |
+| Decisions | DEC-023, DEC-030, DEC-034, DEC-035, DEC-037 |
 
 ## Purpose
 
@@ -42,12 +42,13 @@ npm run check
 
 The checkers are the tests: there is no separate unit suite for them, and each script contains its
 own negative proof so that a passing run is evidence the check can fail. `check-config.mjs` injects
-eight configuration failures and a synthetic unitless field; `check-ci.mjs` breaks a copy of the
-workflow six ways; `check-docs.mjs` breaks seven copies of the documentation; `check-acceptance.mjs`
-recomputes the signed digest; `check-decisions.mjs` resolves every reference; `check-requirements.mjs`
-looks for cycles, dangling dependencies and vague wording; `check-provenance.mjs` walks the metric
-graph; `check-runtime.mjs` checks the lockfile against the manifests. A new script must be added to
-the `check` chain and to the table below, or `check-docs` fails.
+ten configuration failures and a synthetic unitless field; `check-time.mjs` checks the shipped runs,
+four DST days and five broken time cases; `check-ci.mjs` breaks a copy of the workflow six ways;
+`check-docs.mjs` breaks seven copies of the documentation; `check-acceptance.mjs` recomputes the
+signed digest; `check-decisions.mjs` resolves every reference; `check-requirements.mjs` looks for
+cycles, dangling dependencies and vague wording; `check-provenance.mjs` walks the metric graph;
+`check-runtime.mjs` checks the lockfile against the manifests. A new script must be added to the
+`check` chain and to the table below, or `check-docs` fails.
 
 **Not covered.** The scripts check structure and cross-references, not whether a carefully written
 sentence says something false. A statement that no invariant connects to code remains a review
@@ -62,7 +63,8 @@ responsibility.
 | `check-decisions.mjs` | Index/body sync, statuses, topics, DEC/AS/FR references | An entry lacks a body, a topic or a resolved reference | — |
 | `check-requirements.mjs` | IDs, dependencies, cycles, Must coverage, wording | An ID gap, a cycle, an uncovered Must or vague wording | — |
 | `check-provenance.mjs` | Metric register, classes, gates, derived inputs, tables | A class rule, an input or the generated table is wrong | `docs/data-provenance.md` with `--write` |
-| `check-config.mjs` | The four failure classes, units, layer boundaries | The validator accepts a bad scenario or a layer leaks | — |
+| `check-config.mjs` | The configuration failure classes, timezone agreement, units, layer boundaries | The validator accepts a bad scenario or a layer leaks | — |
+| `check-time.mjs` | Day step counts, site-day boundaries, DST transitions, instant offsets, unit scales | A count, boundary, offset or negative case is wrong | — |
 | `check-docs.mjs` | Module READMEs, API, dictionary, experiment log, changelog, map | A section, export, path, record or version is missing or stale | `docs/data-dictionary.md` with `--write` |
 | `check-ci.mjs` | Workflow structure and the gate list | A gate, trigger, pin or install command drifts | — |
 | `validate-scenarios.mjs` | Every committed scenario through the runtime validator | A scenario is invalid | — |

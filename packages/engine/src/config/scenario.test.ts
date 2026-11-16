@@ -108,6 +108,23 @@ describe('the scenario contract', () => {
     expect(issue?.hint).toContain('did you mean "tilt_deg"');
   });
 
+  it('rejects a site timezone the runtime does not know', () => {
+    const document = fixture();
+    (document.site as { timezone: string }).timezone = 'Mars/Olympus';
+    const issue = issueAt(document, 'site.timezone');
+    expect(issue?.code).toBe('relation.timezone');
+    expect(issue?.expected).toContain('Africa/Tunis');
+  });
+
+  it('rejects a start offset that contradicts the site timezone', () => {
+    const document = fixture();
+    (document.simulation as { start: string }).start = '2026-06-21T00:00:00+02:00';
+    const issue = issueAt(document, 'simulation.start');
+    expect(issue?.code).toBe('relation.start-offset');
+    expect(issue?.expected).toContain('+01:00');
+    expect(issue?.hint).toContain('offset');
+  });
+
   it('reports every problem instead of the first one', () => {
     const document = fixture();
     document.grid.export_limit_kw = -1;

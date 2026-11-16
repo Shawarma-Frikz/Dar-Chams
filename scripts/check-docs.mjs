@@ -654,10 +654,7 @@ function runNegatives() {
     },
     {
       name: 'decision citation unresolved',
-      issues: checkModule(
-        'engine',
-        engineReadme.replace('DEC-002, DEC-021, DEC-033', 'DEC-999, DEC-021, DEC-033'),
-      ).issues,
+      issues: checkModule('engine', engineReadme.replace('DEC-002,', 'DEC-999,')).issues,
     },
     {
       name: 'document orphaned',

@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.1 |
+| Version | 1.2.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.5, 01.6); v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line |
-| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035 |
-| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all nine checks |
+| Phase | 01 (tasks 01.5, 01.6), 02.1; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests |
+| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037 |
+| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all ten checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
 
 Task 01.5 asks for formatting, lint, type-check, unit-test and production-build commands, and for CI to run them on pushes and pull requests. Its acceptance condition is not "the commands exist" but "a failing check blocks a green build", so this document records the gate list, the order, the CI job and the two ways the failure path is demonstrated.
@@ -17,7 +17,7 @@ Task 01.5 asks for formatting, lint, type-check, unit-test and production-build 
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Registers | `npm run check` | The nine document, configuration and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
+| Registers | `npm run check` | The ten document, configuration, time and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
 | Type-check | `npm run typecheck` | `tsc --noEmit` under the strict base config, including the test files and `vitest.config.ts` |
 | Lint | `npm run lint` | ESLint 9 on the flat config, including the engine boundary that forbids React, Next and `@/` imports (DEC-002) |
 | Format | `npm run format:check` | Prettier 3 over code, config and scripts; Markdown and JSON evidence are excluded by [`.prettierignore`](../.prettierignore) |
@@ -30,7 +30,7 @@ The order is deliberate. The cheap, broad checks come first — a formatting err
 
 ```text
 npm run verify
-  → npm run check        nine checks
+  → npm run check        ten checks
   → npm run typecheck
   → npm run lint
   → npm run format:check
@@ -40,22 +40,28 @@ npm run verify
 
 `verify` is the single command a contributor runs before a commit, and the same list the workflow runs. CI does not call `verify`, because one combined step would report six gates as one red cross; it runs the same six commands as separate steps so a failing gate is named on the pull request.
 
-The register gate is itself nine checks. The seventh, `scripts/check-docs.mjs`, holds six module READMEs (purpose, inputs, outputs, runnable tests), the API tables in both directions, the generated data dictionary, the experiment record format, the changelog and the document map to their contracts (DEC-035).
+The register gate is itself ten checks. The seventh, `scripts/check-time.mjs`, holds the step grid to its arithmetic: each shipped run tiles its horizon, a site day yields the step count its real length allows at 5, 15, 30 or 60 minutes, and five broken cases — a naive instant, a partial final step, an hourly grid on a 23.5-hour day, a contradictory start offset and an unknown zone — are refused (DEC-037). The eighth, `scripts/check-docs.mjs`, holds six module READMEs (purpose, inputs, outputs, runnable tests), the API tables in both directions, the generated data dictionary, the experiment record format, the changelog and the document map to their contracts (DEC-035).
 
 ## 2 · What the tests cover
 
-All 22 tests exercise code that shipped in 01.4, because the first meaningful unit to test is the one the last two tasks built:
+All 47 tests run against the modules the application imports — the configuration contract from 01.4 and the time and energy base from 02.1:
 
 | File | Tests | Subject |
 | --- | --- | --- |
-| [`packages/engine/src/config/scenario.test.ts`](../packages/engine/src/config/scenario.test.ts) | 12 | The shipped scenarios validate; the four failure classes 01.4 promised are rejected with the right path, code and fix; issues collect instead of aborting; the unit audit and the SOC invariant hold |
+| [`packages/engine/src/config/scenario.test.ts`](../packages/engine/src/config/scenario.test.ts) | 14 | The shipped scenarios validate; the four failure classes 01.4 promised are rejected with the right path, code and fix; an unknown zone and a start offset that contradicts the site zone are refused; issues collect instead of aborting; the unit audit and the SOC invariant hold |
+| [`packages/engine/src/time/time.test.ts`](../packages/engine/src/time/time.test.ts) | 18 | Instants store as one absolute value and format with an explicit offset; a naive, impossible or sub-millisecond stamp is refused; Tunis yields 1440 minutes and 288/96/48/24 steps; Paris and Lord Howe keep their 23-, 25-, 23.5- and 24.5-hour days; a gap shifts forward and an overlap takes the earlier instant; a run tiles its horizon and splits at site midnight |
+| [`packages/engine/src/units/energy.test.ts`](../packages/engine/src/units/energy.test.ts) | 5 | Interval energy is power × minutes ÷ 60 in Wh; kW and kWh are display conversions only; non-finite input and a negative interval are refused |
 | [`src/lib/config/layers.test.ts`](../src/lib/config/layers.test.ts) | 10 | Settings recover without throwing, refuse scenario fields and never change the scenario; runtime state derives from a frozen configuration; resolution fails closed |
 
-Three of them are properties rather than examples, run 200–300 times each:
+Seven of them are properties rather than examples, run 50–300 times each:
 
 - the SOC invariant flags a start outside the window, and only then, for arbitrary fractions;
 - `formatIssues` renders any list of issues without throwing;
-- `parseUserSettings` never throws on anything `JSON.parse` can return, and always yields a usable preference.
+- `parseUserSettings` never throws on anything `JSON.parse` can return, and always yields a usable preference;
+- a site day at any supported timestep yields exactly minutes ÷ timestep steps;
+- every step belongs to exactly one site day, and the days stay in order;
+- interval energy equals power × minutes ÷ 60 for arbitrary finite power and duration;
+- the kW/kWh and W/Wh conversions round-trip without losing value.
 
 The tests import the same modules the application imports — the engine entry point and the `src/lib/config` files — with no mocks, so a test cannot pass against behaviour the app does not have. Fixtures are the shipped scenario files, read from `scenarios/`, not copies; a scenario that stops being valid fails the tests and the configuration check together.
 
@@ -79,7 +85,7 @@ The job does not deploy, publish or upload artefacts. It exists to answer one qu
 
 ## 4 · The check on the check
 
-`scripts/check-ci.mjs` is the eighth register check. It parses the workflow (a small reader for the YAML subset the file uses, not a regular expression), then asserts:
+`scripts/check-ci.mjs` is the ninth register check. It parses the workflow (a small reader for the YAML subset the file uses, not a regular expression), then asserts:
 
 - triggers: `push` on `main`, `pull_request`, and a manual dispatch;
 - `permissions.contents: read`, concurrency with cancellation, a job timeout of 1–60 minutes;
@@ -93,7 +99,7 @@ It then breaks copies of the parsed workflow and manifest and requires each brea
 
 ## 5 · The failure path, demonstrated
 
-The DONE WHEN condition was not asserted, it was run. A deliberately red test was added to `packages/engine/src/config/`, and `npm run verify` produced:
+The DONE WHEN condition was not asserted, it was run at phase 01. A deliberately red test was added to `packages/engine/src/config/`, and `npm run verify` produced:
 
 ```text
 FAIL  packages/engine/src/config/failing-gate.test.ts > blocks the production build

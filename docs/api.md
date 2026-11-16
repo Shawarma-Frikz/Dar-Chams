@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6) |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -73,10 +73,47 @@ with the engine and not only with the application.
 | `TimeWindow` | type | Clock start and end in site time; a window may cross midnight |
 | `Tracker` | type | Enable flag and 0, 1 or 2 axes |
 | `Weather` | type | Primary and historical sources, cache directory, refresh period and fallback order |
+| `Instant` | type | Milliseconds since the Unix epoch, tagged; the only internal timestamp form |
+| `parseInstant` | function | Reads ISO 8601 with `Z` or `±hh:mm`; refuses a naive time, an impossible date, a leap second or sub-millisecond precision |
+| `formatInstant` | function | The canonical UTC form, `YYYY-MM-DDTHH:mm:ss.sssZ` |
+| `instantEpochMilliseconds` | function | The underlying millisecond count, for manifests and storage boundaries |
+| `instantFromEpochMilliseconds` | function | Rebuilds an instant from a stored millisecond count; refuses a non-integer |
+| `addMinutes` | function | Advances by whole minutes; the operation a step uses |
+| `minutesBetween` | function | The distance between two instants in minutes |
+| `isTimeZone` | function | True when the runtime's IANA zone database knows the identifier |
+| `zonedParts` | function | Year, month, day, hour, minute and second of an instant in a zone |
+| `zoneOffsetMinutes` | function | The offset east of UTC in effect at that instant, in minutes |
+| `instantFromZonedParts` | function | Resolves a wall clock to an instant; a gap shifts forward, an overlap takes the earlier occurrence |
+| `formatZonedInstant` | function | ISO 8601 in the site zone with its numeric offset, e.g. `2026-06-21T00:00:00.000+01:00` |
+| `siteDate` | function | The `YYYY-MM-DD` site day containing an instant |
+| `siteDayBounds` | function | Local midnight to the next local midnight, with the day's real length in minutes |
+| `ZonedParts` | type | Year, month, day, hour, minute and second in a zone |
+| `SiteDayBounds` | type | Date, start, end and minutes of one site day |
+| `TIMESTEP_MINUTES` | const | `[5, 15, 30, 60]`; the timesteps the step grid accepts |
+| `createStepGrid` | function | A uniform grid from a start, a timestep and a whole-minute duration; refuses a partial final step |
+| `stepAt` | function | The step at an index, with absolute start and end instants |
+| `stepsInSiteDay` | function | Whole steps between local midnights; refuses a day whose boundary does not align |
+| `siteDayGrid` | function | A full site-day grid, local midnight to local midnight |
+| `groupStepsBySiteDay` | function | Splits a run at local midnight; a step belongs to the day its start falls in |
+| `StepGrid` | type | Start, end, timestep, duration and step count |
+| `Step` | type | Index, start, end and duration of one step |
+| `SiteDaySegment` | type | A site day's bounds plus its first and last step index |
+| `Watts` | type | Instantaneous power in watts, the internal unit |
+| `WattHours` | type | Interval energy in watt-hours, the internal unit |
+| `intervalWattHours` | function | Power × minutes ÷ 60 → watt-hours, the per-step conversion |
+| `wattsFromKilowatts` | function | kW → W at an input boundary |
+| `kilowattsFromWatts` | function | W → kW at a display boundary |
+| `wattHoursFromKilowattHours` | function | kWh → Wh at an input boundary |
+| `kilowattHoursFromWattHours` | function | Wh → kWh at a display boundary |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
 to one is reviewed with the other in the same commit (DEC-021, DEC-033).
+
+The time functions are the axis every later phase uses (DEC-037): an instant is stored once, in UTC,
+and a site day is read from the scenario's IANA zone rather than assumed to be 24 hours. The unit
+functions are the two internal scales; task 02.2 extends the dimensional guard to temperature, state
+of charge and every other boundary conversion.
 
 ## 2 · Application configuration surface
 

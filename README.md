@@ -10,9 +10,10 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 
 - **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
 - **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
-- **Phases 02–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
+- **Phases 02.2–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
 - **Phase 01 — toolchain and scaffold: complete.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.13.1 and npm 11.20.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031; the version line corrected by DEC-036 after Node 26.2.0 was found to bundle npm 11.13.0). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033). Task 01.5 is complete: six quality gates, 22 unit and property tests, an aggregate `verify` that ends in the production build, and a CI workflow on Linux and Windows that `check-ci` holds to the same gate list (DEC-034). Task 01.6 is complete: a documentation convention that turns six module READMEs, API notes, a generated data dictionary, an experiment log and a changelog into checked artefacts, with `check-docs` bringing the register checks to nine (DEC-035).
-- No simulation code yet, and therefore no metric: the shell names what each route will contain and displays no value until its source exists (NFR-07). The engine's first model arrives in phase 02.
+- **Phase 02 — system model: in progress.** Task 02.1 is complete: a configurable whole-minute timestep of 5, 15, 30 or 60 minutes, timestamps stored as timezone-aware instants and displayed in the site's IANA zone, site days that follow the real 23–25-hour length of a daylight-saving day, and power and energy kept in W and Wh with kW and kWh only at display and boundary conversions (DEC-037). `node scripts/check-time.mjs`, the tenth register check, proves the step count for Tunis, both Paris transitions and both Lord Howe half-hour transitions, and rejects a naive instant, a horizon that is not a whole number of steps, an hourly grid on a 23.5-hour day, an unknown site timezone and a start offset that contradicts it. The suite now runs 47 tests.
+- No physics and therefore no metric yet: the shell names what each route will contain and displays no value until its source exists (NFR-07). The PV, battery and load models arrive later in phase 02.
 
 ## What this is
 
@@ -59,7 +60,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 | Node | 26.13.1 (Active LTS "Lithium"), `engines` `>=26.0.0 <27`, pinned in [`.nvmrc`](.nvmrc) |
 | npm | 11.20.0 exactly, the npm bundled with Node 26.13.1, declared in `packageManager`; `.npmrc` enforces `engine-strict` and exact versions |
 | Install | `npm ci` from the committed lockfile; a wrong Node line is refused with `EBADENGINE` |
-| Checks | `npm run check` runs nine register checks; `npm run verify` adds type-check, lint, format check, tests and the production build |
+| Checks | `npm run check` runs ten register checks; `npm run verify` adds type-check, lint, format check, tests and the production build |
 | Commands | `npm run dev` (port 3000), `npm run build` (static export in `out/`), `npm run preview` (server for that export, port 4173), `npm run test` (Vitest), `npm run verify` (every gate) |
 | Browsers | Chrome/Edge latest two (gated); Firefox, Safari 17.4+ (supported); no WebGL2 falls back to the 2D map |
 | Hardware | 4 cores, 8 GB RAM, 1920×1080, WebGL2; minimum 2 cores, 4 GB |
@@ -112,6 +113,8 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 │       ├── README.md           Purpose, inputs, outputs and tests for the engine module
 │       └── src/
 │           ├── config/         Validator, invariants, units audit, issue model, tests
+│           ├── time/           Instants, IANA zones, site days, step grids, tests
+│           ├── units/          Interval energy conversion, its display scales, tests
 │           └── index.ts
 ├── scenarios/
 │   ├── README.md               Scenario contract, conventions, tariff policy
@@ -128,6 +131,7 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   ├── check-runtime.mjs       Node/npm pins, workspaces, overrides, lockfile
+│   ├── check-time.mjs          Step counts, site days, DST transitions, unit scales
 │   ├── README.md               What each script proves and what it may write
 │   ├── serve-static.mjs        Serves the static export for `npm run preview`
 │   └── validate-scenarios.mjs  Runs the engine validator over every scenario
@@ -162,7 +166,7 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 └── README.md
 ```
 
-Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the same engine validator the application uses at startup. `node scripts/check-config.mjs` proves the four failure classes, the unit audit and the layer boundaries. `node scripts/check-ci.mjs` parses the workflow and proves it runs the same gates as `npm run verify`. Both are part of `npm run check`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. The documentation system — six module READMEs with purpose, inputs, outputs and a runnable test command, API tables that match the exports in both directions, the generated data dictionary, the experiment format, the changelog and the document map — is checked with `node scripts/check-docs.mjs`; `--write` regenerates the dictionary after a schema edit. `npm run verify` runs all nine checks, type-check, lint, format check, the unit and property tests, and the production build; CI runs the same six gates on Linux and Windows. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
+Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the same engine validator the application uses at startup. `node scripts/check-config.mjs` proves the four named failure classes, the relational invariants, the unit audit and the layer boundaries. `node scripts/check-time.mjs` proves the step counts and site-day boundaries on four daylight-saving fixtures and rejects five broken cases. `node scripts/check-ci.mjs` parses the workflow and proves it runs the same gates as `npm run verify`. All are part of `npm run check`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. The documentation system — six module READMEs with purpose, inputs, outputs and a runnable test command, API tables that match the exports in both directions, the generated data dictionary, the experiment format, the changelog and the document map — is checked with `node scripts/check-docs.mjs`; `--write` regenerates the dictionary after a schema edit. `npm run verify` runs all ten checks, type-check, lint, format check, the unit and property tests, and the production build; CI runs the same six gates on Linux and Windows. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
 
 ## Documentation
 

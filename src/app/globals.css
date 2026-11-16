@@ -39,6 +39,8 @@
     outline-offset: 2px;
   }
 
+  /* The settings layer sets data-motion on <html>; 'system' defers to the
+     media query below, 'reduced' forces the same outcome. */
   @media (prefers-reduced-motion: reduce) {
     *,
     ::before,
@@ -48,5 +50,14 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+
+  html[data-motion='reduced'] *,
+  html[data-motion='reduced'] ::before,
+  html[data-motion='reduced'] ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

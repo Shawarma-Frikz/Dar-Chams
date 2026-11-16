@@ -112,10 +112,11 @@ node scripts/check-acceptance.mjs
 node scripts/check-decisions.mjs
 node scripts/check-requirements.mjs
 node scripts/check-provenance.mjs
+node scripts/check-config.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-All six must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032).
+All seven must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile, a floating dependency spec, a workspace manifest that drifts from the root pin, or an override that is not an exact installed version (DEC-031, DEC-032). The sixth runs the runtime validator the application uses at startup against the shipped scenarios and against deliberately broken documents, so the four failure classes task 01.4 names — invalid capacity, negative power, impossible SOC, missing units — are proven to stop a load with a message (DEC-033).
 
 The code gates are separate and can be run individually:
 
@@ -125,7 +126,7 @@ npm run lint
 npm run format:check
 ```
 
-`npm run verify` runs the six checks and then all three. From 01.5, CI runs that single script together with unit and property tests and the production build; a failing check blocks a green build.
+`npm run verify` runs the seven checks and then all three. From 01.5, CI runs that single script together with unit and property tests and the production build; a failing check blocks a green build.
 
 ## 8 · Editor setup
 

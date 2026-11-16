@@ -21,9 +21,15 @@ const STATUS = [
     refs: 'FR-SIM-01 · DEC-002',
   },
   {
+    label: 'Configuration',
+    detail:
+      'Defaults, scenario, user settings and runtime state are separate layers. The boot scenario is validated at startup, so a bad capacity, a negative power, an impossible SOC or a field that forgot its unit stops the build with a path and a fix.',
+    refs: 'FR-SIM-10 · DEC-033',
+  },
+  {
     label: 'Quality gates',
     detail:
-      'npm run verify runs the six document checks, then type-check, lint and format check. CI runs the same commands from phase 01.5.',
+      'npm run verify runs seven checks — the runtime pin, five document registers and the configuration proof — then type-check, lint and format check. CI runs the same commands from phase 01.5.',
     refs: 'NFR-06',
   },
 ];
@@ -56,7 +62,7 @@ export default function OverviewPage() {
 
       <section className="mt-12 grid gap-8 border-b border-line pb-12 md:grid-cols-[1fr_2fr]">
         <h2 className="font-display text-2xl text-basalt">State of the build</h2>
-        <dl className="grid gap-6 sm:grid-cols-3">
+        <dl className="grid gap-6 sm:grid-cols-2">
           {STATUS.map(({ label, detail, refs }) => (
             <div key={label}>
               <dt className="font-mono text-[11px] tracking-[0.14em] text-ink uppercase">

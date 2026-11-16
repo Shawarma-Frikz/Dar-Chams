@@ -85,33 +85,32 @@ The off-grid scenario keeps a tariff block with `null` values for schema complet
 
 ## Validation
 
-Two layers, because they catch different mistakes.
+Two passes, because they catch different mistakes. Both live in `packages/engine/src/config/` and run through one validator, so the application at startup, `scripts/validate-scenarios.mjs` and `scripts/check-config.mjs` cannot disagree about what a valid scenario is.
 
-**1 · Schema.** `scenario.schema.json` enforces structure: required keys, allowed enums, numeric ranges, `null` handling, per-profile field rules, off-grid zero limits, tracker axes when enabled, and tariff verification pairing. It rejects unknown keys, so a typo surfaces as an error instead of a silently ignored setting.
+**1 · Schema.** `scenario.schema.json` enforces structure: required keys, allowed enums, numeric ranges, `null` handling, per-profile field rules, off-grid zero limits, tracker axes when enabled, and tariff verification pairing. It rejects unknown keys, so a typo surfaces as an error instead of a silently ignored setting, and the error names the closest valid key (`tilt` → `tilt_deg`). Every numeric property must carry its unit in its name; `auditSchemaUnits` walks the contract and fails `npm run check` if one does not.
 
-**2 · Relational invariants.** JSON Schema cannot express these; `scripts/validate-scenarios.mjs` checks them:
+**2 · Relational invariants.** JSON Schema cannot express these; `checkScenarioInvariants` runs after the schema passes and reports the same issue shape, with an expected value and a fix:
 
 | Invariant | Why it matters |
 | --- | --- |
 | `min_soc < initial_soc < max_soc` | A run cannot start outside the usable window |
-| Timestep ∈ {5, 15, 30, 60} min and horizon divides cleanly | Step arithmetic and the 96-steps-per-day guarantee |
-| `mode: off_grid` ⇒ both grid limits are 0 | No accidental grid backup in an autonomy experiment |
-| `tariff.verified: true` ⇒ no `null` price | No half-verified tariff producing partial economics |
 | Unique room and appliance `id`s | Events and 3D bindings need unambiguous targets |
 | Every `appliance.room` exists in `household.rooms` | No orphan loads |
-| Profile block matches `profile` | No contradictory or ignored configuration |
-| `flexible_window` ⇒ `controllable: true` | A flexible load must be movable |
-| `policies` reserves and hysteresis in range | Threshold logic stays definable |
-| `weather.fallback_order` has no duplicates | Deterministic fallback sequence |
+| `flexibility.earliest` → `latest` is long enough for `duration_minutes` | A task that cannot finish inside its window is unschedulable, not flexible |
+| Tariff bands are ordered, and only the last one may be open-ended | An unordered band table makes the price ambiguous |
 | File name equals `id` | The manifest hash and the file you edited stay tied together |
 
-Run it from the repository root:
+Timestep, horizon arithmetic, off-grid limits, profile/block matching and tariff verification pairing are schema rules and are rejected in the first pass.
+
+Every failure is a `ConfigIssue` — layer, dotted path, stable code, message, received value, expected value and a hint — collected and rendered together, never a first-error abort. A scenario that fails is never silently repaired: there is no fallback to the default scenario and no clamping at load time (clamping rules arrive with the engine in phase 02.7).
+
+Run the same validator the app starts with:
 
 ```text
 node scripts/validate-scenarios.mjs
 ```
 
-It prints the validated files and exits non-zero on the first failing scenario. The script is dependency-free on purpose: it runs before the toolchain exists and keeps working if the toolchain changes. In phase 01.4 the schema moves into the app's runtime validator (Ajv) and the invariant checks become unit tests, so a bad scenario fails at load time as well as in CI.
+It imports the engine validator and exits non-zero on the first failing scenario. The app resolves the default scenario at module load, so a bad file also fails `npm run dev` and `npm run build` with the same numbered message. See [configuration](../docs/configuration.md) for the four layers and what each failure class is allowed to do.
 
 ## Adding a scenario
 
@@ -119,5 +118,5 @@ It prints the validated files and exits non-zero on the first failing scenario. 
 2. Change `id` to a new versioned slug and rename the file to match.
 3. Update `name`, `description` and `provenance.notes` to say what is varied and what is assumed.
 4. Change one variable group if the file is meant to be a comparison; say so explicitly if it is not.
-5. Run `node scripts/validate-scenarios.mjs`.
+5. Run `npm run check`, or `node scripts/validate-scenarios.mjs` alone.
 6. Reference the file in the report only after it has produced a stored run manifest.

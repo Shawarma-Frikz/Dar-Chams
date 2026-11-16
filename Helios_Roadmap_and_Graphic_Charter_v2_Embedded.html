@@ -191,8 +191,8 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.4</td>
-          <td><strong>Create configuration layers</strong><p>Separate defaults, scenario configuration, user settings, and runtime state. Validate configuration at startup with readable errors.</p></td>
-          <td><span class="done-label">DONE WHEN</span><p>Invalid capacity, negative power, impossible SOC, or missing units fail early with actionable messages.</p></td>
+          <td><strong>Create configuration layers</strong><p>Separate defaults, scenario configuration, user settings, and runtime state. Validate configuration at startup with readable errors. Defaults live in <code>src/lib/config/defaults.ts</code> and fill only layers allowed to be empty; the scenario is complete and validated against <code>scenarios/scenario.schema.json</code> by an Ajv validator in <code>packages/engine/src/config</code>; user settings hold presentation only and recover from a bad stored value; runtime state is derived and never an input. Failures are <code>ConfigIssue</code> records printed as numbered blocks with layer, path, value, expected value and a fix. The same validator runs at startup, in <code>scripts/validate-scenarios.mjs</code> and in <code>scripts/check-config.mjs</code>, and a unit audit rejects any numeric field whose name omits its unit (FR-SIM-01, FR-SIM-10, NFR-06, DEC-033).</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Invalid capacity, negative power, impossible SOC, or missing units fail early with actionable messages. <code>scripts/check-config.mjs</code> injects all four classes, requires a path, a value and a fix for each, and exits non-zero if any is accepted (FR-SIM-10).</p></td>
         </tr>
 
         <tr>

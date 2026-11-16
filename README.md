@@ -11,7 +11,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 - **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
 - **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
 - **Phases 01–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
-- **Phase 01 — toolchain and scaffold: in progress.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032).
+- **Phase 01 — toolchain and scaffold: in progress.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033).
 - No simulation code yet, and therefore no metric: the shell names what each route will contain and displays no value until its source exists (NFR-07). The engine's first model arrives in phase 02.
 
 ## What this is
@@ -37,6 +37,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 | Application | Next.js 16 App Router + React 19 + TypeScript 5.9 (strict) |
 | Styling | Tailwind CSS 4, with the graphic-charter palette as `@theme` tokens; shadcn/ui used selectively |
 | Simulation engine | TypeScript, headless-capable, runs in a Web Worker in the browser |
+| Configuration | JSON Schema 2020-12 validated by Ajv 8.20.0 inside the engine; defaults, scenario, settings and runtime state kept as separate layers |
 | 3D twin | Three.js via React Three Fiber + Drei; 2D map as the authoritative fallback |
 | Charts | Recharts, fed from stored run records |
 | Solar position | SunCalc (or a validated equivalent) |
@@ -57,7 +58,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 | Node | 26.2.0 (Active LTS), `engines` `>=26.0.0 <27`, pinned in [`.nvmrc`](.nvmrc) |
 | npm | 11.15.0 exactly, declared in `packageManager`; `.npmrc` enforces `engine-strict` and exact versions |
 | Install | `npm ci` from the committed lockfile; a wrong Node line is refused with `EBADENGINE` |
-| Checks | `npm run check` runs the runtime check and the five document checks; `npm run verify` adds type-check, lint and format check |
+| Checks | `npm run check` runs the runtime check and the six document and configuration checks; `npm run verify` adds type-check, lint and format check |
 | Commands | `npm run dev` (port 3000), `npm run build` (static export in `out/`), `npm run preview` (server for that export, port 4173) |
 | Browsers | Chrome/Edge latest two (gated); Firefox, Safari 17.4+ (supported); no WebGL2 falls back to the 2D map |
 | Hardware | 4 cores, 8 GB RAM, 1920×1080, WebGL2; minimum 2 cores, 4 GB |
@@ -71,6 +72,7 @@ Full baseline, performance budgets and failure messages: [`docs/runtime-support.
 ├── docs/                       Phase 00 deliverables and the report seed
 │   ├── 00-scope-brief.md
 │   ├── acceptance-checklist.md
+│   ├── configuration.md        The four layers, startup validation, what the check proves
 │   ├── conventions.md          Licence, branches, commits, what enters Git
 │   ├── data-provenance.md      Simulation truth, labelling rules, generated register
 │   ├── decision-log.md
@@ -83,7 +85,9 @@ Full baseline, performance budgets and failure messages: [`docs/runtime-support.
 ├── packages/
 │   └── engine/                 @helios/engine — the simulation boundary, no React or DOM
 │       ├── package.json
-│       └── src/index.ts
+│       └── src/
+│           ├── config/         Validator, invariants, units audit, issue model
+│           └── index.ts
 ├── scenarios/
 │   ├── README.md               Scenario contract, conventions, tariff policy
 │   ├── scenario.schema.json    JSON Schema for every scenario
@@ -92,16 +96,19 @@ Full baseline, performance budgets and failure messages: [`docs/runtime-support.
 │   └── tunis-dust-v1.json      Heavy-soiling variant
 ├── scripts/
 │   ├── check-acceptance.mjs    Signed checklist: targets, references, digest
+│   ├── check-config.mjs        The four failure classes, units, layer boundaries
 │   ├── check-decisions.mjs     Decision log: index/body sync, topics, references
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   ├── check-runtime.mjs       Node/npm pins, workspaces, overrides, lockfile
 │   ├── serve-static.mjs        Serves the static export for `npm run preview`
-│   └── validate-scenarios.mjs  Scenario invariant checks
+│   └── validate-scenarios.mjs  Runs the engine validator over every scenario
 ├── src/
 │   ├── app/                    Layout, six routes, palette tokens, icon, 404
 │   ├── components/             Header, navigation, page intro, planned items, references
-│   └── lib/routes.ts           One source for the navigation and the overview index
+│   └── lib/
+│       ├── config/             Defaults, settings, resolution, runtime state, startup
+│       └── routes.ts           One source for the navigation and the overview index
 ├── .gitattributes              LF normalisation, binary declarations
 ├── .gitignore                  Regenerable output out, evidence in
 ├── .editorconfig               UTF-8, LF, indentation
@@ -122,7 +129,7 @@ Full baseline, performance budgets and failure messages: [`docs/runtime-support.
 └── README.md
 ```
 
-Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. `npm run verify` runs all six checks plus type-check, lint and format check, and is what CI runs from phase 01.5. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
+Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the same engine validator the application uses at startup. `node scripts/check-config.mjs` proves the four failure classes, the unit audit and the layer boundaries, and is part of `npm run check`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. `npm run verify` runs all seven checks plus type-check, lint and format check, and is what CI runs from phase 01.5. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
 
 ## Documentation
 
@@ -135,6 +142,7 @@ Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric regist
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |
 | [Report · product statement](docs/report/01-product-statement.md) | Canonical paragraph for the final report |
 | [Scenario conventions](scenarios/README.md) | Schema contract, field groups, units, seeds, variants, tariff policy |
+| [Configuration](docs/configuration.md) | The four layers, precedence without merging, startup failure, units, what the check proves |
 | [Repository conventions](docs/conventions.md) | MIT licence, branch and commit rules, what enters Git, pre-commit checks |
 | [Runtime and support](docs/runtime-support.md) | Pinned Node/npm, exact-version and lockfile policy, browser tiers, hardware expectations |
 

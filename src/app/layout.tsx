@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { DM_Mono, DM_Sans, Literata } from 'next/font/google';
-import { ENGINE_NAME, ENGINE_VERSION } from '@helios/engine';
 import { SiteHeader } from '@/components/site-header';
+import { CONFIGURATION } from '@/lib/config/startup';
 import './globals.css';
 
 const literata = Literata({ subsets: ['latin'], variable: '--font-literata', display: 'swap' });
@@ -30,7 +30,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${literata.variable} ${dmSans.variable} ${dmMono.variable}`}>
+    <html
+      lang="en"
+      data-motion={CONFIGURATION.presentation.motion}
+      className={`${literata.variable} ${dmSans.variable} ${dmMono.variable}`}
+    >
       <body>
         <a
           href="#main"
@@ -52,7 +56,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </p>
             </div>
             <p className="font-mono text-[11px] tracking-[0.12em] uppercase">
-              Engine · {ENGINE_NAME} {ENGINE_VERSION}
+              Engine · {CONFIGURATION.engine.name} {CONFIGURATION.engine.version}
             </p>
           </div>
         </footer>

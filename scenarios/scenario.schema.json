@@ -3,7 +3,7 @@
   "$id": "https://github.com/Shawarma-Frikz/Helios/scenarios/scenario.schema.json",
   "title": "Helios scenario",
   "description": "Complete, self-contained description of one virtual installation. Every value that can change a run belongs in a scenario file, never in engine code.",
-  "$comment": "Relational invariants that JSON Schema cannot express (min_soc < initial_soc < max_soc, unique appliance IDs, room references, schedule validity) are enforced by scripts/validate-scenarios.mjs and will be moved into the runtime validator in phase 01.4.",
+  "$comment": "Relational invariants that JSON Schema cannot express (min_soc < initial_soc < max_soc, unique appliance IDs, room references, flexibility duration, tariff band order) are enforced by checkScenarioInvariants in packages/engine/src/config/invariants.ts, immediately after this schema validates. Both passes run at application startup, in scripts/validate-scenarios.mjs and in scripts/check-config.mjs. Unknown keys are rejected and reported with the nearest valid name; every numeric property must name its unit.",
   "type": "object",
   "additionalProperties": false,
   "required": [

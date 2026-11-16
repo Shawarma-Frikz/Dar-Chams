@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.9.0 |
+| Version | 1.10.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.6), 02.1, 02.2, 02.3, 02.4; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests |
+| Phase | 01 (tasks 01.2–01.6), 02.1–02.5; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests; v1.10.0 records the deterministic clock and 74 tests |
 | Decided by | DEC-031 (supersedes the Node version pin in DEC-018), version numbers superseded by DEC-036; the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
@@ -129,3 +129,6 @@ The `npm install` row is deliberate: the tool cannot distinguish an intentional 
 
 
 Re-run after task 02.4: the public engine entry imports and advances in a headless Node test with no `window` or `document`, and typed inert implementations satisfy the PV, inverter, battery, appliance, grid, weather, scheduler and clock ports. All twelve register checks, strict type-check, lint, formatting and 67 tests pass. In this Windows environment, Turbopack panicked while starting its PostCSS helper during the default production build; `npm run build -- --webpack` then compiled and generated all seven routes successfully. No UI framework was added to the engine dependency graph.
+
+
+Re-run after task 02.5: scripts/check-config.mjs rejects an unsafe scenario seed, the public clock tests cover lifecycle state changes and completion, and the versioned SplitMix64 test vector is frozen. Across the same grid, seed 123456 produces identical ordered step timestamps and seeded event values at 1×, 60× and 1000×; reset rewinds the stream. All 12 register checks, type-check, lint, format check and 74 tests pass. The production app build is also confirmed with npm run build -- --webpack, which compiles and prerenders all seven routes. The default Turbopack build panicked while starting its PostCSS helper in this Windows execution environment.

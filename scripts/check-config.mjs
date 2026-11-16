@@ -93,6 +93,15 @@ const cases = [
     contains: ['at least 0', 'non-negative'],
   },
   {
+    label: 'unsafe random seed',
+    check: broken((document) => {
+      document.simulation.seed = Number.MAX_SAFE_INTEGER + 1;
+    }),
+    path: 'simulation.seed',
+    code: 'relation.seed-range',
+    contains: ['safe integer', 'Number.MAX_SAFE_INTEGER'],
+  },
+  {
     label: 'impossible SOC (out of range)',
     check: broken((document) => {
       document.battery.initial_soc = 1.4;

@@ -161,10 +161,11 @@ export interface SimulationClockState {
   readonly stepIndex: number;
   readonly currentStep: Step | null;
   readonly speedMultiplier: number;
+  readonly maximumSpeedMultiplier: number;
   readonly seed: number;
 }
 
-/** 02.4 defines the clock boundary; lifecycle and replay behavior are 02.5. */
+/** Deterministic fixed-step lifecycle and seeded random stream for one run. */
 export interface SimulationClock {
   read(): SimulationClockState;
   start(): void;
@@ -173,4 +174,6 @@ export interface SimulationClock {
   reset(seed: number): void;
   setSpeedMultiplier(multiplier: number): void;
   stepForward(): SimulationClockState;
+  /** Returns the next seeded value in [0, 1); reset(seed) rewinds the stream. */
+  random(): number;
 }

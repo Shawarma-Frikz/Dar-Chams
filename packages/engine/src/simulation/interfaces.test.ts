@@ -94,6 +94,7 @@ const clock = {
     stepIndex: 0,
     currentStep: null,
     speedMultiplier: 1,
+    maximumSpeedMultiplier: 1000,
     seed: 1,
   }),
   start: () => undefined,
@@ -106,8 +107,10 @@ const clock = {
     stepIndex: 0,
     currentStep: null,
     speedMultiplier: 1,
+    maximumSpeedMultiplier: 1000,
     seed: 1,
   }),
+  random: () => 0,
 } satisfies SimulationClock;
 
 describe('phase 02.4 component boundaries', () => {

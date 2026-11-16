@@ -125,6 +125,8 @@ export type {
   WeatherQuery,
   WeatherSource,
 } from './simulation/interfaces.ts';
+export { createSimulationClock } from './simulation/clock.ts';
+export type { SimulationClockOptions } from './simulation/clock.ts';
 
 export type {
   Appliance,

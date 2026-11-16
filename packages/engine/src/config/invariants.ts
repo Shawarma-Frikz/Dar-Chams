@@ -218,6 +218,17 @@ function checkTariffBands(scenario: Scenario, issues: ConfigIssue[]): void {
 /** Returns every relational problem; an empty array means the document is coherent. */
 export function checkScenarioInvariants(scenario: Scenario): ConfigIssue[] {
   const issues: ConfigIssue[] = [];
+  if (!Number.isSafeInteger(scenario.simulation.seed) || scenario.simulation.seed < 0) {
+    issues.push({
+      layer: 'scenario',
+      path: 'simulation.seed',
+      code: 'relation.seed-range',
+      message: 'must be a non-negative safe integer so distinct seeds remain distinct at runtime',
+      received: describeValue(scenario.simulation.seed),
+      expected: 'an integer from 0 through 9007199254740991',
+      hint: 'choose a non-negative integer no greater than Number.MAX_SAFE_INTEGER',
+    });
+  }
   checkSiteTime(scenario, issues);
   checkBatteryWindow(scenario, issues);
   checkHousehold(scenario, issues);

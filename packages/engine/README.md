@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements clock behavior |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043 |
 
 ## Purpose
 
@@ -22,8 +22,10 @@ change behind a named conversion. Phase 02.3 adds the energy ledger: the nine ma
 must satisfy, with the direction in the term name and an absolute tolerance on the residual. Phase
 02.4 adds pure, typed ports for weather, PV, inverter, battery, appliance, grid, scheduler and clock;
 these specify the dependency boundary without claiming a physical model exists. The scheduler sees
-only an explicit observation, never a UI store or the full scenario. It is not a UI or persistence
-layer.
+only an explicit observation, never a UI store or the full scenario. Task 02.5 implements the
+fixed-step clock lifecycle and a versioned SplitMix64 stream seeded by the scenario; speed changes
+playback pacing only and replay resets both the step cursor and random stream. It is not a UI or
+persistence layer.
 
 ## Inputs
 
@@ -68,7 +70,10 @@ layer.
 - The **component ports**: each model interface has one typed input and output, uses canonical unit
   types, receives only the configuration it needs and contains no UI or framework type. The weather
   source is an explicit async data boundary; the scheduler receives a limited observation; the clock
-  lifecycle contract is declared now and implemented in 02.5.
+  lifecycle contract is implemented in 02.5.
+- The **simulation clock**: `createSimulationClock` creates the fixed step grid from a validated
+  scenario, implements explicit lifecycle transitions, advances one step at a time, validates the
+  configured playback rate and maximum, and provides a resettable deterministic random stream.
 
 The complete list, with signatures, is the first table in [`docs/api.md`](../../docs/api.md).
 
@@ -83,9 +88,9 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 57 engine tests and the application's ten, 67 in total:
+`npm run test` runs 63 engine tests and the application's ten, 73 in total:
 
-- [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 14 tests — the shipped scenarios
+- [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 15 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
   site timezone and a start offset that contradicts that zone are each rejected with the right path,
   code and fix; issues collect instead of aborting; the issue report renders; the unit audit flags a
@@ -110,10 +115,13 @@ node scripts/validate-scenarios.mjs
 - [`src/simulation/interfaces.test.ts`](src/simulation/interfaces.test.ts), 2 tests — the public
   engine entry runs in plain Node with no browser globals, and typed ports exist for all eight
   component groups.
+- [`src/simulation/clock.test.ts`](src/simulation/clock.test.ts), 6 tests — lifecycle transitions,
+  invalid commands and seeds, fixed-step completion, playback-rate bounds, a frozen SplitMix64
+  sequence, seed reset, and identical ordered replay at 1×, 60× and maximum speed.
 - [`src/lib/config/layers.test.ts`](../../src/lib/config/layers.test.ts), 10 application tests — the
   four layers stay separate and resolution fails closed.
 
-`node scripts/check-config.mjs` proves ten failure classes outside Vitest, audits every numeric
+`node scripts/check-config.mjs` proves eleven failure classes outside Vitest, audits every numeric
 property in the contract, and asserts that no layer is silently merged. `node scripts/check-time.mjs`
 is the acceptance proof for 02.1: it checks the shipped runs, a full day at each timestep, four DST
 days, the two transition directions, instant storage and the unit scales, then feeds five broken
@@ -127,8 +135,9 @@ feeds ten broken ledgers back through the public API. `node scripts/validate-sce
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
-**Not covered yet.** There is no physics and no running simulation clock; 02.3 states and proves the
-energy ledger, 02.4 defines the component contracts, and later phases implement the models. Solar elevation and sunrise/sunset — the
+**Not covered yet.** There is no physics yet; 02.3 states and proves the energy ledger, 02.4 defines
+the component contracts and 02.5 implements the deterministic clock. Later phases implement the
+models. Solar elevation and sunrise/sunset — the
 weather model's daylight flag (MET-11) — belong to 03.2, not to this day boundary. The time base and
 the ledger are tested; the simulation they will carry is not.
 
@@ -139,11 +148,12 @@ the ledger are tested; the simulation they will carry is not.
 | `src/index.ts` | The public surface; every export is documented in the API notes |
 | `src/config/scenario.ts` | The typed view of the contract |
 | `src/simulation/interfaces.ts` | UI-free component inputs, outputs and ports for phase 02.4 |
+| `src/simulation/clock.ts` | Fixed-step clock lifecycle, playback speed and seeded PRNG for phase 02.5 |
 | `src/config/schema.ts` | Ajv 8.20.0, error-to-issue translation and unknown-key suggestions |
 | `src/config/invariants.ts` | The relational rules JSON Schema cannot express |
 | `src/config/units.ts` | Unit suffixes, unitless quantities and the schema audit |
 | `src/config/issues.ts` | `ConfigIssue`, `ConfigError`, the formatter and pointer reader |
-| `src/config/scenario.test.ts` | Fourteen configuration tests over the shipped scenarios |
+| `src/config/scenario.test.ts` | Fifteen configuration tests over the shipped scenarios |
 | `src/time/instant.ts` | `Instant`, strict ISO parsing, formatting and whole-minute arithmetic |
 | `src/time/zone.ts` | IANA offsets, wall-clock resolution, site-date and site-day bounds |
 | `src/time/timeline.ts` | The uniform step grid and its split at local midnight |

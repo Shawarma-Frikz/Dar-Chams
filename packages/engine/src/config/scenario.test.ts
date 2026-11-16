@@ -80,6 +80,14 @@ describe('the scenario contract', () => {
     expect(issue?.hint).toContain('non-negative');
   });
 
+  it('rejects seeds that JavaScript cannot represent exactly', () => {
+    const document = fixture() as TestDocument & { simulation: { seed: number } };
+    document.simulation.seed = Number.MAX_SAFE_INTEGER + 1;
+    const issue = issueAt(document, 'simulation.seed');
+    expect(issue?.code).toBe('relation.seed-range');
+    expect(issue?.hint).toContain('Number.MAX_SAFE_INTEGER');
+  });
+
   it('rejects an SOC state of charge outside [0, 1] as a fraction', () => {
     const document = fixture();
     document.battery.initial_soc = 1.4;

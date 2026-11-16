@@ -4,7 +4,7 @@
 | --- | --- |
 | Version | 1.0.0 |
 | Date | 2026-11-16 |
-| Phase | 02; adoption crosswalk for the Dar Chams roadmap; task 02.4 interfaces complete |
+| Phase | 02; adoption crosswalk for the Dar Chams roadmap; tasks 02.4–02.5 complete |
 | Authority | [Dar Chams Roadmap](../Dar_Chams_Roadmap.html), [accepted engineering roadmap](../Dar_Chams_Roadmap_and_Graphic_Charter_v2_Embedded.html), [requirements](requirements.md), [acceptance checklist](acceptance-checklist.md) |
 | Decision | DEC-041, DEC-042 |
 
@@ -14,7 +14,7 @@ The Dar Chams roadmap adds useful specificity to the existing project: physical 
 
 - The deterministic, offline-capable TypeScript engine remains the source of truth. The root package and repository, `@dar-chams/engine`, static export, IndexedDB direction, scenario schema, provenance register, append-only decision log, signed acceptance checklist and machine checks remain in place.
 - The app remains simulation-first. No real plant is monitored or controlled, weather services remain optional, and sensor or Wokwi observations never become measurements of PV or battery state by implication.
-- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01 or 02.1–02.4. Task 02.4 establishes UI-free typed component ports and a passing headless engine test; it does not implement physics or the 02.5 clock lifecycle.
+- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01 or 02.1–02.5. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream. Neither task implements physical models.
 
 ## Adopt into the existing gates
 

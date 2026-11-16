@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.5.0 |
+| Version | 1.6.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041, DEC-042 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041, DEC-042, DEC-043 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -150,11 +150,13 @@ with the engine and not only with the application.
 | `SchedulerInput` | type | Scheduler policy, observed state and appliance configurations |
 | `SchedulerObservation` | type | Step, SOC, available PV, forecast load, grid availability and import price; no Scenario or UI store |
 | `SchedulerOutput` | type | Appliance dispatch and separate requested battery charge/discharge power |
-| `SimulationClock` | type | Clock read and lifecycle command contract; behavior is implemented in 02.5 |
-| `SimulationClockState` | type | Status, step index, current step, speed multiplier and replay seed |
+| `SimulationClock` | type | Read lifecycle state, start/pause/resume/reset, advance one fixed step, set playback speed and draw seeded random values |
+| `SimulationClockState` | type | Status, step index, current step, selected and maximum playback speed and replay seed |
 | `WeatherFrame` | type | Time, ambient temperature, irradiance, wind speed and provenance |
 | `WeatherQuery` | type | Site and requested step grid |
 | `WeatherSource` | type | `read(query): Promise<WeatherFrame[]>`; external I/O boundary |
+| `createSimulationClock` | function | Builds an idle fixed-step clock from a validated scenario; playback speed never changes the step grid |
+| `SimulationClockOptions` | type | Optional maximum playback speed, default 1000× |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
@@ -175,9 +177,10 @@ mixed calculation must be refused.
 Phase 02.4 adds framework-free component ports. Each model receives only its required configuration,
 the current step and typed domain inputs, and returns W, Wh, temperature or SOC using canonical
 types. Weather I/O is isolated behind `WeatherSource`; the scheduler sees `SchedulerObservation`
-instead of the full scenario or UI state. The clock surface is declared here, while its lifecycle and
-deterministic replay implementation belong to 02.5. These interfaces do not claim that any physical
-model exists yet.
+instead of the full scenario or UI state. Task 02.5 implements `createSimulationClock`: it advances
+only on explicit step calls and provides a SplitMix64 random stream, versioned by DEC-043; resetting
+to a seed rewinds it. Start/pause/resume/reset and playback-rate changes do not read wall time. These
+interfaces do not claim that any physical model exists yet.
 
 The ledger is the conservation law every simulated step is settled against (DEC-039). `pv`,
 `gridImport` and `batteryDischarge` are supply; `load`, `batteryCharge`, `gridExport`,

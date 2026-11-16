@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.2.0 |
-| Date | 2026-11-15 |
-| Phase | 00 (task 00.5) |
+| Version | 0.3.0 |
+| Date | 2026-11-16 |
+| Phase | 00 (task 00.5); embedded metrics added by DEC-027 |
 | Register | [`metric-register.json`](metric-register.json) — every value the interface may display |
 | Checked by | `scripts/check-provenance.mjs` (CI from phase 01.5) |
-| Related | [Requirements](requirements.md) NFR-07 · [Checklist](acceptance-checklist.md) AC-20, AC-28 · [Decision log](decision-log.md) DEC-019, DEC-024 |
+| Related | [Requirements](requirements.md) NFR-07 · [Checklist](acceptance-checklist.md) AC-20, AC-28, AC-32 · [Decision log](decision-log.md) DEC-019, DEC-024, DEC-027 |
 
-**No number in Helios v1 is a measurement.** The first release models a virtual installation; every value it shows is simulated, forecast, external, inferred, derived or configured. This document defines those categories, the register that enumerates every displayed metric, the rules that label it, and the claims the project may and may not make with it.
+**No value describing the installation in Helios v1 is a measurement.** The first release models a virtual installation; every generation, consumption and state figure it shows is simulated, forecast, external, inferred, derived or configured. The only class M values are three bench-node channels behind a hardware gate, and they describe the room the node sits in, never the plant. This document defines the categories, the register that enumerates every displayed metric, the rules that label it, and the claims the project may and may not make with it.
 
 ---
 
@@ -38,21 +38,22 @@ The register is machine-readable because a labelling rule that lives only in pro
 
 | Code | Shown as | Definition | It is **not** | In v1 |
 | --- | --- | --- | --- | --- |
-| **M** | Measured | Read from a physical sensor on a real installation, with device identity and acquisition time. | A model output, however accurate. | None — requires hardware |
+| **M** | Measured | Read from a physical sensor on a real installation, with device identity and acquisition time. | A model output, however accurate. | Bench node only (3 channels, behind `hardware.node`) |
 | **X** | External | Supplied by a third party's product: forecast API, reanalysis archive, reference dataset, tariff document. | Measured by us; produced by our model. | Weather inputs (6 metrics) |
 | **S** | Simulated | Produced by a Helios model of the virtual installation: astronomy, weather generator, PV physics, battery, loads, grid, controller output. Ground truth *inside the simulation*. | Evidence about the real world. | 25 metrics |
 | **F** | Forecast | A prediction for an instant after its issue time; carries issue time and horizon. | An observed or simulated value for that instant. | 3 metrics |
-| **E** | Inferred | The twin's belief about a state it cannot observe directly, or a controller's expectation. | Ground truth; a probability. | 4 metrics |
+| **E** | Inferred | The twin's belief about a state it cannot observe directly, or a controller's expectation. | Ground truth; a probability. | 7 metrics |
 | **D** | Derived | Computed from other registered metrics for analysis or presentation: totals, ratios, loss attribution, costs, diagnostics, comparisons, forecast errors. Names its inputs. | A new model output. | 33 metrics |
-| **C** | Configured | Declared in the scenario: limits, thresholds, setpoints, seed, speed, installation geometry. An input to the run, not a result. | A value the model produced. | 17 metrics |
+| **C** | Configured | Declared in the scenario: limits, thresholds, setpoints, seed, speed, installation geometry. An input to the run, not a result. | A value the model produced. | 20 metrics |
+| **M / S** | Measured or simulated | The same bench channel, from two sources: the Wokwi simulator supplies S, the physical node supplies M inside its declared validity range. | Plant measurement; a calibrated irradiance sensor. | 3 metrics |
 
-Weather metrics carry `X / S` because the same field is external when a provider supplies it and synthetic when the fallback does; the run manifest records which one was active. No other metric has more than one class.
+Weather metrics carry `X / S` because the same field is external when a provider supplies it and synthetic when the fallback does; the run manifest records which one was active. The three bench-node channels carry `M / S` for the same reason, resolved by the run's `source_mode`: Wokwi values stay simulated, and only the physical node produces class M. No other metric has more than one class.
 
 ### 2.2 Choosing a class
 
 Apply these questions in order. The first match wins.
 
-1. Is it read from a sensor on a real installation? → **M** (impossible in v1).
+1. Is it read from a sensor on a real installation? → **M**, and only from the physical bench node inside a `hardware.*` gate (impossible for any plant channel in v1).
 2. Was it supplied by an external product, without passing through a Helios model? → **X**.
 3. Does it predict an instant after its issue time? → **F**.
 4. Is it a belief about state that is not directly observed, or a controller's expectation? → **E**.
@@ -94,7 +95,7 @@ Rule of thumb: if deleting the dashboard would still leave the number inside the
 | --- | --- | --- |
 | Estimated energy | **S** (and **D** for totals over it) | Displayed as "simulated"; the report may say "estimated by simulation", never "measured". |
 | Forecast values | **F** | Always with issue time and horizon. |
-| Measured values (future hardware) | **M** | Not present in v1; activated only through the hardware adapter (§8). |
+| Measured values | **M** | Only the bench-node channels behind `hardware.node` (DEC-027); plant channels stay impossible. |
 | Derived values | **D** | With inputs listed; no stronger claim than its inputs. |
 
 Three extra classes are required because the roadmap's four terms do not cover them: **X** (weather is neither measured by us nor simulated by us), **E** (the twin's belief about unobserved state is not ground truth) and **C** (a configured limit is not a result). Keeping them separate is what makes the four main labels honest.
@@ -257,7 +258,7 @@ export interface Reading {
 | Forecast service | F | Requires issue time and horizon at construction. |
 | Detector and decision record | E | Belief about unobserved state; caveat attached. |
 | Selectors, aggregates, comparisons, report tables | D | Must list inputs; cannot be more available than them. |
-| Future hardware adapter | M | Only after §8. |
+| Embedded adapter (bench node) | M, or S from Wokwi | Only behind a `hardware.*` gate, only the three bench channels (FR-EMB-06). |
 
 ### 4.3 Fail-closed rules
 
@@ -266,6 +267,7 @@ export interface Reading {
 - Missing unit → rejected at construction, not defaulted.
 - Class F without issue time or horizon → rejected at construction.
 - Class D without inputs → rejected at construction.
+- Class M without a `hardware.*` availability gate → rejected by `check-provenance.mjs` and by the contract test.
 - A metric that is not in the register → rejected by the contract test in phase 09.
 
 ### 4.4 Enforcement map
@@ -290,17 +292,18 @@ The register is the complete list of values the interface may display. It is edi
 
 | Register | Count |
 | --- | --- |
-| Registered metrics | 88 |
-| Always available | 78 |
-| Conditional | 6 |
+| Registered metrics | 97 |
+| Always available | 83 |
+| Conditional | 10 |
 | Disabled by a data gate | 4 |
 | Derived (D) | 33 |
 | Simulated (S) | 25 |
-| Configured (C) | 17 |
+| Configured (C) | 20 |
 | Weather (X / S) | 6 |
-| Inferred (E) | 4 |
+| Inferred (E) | 7 |
 | Forecast (F) | 3 |
 | Measured (M) | 0 |
+| Measured or simulated (M / S) | 3 |
 
 <!-- metric-register:start -->
 _Generated from [`metric-register.json`](metric-register.json) by `scripts/check-provenance.mjs`. Do not edit these tables by hand; edit the JSON and run `node scripts/check-provenance.mjs --write`._
@@ -447,6 +450,20 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-86 | Battery maximum discharge power | kW | C | Discharge limit read from the scenario (`battery.max_discharge_kw`). | — | Always | kW · 2 dp |
 | MET-87 | Inverter efficiency | % | C | Conversion efficiency read from the scenario (`inverter.efficiency`). | — | Always | % · 1 dp |
 | MET-88 | Inverter standby power | W | C | Standby consumption read from the scenario (`inverter.standby_w`). | — | Always | W · 0 dp |
+
+#### Embedded node and telemetry
+
+| ID | Metric | Unit | Class | Source / formula | Inputs | Availability | Display |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| MET-89 | Node connection state | state | E | Inferred by the adapter from the last receipt time for the configured device: connected, stale or offline. | — | Always | state |
+| MET-90 | Telemetry staleness | h | E | Adapter receipt time compared with the current simulation instant; computed locally, never received from the node. | — | Always | min · 0 dp |
+| MET-91 | Telemetry source mode | state | C | Manifest field `source_mode` of the active run: scenario, wokwi, physical or replay. | — | Always | state |
+| MET-92 | Telemetry sequence gaps | count | E | Adapter detects a discontinuity in the node's `sequence` counter and counts the missing positions. | — | Only when `hardware.node` | count · 0 dp |
+| MET-93 | Bench node ambient temperature | °C | M / S | DHT22 channel; simulated class S from the Wokwi node, measured class M from the physical bench node inside its declared validity range. | — | Only when `hardware.node` | °C · 1 dp |
+| MET-94 | Bench node relative humidity | % | M / S | DHT22 channel; simulated class S from the Wokwi node, measured class M from the physical bench node inside its declared validity range. | — | Only when `hardware.node` | % · 0 dp |
+| MET-95 | Light-level proxy | unitless | M / S | Uncalibrated light-dependent resistor on an ADC1 pin; a relative level from 0 to full scale, simulated class S in Wokwi and measured class M on the bench. | — | Only when `hardware.node` | unitless · 0 dp |
+| MET-96 | Firmware version | state | C | Version string compiled into the firmware and repeated in every telemetry document. | — | Always | state |
+| MET-97 | Telemetry schema version | state | C | `schema_version` field of the telemetry document, validated against the committed schema. | — | Always | state |
 <!-- metric-register:end -->
 
 ---
@@ -462,6 +479,7 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | STEG residential tariff | Import cost, export compensation | X (when cited) | **Unverified** — prices are `null`, economics disabled |
 | National grid emission factor | Avoided CO₂ | X (when cited) | Not selected; the metric stays disabled |
 | Solar-position algorithm | Sun elevation, azimuth, daylight state | S | Checked against an independent reference within 0.5° |
+| Wokwi ESP32 simulator | Bench-node channel values in the Wokwi source mode | S | Electronics simulated from the committed circuit; parity with the physical bench is measured (AC-34), not assumed |
 
 ---
 
@@ -479,24 +497,27 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | "Battery health is predicted" | **Forbidden** | The fade proxy is disabled by default and is not a remaining-useful-life estimate (FR-BAT-06). |
 | "The demonstration works offline" | Allowed | Demonstrated with the network disabled (AC-19); the provenance label shows cached or synthetic data. |
 | "Helios controls a real installation" | **Forbidden** | No physical plant is monitored or actuated in v1 (CON-01, claim gate). |
+| "The bench node measures the installation" | **Forbidden** | It reads room temperature, humidity and a relative light level; the installation stays modelled (DEC-026). |
 
 The claim gate in the [acceptance checklist](acceptance-checklist.md) remains binding regardless of what the interface can render.
 
 ---
 
-## 8 · If hardware arrives: activating class M
+## 8 · The bench node: how class M is activated and bounded
 
-Class M is not a display toggle. Activating it requires all of the following, in order:
+Class M is not a display toggle. The register carries three bench-node channels as `M / S` behind the `hardware.node` gate (DEC-027), and activation requires all of the following, in order:
 
-1. An adapter that implements the observation interface with device identity, calibration, unit and acquisition timestamp (FR-SIM-08).
-2. A data-mode field recorded in the run manifest: simulated, cached, synthetic or measured.
-3. Register entries updated so the affected metric may be active as M; the document is regenerated and the checker passes.
+1. An adapter that implements the observation interface with device identity, calibration, unit and acquisition timestamp (FR-SIM-08, FR-EMB-04).
+2. A recorded source mode: Scenario, Wokwi, Physical or Replay, written into the run manifest (FR-EMB-05).
+3. Register entries that admit M for that metric under a `hardware.*` gate; the document is regenerated and the checker passes.
 4. A freshness rule: a stale reading degrades to E or S with a visible label, never silently.
 5. A missing reading is never written as zero; the metric is unavailable with a reason.
-6. Measured and simulated series are never merged into one unlabelled series.
-7. Hardware validation evidence recorded before any wording changes; the claim gate is updated by decision-log entry, not by editing a caption.
+6. A validity range per channel: a value outside it is flagged as bad quality, not shown as a reading.
+7. Measured and simulated series are never merged into one unlabelled series.
+8. The channel declares what it is calibrated against. An uncalibrated light-dependent resistor stays a relative light level and is never converted to W/m² irradiance (FR-EMB-06, AC-32).
+9. Hardware validation evidence recorded before any wording changes; the claim gate is updated by decision-log entry, not by editing a caption.
 
-Until then, any M badge in the build is a defect.
+Until the physical node is attached, the gate is closed, the Wokwi source resolves to S, and an M badge outside those three channels is a defect.
 
 ---
 
@@ -510,7 +531,7 @@ Until then, any M badge in the build is a defect.
 6. The comparative claim is valid **inside the simulation**, under the stated scenarios, seeds and assumptions — not as a field result.
 7. No economic claim is made; the tariff is unverified and the cost metrics are disabled.
 8. Injected faults are synthetic and labelled; detector quality is reported against them, not against field failures.
-9. Only physical instrumentation could supply class M values. That is the first task of any hardware phase, and it is outside this MVP.
+9. Only the bench node can supply class M values, and only for three room-level channels: ambient temperature, relative humidity and a relative light level. Nothing measures the array, the battery or the grid, and a room reading is not plant telemetry (DEC-026).
 
 ---
 
@@ -522,4 +543,4 @@ Until then, any M badge in the build is a defect.
 - Display precision and gate thresholds are fixed before results are seen and are not tuned afterwards (task 11.1).
 - The checker, the UI contract test and the bundle scan are cumulative: passing one does not excuse another.
 
-**Change history.** 0.1.0 defined six value classes and labelling rules. 0.2.0 adds class C for configured values, makes D inputs explicit, turns the metric list into a generated register and adds the machine check (DEC-024).
+**Change history.** 0.1.0 defined six value classes and labelling rules. 0.2.0 adds class C for configured values, makes D inputs explicit, turns the metric list into a generated register and adds the machine check (DEC-024). 0.3.0 registers the embedded node and telemetry group, admits class M for three bench channels behind `hardware.node`, adds the `M / S` combination and requires a `hardware.*` gate for any M metric (DEC-027).

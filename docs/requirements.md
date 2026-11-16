@@ -2,12 +2,13 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.2.0 |
-| Date | 2026-11-15 |
+| Version | 0.3.0 |
+| Date | 2026-11-16 |
 | Phase | 00 (task 00.4) |
 | Owner | Author (sole developer) |
 | Scope | Functional requirements, non-functional requirements, constraints, external dependencies |
 | Gate mapping | [Scope brief §6](00-scope-brief.md#6--mvp-boundary), [acceptance checklist](acceptance-checklist.md) |
+| Change | 0.3.0 adds the embedded sensing track: §10 with twelve FR-EMB rows, CON-14 and EX-09/EX-10 (DEC-026 – DEC-028) |
 
 A requirement is admitted only if it can be verified. Vague ambitions ("make it smart", "look modern") are not requirements. Each row names its priority, verification method, prerequisite and the phase where its evidence is produced.
 
@@ -34,7 +35,7 @@ A requirement is admitted only if it can be verified. Vague ambitions ("make it 
 | `I` | Inspection or review against code, schema or bundle | Dated review note stating what was inspected |
 | `D` | Demonstration of a user-visible flow | Scripted demo step and its capture |
 
-**Dependencies.** `Depends on` lists what must exist or be true before this requirement can be verified: other requirements, `SCN` (the scenario contract), or an `EX-nn` external dependency. `—` means no prerequisite. The column is the project's dependency graph; §12 lists the external services behind it.
+**Dependencies.** `Depends on` lists what must exist or be true before this requirement can be verified: other requirements, `SCN` (the scenario contract), or an `EX-nn` external dependency. `—` means no prerequisite. The column is the project's dependency graph; §13 lists the external services behind it.
 
 **Admission rules.**
 
@@ -164,7 +165,26 @@ A requirement is admitted only if it can be verified. Vague ambitions ("make it 
 | FR-TWN-04 | The scene environment must follow the simulation clock and weather; any decorative lighting must be labelled decorative. | M | I | FR-SIM-02, SCN | 08.8 |
 | FR-TWN-05 | Rendering must use on-demand frames, a capped pixel ratio, limited dynamic shadows and lazy loading; disabling 3D must leave every non-3D function working. | M | T | FR-TWN-01, NFR-01 | 08.9 |
 
-## 10 · Non-functional requirements
+## 10 · Embedded node and telemetry
+
+The embedded track is a simulated ESP32 and sensors that publish measurements into the same application (DEC-026). It is a sensing node, not a controller: the engine remains the authority for energy state, the node reports, and no real load is switched.
+
+| ID | Requirement | Pri | Verify | Depends on | Phase |
+| --- | --- | --- | --- | --- | --- |
+| FR-EMB-01 | The firmware must build from one PlatformIO project for `esp32dev` with documented profiles for the Wokwi target and the physical DevKit v1, and the build must fail when a required profile is absent. | M | T | — | 13.3 |
+| FR-EMB-02 | The Wokwi VS Code workspace must consume the PlatformIO artifacts (`firmware.bin`, `firmware.elf`) through `wokwi.toml`, and the circuit in `diagram.json` must use the same GPIO map as the firmware. | M | T, I | FR-EMB-01 | 14.2 |
+| FR-EMB-03 | Telemetry must be one versioned JSON document carrying `device_id`, `schema_version`, `sequence`, `timestamp_ms` as a UTC epoch, `source_mode`, `firmware_version`, `uptime_s` and a measurements array in which every value names its unit, provenance class and quality. | M | T, I | FR-EMB-01 | 12.3 |
+| FR-EMB-04 | The telemetry adapter must validate each message against the versioned schema, quarantine a non-conforming message with a named reason, normalize units to canonical form, stamp a receipt time, drop duplicates by device and sequence, and expose a liveness state. | M | T | FR-EMB-03 | 14.10 |
+| FR-EMB-05 | The application must offer four explicit source modes (Scenario, Wokwi, Physical, Replay); choosing one must not mutate a stored run, and every run manifest must record the mode that produced it. | M | T, D | FR-EMB-04, FR-SIM-02 | 14.11 |
+| FR-EMB-06 | Every sensor channel must declare its GPIO, part, conversion formula, validity range and fallback; an uncalibrated light-dependent-resistor channel must be reported as a relative light level and must never be converted to W/m² irradiance. | M | I, T | FR-EMB-03 | 14.12 |
+| FR-EMB-07 | The node must not run dispatch, optimization or energy accounting: it publishes measurements, accepts a display-only command and reports its own health, and the adapter must reject any message that would alter a scheduled plan. | M | I | FR-EMB-01 | 12.5 |
+| FR-EMB-08 | Every actuator output must power up off, require an explicit enable and never drive a real load in v1; the only permitted demonstration load is a low-voltage indicator. | M | I, D | FR-EMB-07 | 12.7 |
+| FR-EMB-09 | At least three recorded telemetry fixtures (nominal, daytime peak, sensor failure) must be committed so the embedded path replays with the network disabled and produces identical results across runs. | M | T | FR-EMB-04 | 14.14 |
+| FR-EMB-10 | The same firmware source and circuit map must produce the same measurement values in Wokwi and on the physical DevKit within declared per-channel tolerances for at least three test profiles, and any larger divergence must be reported with its cause. | M | A, T | FR-EMB-02, FR-EMB-04 | 15.7 |
+| FR-EMB-11 | Broker loss, duplicate delivery and out-of-order delivery must not corrupt state: the node must reconnect with bounded backoff and publish a last-will offline state, and the adapter must show a staleness warning after a declared timeout. | M | T | FR-EMB-04 | 15.6 |
+| FR-EMB-12 | The node must publish its own health (free heap, RSSI, uptime, reconnect count) and the interface must label it as node health rather than plant state. | S | T | FR-EMB-01 | 15.5 |
+
+## 11 · Non-functional requirements
 
 | ID | Requirement | Pri | Verify | Depends on | Phase |
 | --- | --- | --- | --- | --- | --- |
@@ -177,18 +197,18 @@ A requirement is admitted only if it can be verified. Vague ambitions ("make it 
 | NFR-07 | Every displayed numeric or state value must resolve to an entry in the [metric register](data-provenance.md) carrying its provenance class, unit, source and gate; a simulated value must never be presented as measured, and an unregistered value must fail the interface contract test. | M | I, T | FR-SIM-03 | 00.5, 09 |
 | NFR-08 | Status must be conveyed by text or icon as well as colour; all controls must be keyboard-operable; reduced-motion preference must be respected. | M | I, D | FR-UX-10 | 08.9, 09.9 |
 | NFR-09 | The project must install and run from documented commands on Windows, Linux and macOS without Docker. | M | T | — | 01.2 |
-| NFR-10 | Only free tools and free tiers are permitted; a rate-limit response must degrade gracefully with a visible notice. | M | I, D | EX-01, EX-04, EX-05, EX-06, EX-07 | 10.4 |
+| NFR-10 | Only free tools and free tiers are permitted; a rate-limit response must degrade gracefully with a visible notice. | M | I, D | EX-01, EX-04, EX-05, EX-06, EX-07, EX-09, EX-10 | 10.4 |
 | NFR-11 | A weather-provider failure must degrade to cached or synthetic input with visible provenance, without corrupting state or interrupting the run. | M | T | FR-PV-03, SCN, EX-01 | 10.4 |
 
 ---
 
-## 11 · Constraints
+## 12 · Constraints
 
 Constraints are binding limits on any acceptable solution. They are not wishes; a design that violates one is rejected in review. Their source is an assumption (AS) in the [scope brief §8](00-scope-brief.md#8--assumptions-and-constraints), a decision, or the claim gate.
 
 | ID | Constraint | Source | Verify | Consequence if violated |
 | --- | --- | --- | --- | --- |
-| CON-01 | No physical plant is monitored or controlled in v1. | AS-02, claim gate | I | Any hardware path (ESP32, relay, servo) fails review. |
+| CON-01 | No physical installation is monitored or controlled, and no real load is switched: an embedded bench node publishes sensor measurements and drives an indicator only. | AS-02, DEC-026, claim gate | I | A hardware path that actuates plant or load fails review. |
 | CON-02 | One developer, part-time around a course load; no parallel workstreams. | AS-01, R-01 | I | Work is strictly sequential; a slipped phase moves later gates. |
 | CON-03 | Free tools and free tiers only; no paid API, no paid hosting, no local LLM. | AS-03 | I | A paid-tier dependency is rejected; a free tier must have a fallback. |
 | CON-04 | Development and demonstration on Windows 11 with Node 24 LTS and no Docker. | AS-04 | T | A Unix-only or Docker-only install path is a defect. |
@@ -201,8 +221,9 @@ Constraints are binding limits on any acceptable solution. They are not wishes; 
 | CON-11 | Metric units, TND for currency, IANA timezone identifiers, UTC-offset instants. | DEC-004, DEC-005 | T | A non-metric value or naive timestamp is a defect. |
 | CON-12 | Public weather data only; no personal or household data leaves the browser. | NFR-05 | I | Any upload of usage data is rejected. |
 | CON-13 | Dependency licences must be permissive and compatible with the project licence. | AS-03 | I | A copyleft dependency is rejected unless the project adopts a compatible licence. |
+| CON-14 | The embedded lab must run on a free path only: Wokwi Community or an equivalent free simulator, a free public MQTT broker for synthetic data, and a local Mosquitto instance for the physical bench; no gate may require a paid Wokwi licence, a private gateway or a paid broker. | AS-03, CON-03, DEC-028 | I, D | A paid dependency on the demo path is rejected, and the replay path must stay sufficient without any broker. |
 
-## 12 · External dependencies
+## 13 · External dependencies
 
 These are outside the project's control. Each has a declared fallback, and the report states when a fallback was used. Losing one must degrade a result, never break a run.
 
@@ -216,26 +237,28 @@ These are outside the project's control. Each has a declared fallback, and the r
 | EX-06 | GitHub Actions free tier | NFR-06 | Local pre-push script with manually recorded evidence | CI evidence is produced locally and labelled as such |
 | EX-07 | Static hosting (Vercel Hobby or equivalent) | Deployment | Static export served locally for the demo | The live URL is unavailable; the offline demo is unaffected |
 | EX-08 | onnxruntime-web, pinned version | FR-FCT-06 | None; the learned model is disabled | No learned-model claim is made |
+| EX-09 | Wokwi for VS Code, Community edition (free) | FR-EMB-02, FR-EMB-10 | Committed `diagram.json` and firmware, plus recorded fixtures replayed offline | The Wokwi source mode is demonstrated from recorded telemetry and the report states the limitation |
+| EX-10 | Free public MQTT broker for synthetic data | FR-EMB-04, FR-EMB-11 | Local Mosquitto on the LAN, then committed replay fixtures | Live embedded telemetry is absent; replay and the recorded parity evidence stand |
 
-The critical dependency chains are `SCN → FR-SIM → FR-PV/FR-BAT → FR-EMS → FR-FCT → FR-UX → FR-TWN`, and `FR-SIM-08` gates any anomaly claim (`FR-ANM-*`), because a detector that can see ground truth is not a detector.
+The critical dependency chains are `SCN → FR-SIM → FR-PV/FR-BAT → FR-EMS → FR-FCT → FR-UX → FR-TWN`, and `FR-SIM-08` gates any anomaly claim (`FR-ANM-*`), because a detector that can see ground truth is not a detector. The embedded chain is `FR-EMB-01 → FR-EMB-03 → FR-EMB-04 → {FR-EMB-05, FR-EMB-09, FR-EMB-11}`, with `FR-EMB-07` keeping the node outside every control loop and `FR-EMB-10` the only path by which the physical bench may be compared with the simulator.
 
-## 13 · Traceability
+## 14 · Traceability
 
 | Measure | Value | Checked by |
 | --- | --- | --- |
-| Functional requirements | 73 | `check-requirements.mjs` |
+| Functional requirements | 85 | `check-requirements.mjs` |
 | Non-functional requirements | 11 | `check-requirements.mjs` |
-| Constraints | 13 | `check-requirements.mjs` |
-| External dependencies | 8 | `check-requirements.mjs` |
-| Priorities | 75 Must, 7 Should, 2 Could | `check-requirements.mjs` |
-| Must requirements mapped to an MVP row or cross-cutting table | 75 of 75 | `check-requirements.mjs`, [scope brief §6](00-scope-brief.md#6--mvp-boundary) |
-| Project-level gates | 28 criteria (AC-01…AC-28) | [acceptance checklist](acceptance-checklist.md) |
+| Constraints | 14 | `check-requirements.mjs` |
+| External dependencies | 10 | `check-requirements.mjs` |
+| Priorities | 86 Must, 8 Should, 2 Could | `check-requirements.mjs` |
+| Must requirements mapped to an MVP row or cross-cutting table | 86 of 86 | `check-requirements.mjs`, [scope brief §6](00-scope-brief.md#6--mvp-boundary) |
+| Project-level gates | 37 criteria (AC-01…AC-37) | [acceptance checklist](acceptance-checklist.md) |
 
 The register is the full requirement set; the acceptance checklist is the subset promoted to project gates. A requirement without a gate is still verified by its own test case in the named phase.
 
 These five requirements make the project's claims defensible and may not be downgraded without a written justification in the report: FR-SIM-08 (observability), FR-PV-07 (PVGIS benchmark), FR-EMS-09 (paired runs), FR-EMS-11 (oracle bound), FR-GRD-03 (unverified tariff disables economics).
 
-## 14 · Change control
+## 15 · Change control
 
 - The **Phase** column ties each requirement to the roadmap task that produces its evidence; a phase is not complete until that evidence is recorded.
 - Requirements marked `S` or `C` do not block a phase gate; `M` requirements do, through [scope brief §6](00-scope-brief.md#6--mvp-boundary).

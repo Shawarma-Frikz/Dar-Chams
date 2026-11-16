@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.2.0 |
-| Date | 2026-11-15 |
-| Phase | 00 (task 00.7) |
+| Version | 0.3.0 |
+| Date | 2026-11-16 |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
-**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`).
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -38,6 +38,9 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-023 | Requirements register v0.2: constraints, dependencies, machine check | Accepted | 2026-11-15 |
 | DEC-024 | Seven provenance classes and a machine-readable metric register | Accepted | 2026-11-15 |
 | DEC-025 | Application shell: Next.js + React + TypeScript | Accepted | 2026-11-15 |
+| DEC-026 | Embedded sensing track admitted as phases 12–16 | Accepted | 2026-11-16 |
+| DEC-027 | Telemetry contract, source modes and class-M activation | Accepted | 2026-11-16 |
+| DEC-028 | Free-path transport for the embedded lab | Accepted | 2026-11-16 |
 
 ---
 
@@ -255,3 +258,29 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 
 **Consequences.** The app builds to static files for Vercel Hobby or any static-compatible host; the engine and Worker boundaries are unchanged. If SunCalc fails the AC-05 fixture comparison, adoption of a replacement is recorded in a new entry that supersedes this one.
 
+
+## DEC-026 · Embedded sensing track admitted as phases 12–16
+
+**Context.** The module requires a simulated ESP32 with sensors, not only a software twin. The earlier boundary (DEC-001, DEC-022) admitted Wokwi and a hardware adapter only as a payable *Could* item after task 11.1. A graded requirement cannot live in a Could row.
+
+**Decision.** A sensor-only embedded track is admitted as roadmap phases 12–16: an ESP32 node built with PlatformIO, simulated in Wokwi, publishing telemetry through MQTT into the **same** observation boundary the energy engine already defines. The energy engine remains the sole authority for installation physics; the node supplies observations and nothing else. No real electrical load is switched. This is a scope extension under DEC-022's admission rule: the schedule is extended (core handoff moved to phase 16), no Must item is removed, and the embedded evidence becomes part of the graded deliverable. The boundary changes from "ten MVP items plus two supporting items" to "ten MVP items, two supporting items and one embedded track".
+
+**Alternatives rejected.** A standalone Wokwi sketch with no ingestion — it would satisfy the letter of the requirement while adding no evidence to the twin, and the ingestion path is the part worth defending. Making firmware the plant — the engine's invariants (AC-01 to AC-04) and DEC-002 would collapse into an Arduino sketch. Real-load actuation — fails the claim gate and the electrical safety gate.
+
+**Consequences.** New requirements FR-EMB-01–12, constraints CON-14 and EX-09/EX-10, and acceptance criteria AC-29–AC-37; the scope brief, requirements, register and signed checklist are amended in the same change. Phase 11 narrows to the core freeze and paired runs; a new phase 16 restores demonstration, report and handoff after the embedded track, so report claims can cite embedded evidence. The MVP completion gate stays unchanged for the simulation; the delivery gate adds AC-29–AC-37.
+
+## DEC-027 · Telemetry contract, source modes and class-M activation
+
+**Decision.** One versioned JSON schema carries every device message: `device_id`, `schema_version`, `sequence`, `timestamp_ms` (UTC epoch), `source_mode` (wokwi, physical, replay), `measurements` with a unit, provenance mark and quality flag per field, `firmware_version` and `uptime_s`. The ingestion adapter validates against the schema, normalizes units, timestamps receipt, deduplicates by (device, sequence), tracks liveness and writes an append-only record. The interface offers four explicit source modes — Scenario, Wokwi node, Physical node, Recorded replay — and live modes never mutate the deterministic scenario. The run manifest records `source_mode`, so AC-02 determinism is scoped to Scenario and Replay modes. Class **M** is activated only for physically measured bench channels (ambient temperature, humidity, light-level proxy after calibration) and only behind `hardware.*` availability gates; every installation quantity stays S/D/F/X/C. `docs/metric-register.json` moves to v1.1.0 with nine embedded metrics, and the checker's "no M before hardware" rule becomes "M only behind a hardware gate".
+
+**Alternatives rejected.** A payload per source — three contracts means three drift points and a parity test that proves nothing. Treating Wokwi readings as measured — the claim gate exists for exactly this. One shared mutable buffer where live values overwrite scenario fields — reproducibility (AC-02) would silently depend on whether a node was connected.
+
+**Consequences.** The dashboard must show the active source and per-field provenance (AC-31, AC-32); stale values render as stale (AC-30); the register and `data-provenance.md` are amended; DEC-024's "no class M" clause is superseded for bench channels only, and its register version reference remains historically accurate.
+
+## DEC-028 · Free-path transport for the embedded lab
+
+**Decision.** Every graded embedded path runs on free tiers. Three paths are supported: (1) Wokwi simulation → public Wokwi gateway → free public MQTT broker, carrying only synthetic, non-sensitive telemetry; (2) physical ESP32 → Mosquitto on the local LAN, which needs no Wokwi gateway and no Docker; (3) Recorded Replay fixtures for the offline demonstration and for CI. Paid Wokwi licences and the private IoT gateway are optional developer conveniences; no acceptance criterion may depend on them (CON-14, AC-37).
+
+**Alternatives rejected.** The private gateway as the primary Wokwi path — it is a paid capability and would violate CON-03. Public broker for anything sensitive — excluded by construction: only synthetic telemetry is published, under a unique topic prefix. A serial-only bridge — platform-specific fragility with no standard Wokwi path.
+
+**Consequences.** Task 14.9 is rewritten around the free default; EX-09/EX-10 declare replay and local-broker fallbacks; replay fixtures become mandatory evidence (AC-33) rather than optional polish.

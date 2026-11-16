@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Phase | 00 — project definition and engineering decisions |
-| Status | Complete (2026-11-15) |
+| Status | Complete (2026-11-15); boundary extended 2026-11-16 with the embedded sensing track (DEC-026) |
 | Owner | Author (sole developer) |
 | Related | [Requirements](requirements.md) · [Decision log](decision-log.md) · [Provenance](data-provenance.md) · [Acceptance checklist](acceptance-checklist.md) |
 
@@ -80,7 +80,7 @@ This is the whole v1 scope. The Must subset of it is the MVP, defined item by it
 
 ### Out of scope (v1)
 
-- Monitoring or actuating physical equipment; ESP32, sensors, relays, servos.
+- Monitoring or actuating a real installation: no plant telemetry, no relay, no servo, no load switching. A bench-only ESP32 node may publish simulated or physically measured sensor channels into the application (§6.7).
 - Certified metering, tariff billing, or financial advice.
 - Multi-user accounts, authentication, cloud synchronisation.
 - Native mobile applications (the web app is responsive; PWA packaging is optional polish).
@@ -92,7 +92,7 @@ This is the whole v1 scope. The Must subset of it is the MVP, defined item by it
 
 ## 6 · MVP boundary
 
-The MVP is the smallest build that can produce the report's central comparison — baseline versus forecast-aware scheduler on identical inputs — and demonstrate it without hardware, paid services or a network connection. It is fixed at the **ten items named in roadmap task 00.3**, in the same order. Anything else is Should, Could or Won't.
+The MVP is the smallest build that can produce the report's central comparison — baseline versus forecast-aware scheduler on identical inputs — and demonstrate it without hardware, paid services or a network connection. It is fixed at the **ten items named in roadmap task 00.3**, in the same order, plus the two supporting items in §6.2 and the embedded sensing track in §6.7. Anything else is Should, Could or Won't.
 
 **Owner.** With one developer, ownership is by domain, not by person: `engine`, `data`, `automation`, `ui`, `twin`. The owner is accountable for the item's evidence appearing in the [acceptance checklist](acceptance-checklist.md); the sign-off in section D of that document is the accountability record.
 
@@ -138,9 +138,9 @@ Optional means **not required for the MVP gate**, not "we will see". Each class 
 | SH-04 | Solar tracker comparison | Secondary contribution; must charge actuator energy honestly | Fixed-tilt PV validation closed (AC-06) |
 | SH-05 | Model cards and health panel | Meaningful only once a learned model is retained | SH-01 retained |
 
-**Could — evaluated only after the experiment protocol is frozen (task 11.1).** Seasonal manual-tilt baseline · PDF report export · PWA installation · Telegram alerts · Wokwi firmware sketch · hardware adapter interface.
+**Could — evaluated only after the experiment protocol is frozen (task 11.1).** Seasonal manual-tilt baseline · PDF report export · PWA installation · Telegram alerts.
 
-**Won't — excluded for a structural reason, not for lack of time.** LLM chat assistant (free-tier dependency, not a control contribution, and a claim-gate risk) · cloud accounts and sync (multi-user is out of scope) · native mobile app (the responsive PWA covers the requirement) · real-time hardware control (claim gate: no measured data exists) · electrochemical battery model (cannot be validated without laboratory data) · MPC/MILP/RL controllers (not provable within the budget; the oracle bounds the achievable gain instead).
+**Won't — excluded for a structural reason, not for lack of time.** LLM chat assistant (free-tier dependency, not a control contribution, and a claim-gate risk) · cloud accounts and sync (multi-user is out of scope) · native mobile app (the responsive PWA covers the requirement) · control of a real installation (claim gate: the bench node measures and displays, it does not switch plant or load) · electrochemical battery model (cannot be validated without laboratory data) · MPC/MILP/RL controllers (not provable within the budget; the oracle bounds the achievable gain instead).
 
 ### 6.4 Boundary rules
 
@@ -172,8 +172,23 @@ The gate is binary. It passes only when all of the following hold:
 4. Every `M` requirement in the register is verified by an MVP row or by §6.5, with evidence recorded.
 5. The demonstration script runs end-to-end with the network disabled.
 6. No Won't item is present in the build under another name.
+7. The embedded track of §6.7 has AC-29…AC-37 green before the phase 16 handoff.
 
-A partially green MVP is a failed gate and is reported as failed, naming the rows that did not pass. The MVP also carries no claim that hardware validation, measured savings or real installation behaviour occurred — those remain outside the boundary by design, not by omission.
+A partially green MVP is a failed gate and is reported as failed, naming the rows that did not pass. The MVP also carries no claim that hardware validation, measured savings or real installation behaviour occurred — those remain outside the boundary by design, not by omission. The embedded track changes the evidence available, not the claim: bench measurements of ambient conditions are not plant measurements, and Wokwi values remain simulated.
+
+### 6.7 Embedded sensing track (added 2026-11-16)
+
+The module requires a simulated ESP32 with sensors that read data. The track is admitted as a bounded addition under the rule in §6.4 and recorded in DEC-026. It is a **sensing and telemetry** node: firmware, circuit and transport exist to demonstrate an embedded data path into the same application, never to control plant or load.
+
+| ID | Item | Owner | Requirements | Test | Acceptance criterion | Phase |
+| --- | --- | --- | --- | --- | --- | --- |
+| EMB-01 | Firmware project and Wokwi harness | hardware | FR-EMB-01, FR-EMB-02 | Two-profile PlatformIO build; `wokwi.toml` artifact wiring; GPIO map compared with `diagram.json` | AC-37 (every embedded step runs on the free path) | 13, 14 |
+| EMB-02 | Telemetry contract, adapter and replay | data | FR-EMB-03, FR-EMB-04, FR-EMB-09 | Schema-conformance suite; malformed, duplicate and out-of-order fixtures; replay determinism | AC-29, AC-30, AC-33 | 12, 14 |
+| EMB-03 | Source modes and sensor honesty | data, ui | FR-EMB-05, FR-EMB-06 | Mode-switch test; manifest `source_mode` inspection; register-conformance test for the light proxy | AC-31, AC-32 | 14 |
+| EMB-04 | Bench-node safety and health | hardware | FR-EMB-07, FR-EMB-08, FR-EMB-11, FR-EMB-12 | Boot-state test; rejected-command test; broker-drop and reconnect test | AC-35, AC-36 | 12, 15 |
+| EMB-05 | Bench parity with the simulator | hardware | FR-EMB-10 | Three test profiles measured in Wokwi and on the DevKit, compared per channel against declared tolerances | AC-34 | 15 |
+
+The track is inside the MVP gate but outside the ten items, exactly like §6.2: the ten items define the report's comparison, while §6.7 supplies the embedded evidence the module asks for. Its cost is zero on the free path (CON-14), and the replay fixtures keep every demonstration runnable with the network disabled (NFR-02).
 
 ---
 
@@ -188,12 +203,12 @@ A partially green MVP is a failed gate and is reported as failed, naming the row
 
 ## 8 · Assumptions and constraints
 
-These are assumptions, not obligations. The binding constraints derived from them are registered as `CON-01…CON-13` in the [requirements register](requirements.md#11--constraints), with a verification method and the consequence of violation for each.
+These are assumptions, not obligations. The binding constraints derived from them are registered as `CON-01…CON-14` in the [requirements register](requirements.md#12--constraints), with a verification method and the consequence of violation for each.
 
 | ID | Assumption / constraint |
 | --- | --- |
 | AS-01 | Single developer; work happens in the hours left by a full course load. |
-| AS-02 | No hardware in v1; ESP32, sensors, relays and servos are future work. |
+| AS-02 | No plant hardware: an ESP32 bench node with sensors is simulated in Wokwi and may later be built on a DevKit, but no relay, servo or real load is ever driven (DEC-026). |
 | AS-03 | Only free tools and free tiers; no paid APIs, no cloud compute beyond free Colab. |
 | AS-04 | Development on Windows 11 + VS Code; Node 24 LTS; no Docker; MATLAB/Python available but no local LLM. |
 | AS-05 | Target machine has a 2 GB MX330 GPU: 3D must run with capped DPR, one shadow-casting light, on-demand rendering, and a 2D fallback. |
@@ -209,13 +224,14 @@ These are assumptions, not obligations. The binding constraints derived from the
 
 | ID | Risk | Impact | Mitigation |
 | --- | --- | --- | --- |
-| R-01 | Schedule: 12 phases of work against an unknown deadline | Project delivered partially | Must/Should/Could split; vertical slice by phase 04; weekly checkpoint; freeze scope before phase 11 |
+| R-01 | Schedule: 16 phases of work against an unknown deadline | Project delivered partially | Must/Should/Could split; vertical slice by phase 04; weekly checkpoint; freeze scope before phase 11 |
 | R-02 | 3D consumes the time budget | No complete dashboard | 2D map first and authoritative; 3D timeboxed to phases 08.1–08.3 + 08.5–08.6; detailed assets are Could |
-| R-03 | No hardware means weak validation | Jury discounts all numbers | PVGIS benchmark, ERA5 reanalysis weather, labelled fault injection, explicit limitations section |
+| R-03 | No plant hardware means weak validation | Jury discounts all numbers | PVGIS benchmark, ERA5 reanalysis weather, labelled fault injection, bench parity evidence (FR-EMB-10), explicit limitations section |
 | R-04 | Learned model fails to beat baselines | Wasted phase | Decide by skill score, report the negative result, keep the weather-driven forecast |
 | R-05 | Performance on the target laptop | Unusable demo | Worker-based fixed-step engine, snapshots ≤ 4 Hz, demand-driven 3D, quality toggle |
 | R-06 | Demo depends on free tiers or connectivity | Demo failure | Offline mode, cached weather, precomputed replay, no secrets client-side |
 | R-07 | Scope creep (chat, tracker, PDF, alerts) | Core unfinished | Won't/Could lists above; any addition requires a decision-log entry and a Must item removed or a date moved |
+| R-08 | Free embedded path changes or disappears: Wokwi tier, public broker, board supply | Embedded evidence unavailable at the wrong moment | Committed fixtures and the Replay source mode (AC-33), local Mosquitto, and a physical DevKit bought only if the demo date cannot be met |
 
 ---
 
@@ -227,9 +243,10 @@ These are assumptions, not obligations. The binding constraints derived from the
 | 00.2 Operating scenario | [`scenarios/`](../scenarios/README.md) — schema plus three validated scenarios | Done |
 | 00.3 MVP boundary | §6 of this document | Done |
 | 00.4 Requirements register | [`requirements.md`](requirements.md) | Done |
-| 00.5 Simulation truth and limits | [`data-provenance.md`](data-provenance.md), [`metric-register.json`](metric-register.json) — 88 registered metrics, generated tables, machine check | Done; UI enforcement verified in phases 09–10 |
+| 00.5 Simulation truth and limits | [`data-provenance.md`](data-provenance.md), [`metric-register.json`](metric-register.json) — 97 registered metrics, generated tables, machine check | Done; class M activated for bench channels only (DEC-027); UI enforcement verified in phases 09–10 |
 | 00.6 Success criteria | [`acceptance-checklist.md`](acceptance-checklist.md) | Done; provisional thresholds frozen before the final experiment |
 | 00.7 Decision log | [`decision-log.md`](decision-log.md) | Done |
+| Addendum 2026-11-16 | Embedded sensing track: §6.7, §10 of the requirements register, DEC-026 – DEC-028, AC-29 – AC-37, register v1.1.0 | Done; phases 12–16 deliver the evidence |
 
 ---
 

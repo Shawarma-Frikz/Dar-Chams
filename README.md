@@ -8,8 +8,9 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 
 ## Status
 
-- **Phase 00 — project definition: complete.** Scope brief, requirements register, decision log, simulation-truth contract with an 88-metric register, acceptance checklist and three validated scenarios are in `docs/` and `scenarios/`.
-- **Phases 01–11: planned.** See [`Helios_Roadmap_and_Graphic_Charter.html`](Helios_Roadmap_and_Graphic_Charter.html).
+- **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
+- **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
+- **Phases 01–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
 - No application code yet. CI and the project scaffold arrive in phase 01.
 
 ## What this is
@@ -18,13 +19,14 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 - A deterministic energy engine whose runs are reproducible from a scenario, a seed and a data set.
 - Two controllers compared on identical inputs: a rule-based baseline and a forecast-aware scheduler.
 - An inspectable interface: 2D system map, 3D cutaway twin, energy charts, decision and alert timeline.
+- An embedded sensing node: ESP32 firmware simulated in Wokwi, publishing schematised telemetry through MQTT, with four explicit source modes (Scenario, Wokwi, Physical, Replay).
 - A validation harness: PV yield benchmarked against PVGIS, forecasts scored against naïve baselines, policies compared on paired runs and against a perfect-foresight upper bound.
 
 ## What this is not
 
-- **Not a controller for a real installation.** No physical plant is monitored or actuated in v1.
-- **Not a metered energy audit.** Every value is simulated, estimated, forecast or derived, and is labelled as such.
-- **Not a hardware project yet.** ESP32 and sensor integration is a later milestone behind an adapter.
+- **Not a controller for a real installation.** No plant is monitored or actuated, and no real load is switched; the embedded node senses and displays.
+- **Not a metered energy audit.** Every value describing the installation is simulated, forecast or derived, and is labelled as such. Only three bench channels can ever carry class M, and they describe the room, not the plant.
+- **Not a hardware project first.** The ESP32 is simulated before it is built, and the build is a bench node with sensors and an indicator, never plant wiring.
 - **Not an "AI dashboard".** Rules are called rules; learned models are kept only if they beat a named baseline.
 
 ## Stack
@@ -39,6 +41,8 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 | Solar position | SunCalc (or a validated equivalent) |
 | Weather | Open-Meteo forecast + ERA5 archive, cached, synthetic fallback |
 | ML experiments | Python + scikit-learn (Colab), exported to ONNX, run with onnxruntime-web |
+| Embedded node | ESP32 DevKit v1 firmware built with PlatformIO, simulated in Wokwi for VS Code |
+| Telemetry | MQTT over a free public broker for synthetic data, local Mosquitto for the bench, validated by a Node adapter |
 | Persistence | IndexedDB, local-first |
 | Tests | Vitest + fast-check (property tests) + Playwright |
 | Hosting | Vercel Hobby or static-compatible hosting |
@@ -58,6 +62,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── requirements.md
 │   └── report/
 │       └── 01-product-statement.md
+├── embedded/                   Planned: ESP32 firmware, Wokwi circuit, telemetry schema (phases 12–15)
 ├── scenarios/
 │   ├── README.md               Scenario contract, conventions, tariff policy
 │   ├── scenario.schema.json    JSON Schema for every scenario
@@ -70,7 +75,8 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   └── validate-scenarios.mjs  Scenario invariant checks
-├── Helios_Roadmap_and_Graphic_Charter.html
+├── Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html
+├── Helios_Roadmap_and_Graphic_Charter.html   Superseded 12-phase chart
 └── README.md
 ```
 
@@ -83,7 +89,7 @@ Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric regist
 | [Scope brief](docs/00-scope-brief.md) | Product statement, operating scenario, MVP boundary, non-goals, assumptions, risks |
 | [Requirements register](docs/requirements.md) | Requirements with priority, verification, dependency and phase; constraints; external dependencies |
 | [Decision log](docs/decision-log.md) | Architecture decisions with rejected alternatives and consequences |
-| [Simulation truth and provenance](docs/data-provenance.md) | Seven value classes, labelling and claim rules, generated metric register, limits |
+| [Simulation truth and provenance](docs/data-provenance.md) | Value classes, labelling and claim rules, generated 97-metric register, limits |
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |
 | [Report · product statement](docs/report/01-product-statement.md) | Canonical paragraph for the final report |
 | [Scenario conventions](scenarios/README.md) | Schema contract, field groups, units, seeds, variants, tariff policy |

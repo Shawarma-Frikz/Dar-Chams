@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 (signed) |
-| Date | 2026-11-15 |
-| Phase | 00 (task 00.6) |
+| Version | 1.1.0 (signed) |
+| Date | 2026-11-16 |
+| Phase | 00 (task 00.6); B.5 added by the embedded-track decision DEC-026 |
 | Owner | Author (sole developer) |
-| Content digest (sha256) | 951760a0501b5d6712fec3d612221a06b61534c4412e18b76d3659c768af7387 |
+| Content digest (sha256) | b0049722998ee867cf0da398a9bb16c3629c59635f776db1965f3971fa010176 |
 
 A phase is complete when its acceptance evidence exists, not when its screen exists. This checklist is the agreed definition of success; evidence is recorded next to each row as phases finish. `scripts/check-acceptance.mjs` verifies its structure, the six task-00.6 headline targets, every cross-document AC reference and the content digest below; an edit after signing invalidates the digest until the sign-off is renewed.
 
@@ -20,9 +20,9 @@ A phase is complete when its acceptance evidence exists, not when its screen exi
 | --- | --- | --- | --- |
 | 00.1 | One paragraph in README and report; no claim of controlling a real installation | [`README.md`](../README.md), [`report/01`](report/01-product-statement.md) | **Met** |
 | 00.2 | A scenario file describes the complete installation without hard-coded values | [`scenarios/tunis-typical-v1.json`](../scenarios/tunis-typical-v1.json), [`scenario.schema.json`](../scenarios/scenario.schema.json), [`scenarios/README.md`](../scenarios/README.md) | **Met** (three validated scenarios; tariff intentionally unverified) |
-| 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** — 10 items and 2 supporting items, each with domain owner, test and `AC` reference; Should/Could/Won't separated with admission rules |
-| 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** — 73 FR, 11 NFR, 13 constraints and 8 external dependencies, each with priority, verification method, dependency and phase; wording and structure machine-checked |
-| 00.5 | Every displayed metric has a source type and unit | [Simulation truth and provenance](data-provenance.md), [metric register](metric-register.json), [`check-provenance.mjs`](../scripts/check-provenance.mjs) | **Met** — 88 metrics, each with class, unit, source, inputs and gate; register, generated tables and declared counts machine-checked. Enforcement in the build verified in phases 09–10 (AC-20, AC-28) |
+| 00.3 | Every MVP item has an owner, test and acceptance criterion; optional features separated | [Scope brief §6](00-scope-brief.md#6--mvp-boundary) | **Met** — 10 items, 2 supporting items and the embedded track, each with domain owner, test and `AC` reference; Should/Could/Won't separated with admission rules |
+| 00.4 | No requirement is a vague phrase; each is testable with a verification method | [Requirements register](requirements.md) | **Met** — 85 FR, 11 NFR, 14 constraints and 10 external dependencies, each with priority, verification method, dependency and phase; wording and structure machine-checked |
+| 00.5 | Every displayed metric has a source type and unit | [Simulation truth and provenance](data-provenance.md), [metric register](metric-register.json), [`check-provenance.mjs`](../scripts/check-provenance.mjs) | **Met** — 97 metrics, each with class, unit, source, inputs and gate; class M restricted to bench channels behind `hardware.*` gates; register, generated tables and declared counts machine-checked. Enforcement in the build verified in phases 09–10 (AC-20, AC-28) |
 | 00.6 | A signed acceptance checklist exists before implementation | This document | **Met** |
 | 00.7 | A new contributor can understand why each major choice was made | [Decision log](decision-log.md) | **Met** |
 
@@ -80,6 +80,22 @@ These are the measurable targets from task 00.6. "Evidence" names the artifact t
 | AC-27 | Twin binding integrity | 100% of 3D objects map to an existing simulation entity; disabling 3D changes no simulation value; selection stays synchronised both ways on desktop and mobile | Test + demo | Pending (phase 08) |
 | AC-28 | Metric register conformance | 100% of numeric and state widgets resolve to a `MET-nn` entry; rendered class, unit and source equal the register; 0 disabled metric computed or displayed as a value; 0 value rendered outside the register (raw-number lint clean) | UI contract test + bundle scan | Pending (phase 09) |
 
+### B.5 Embedded node and telemetry
+
+The module requires a simulated ESP32 with sensors that read data. These criteria gate the embedded track (scope brief §6.7, DEC-026 – DEC-028). They change the evidence available, not the project's claim: Wokwi values stay simulated, and a bench measurement of a room is not a measurement of a plant.
+
+| ID | Criterion | Threshold | Evidence | Status |
+| --- | --- | --- | --- | --- |
+| AC-29 | Telemetry schema conformance | 100% of published messages validate against the committed schema version; a non-conforming message is quarantined with a named reason; 0 non-conforming value reaches the interface | Schema suite + adapter log | Pending (phase 14) |
+| AC-30 | Ingestion integrity | 100% of duplicates by device and sequence dropped; out-of-order messages reordered or rejected with a logged reason; staleness surfaced after 3 missed intervals; the append-only store is unchanged by redelivery | Adapter test | Pending (phase 14) |
+| AC-31 | Source-mode isolation | Each of the four source modes runs the same pipeline; switching mode mutates no stored run; 100% of manifests record `source_mode`; AC-02 determinism is evaluated in Scenario and Replay modes only | Test + manifest inspection | Pending (phase 14) |
+| AC-32 | Sensor-mapping honesty | 100% of sensor channels resolve to a `MET-nn` entry with unit, class and quality; the light proxy is shown as a relative level with unit `unitless`; 0 values labelled W/m² from an uncalibrated channel | Register-conformance test + inspection | Pending (phase 14) |
+| AC-33 | Offline replay fidelity | Three committed fixtures (nominal, daytime peak, sensor failure) replay with the network disabled; two replays of one fixture agree within 1 × 10⁻⁹ relative; the failure fixture shows a quality flag, not a value | Test + demo recording | Pending (phase 14) |
+| AC-34 | Wokwi and bench parity | At least 3 test profiles; per channel within declared tolerance (temperature ±1.0 °C, humidity ±5 %RH, light proxy ±10% of full scale); every larger divergence reported with its cause | Measurement table | Pending (phase 15) |
+| AC-35 | Node resilience | Broker stop shows the last-will offline state within 10 s; 0 corrupted or duplicated measurements after 20 reconnects; backoff bounded at ≤ 30 s; stale warning visible after 3 missed intervals | Failure-injection test | Pending (phase 15) |
+| AC-36 | Actuator safety | Every output low at boot and after reset; 0 actuation without an explicit enable; 0 messages applied that would alter a scheduled plan; only a low-voltage indicator is driven | Inspection + test | Pending (phase 12, 15) |
+| AC-37 | Free-path compliance | Every embedded step — build, simulate, publish, connect, replay — runs on free tools; no gate or demo step requires a paid Wokwi licence, a private gateway or a paid broker | Dependency and account audit | Pending (phase 14) |
+
 ---
 
 ## C · Decision gates
@@ -92,8 +108,9 @@ These gates from the roadmap are binding. A gate that fails stops the dependent 
 | Data gate | No ML trained on synthetic traces is presented as validated real-world performance; synthetic and external observations stay labelled. |
 | Optimizer gate | No improvement is claimed unless baseline and scheduler ran on identical scenario, seed, weather, load trace and initial SOC (AC-09). |
 | 3D gate | No detailed models before the semantic object map and state binding work; the scene is a client of the simulation. |
-| Hardware gate | Physical ESP32/sensor integration is a later milestone, added through an adapter, with units, timestamps and missing-data behaviour validated first. |
-| Claim gate | Helios is described as a simulation-based twin until it is connected to a real installation with validated telemetry. |
+| Hardware gate | The embedded node is admitted only as a sensing path: units, timestamps, schema and missing-data behaviour are validated (AC-29, AC-30) before the Wokwi circuit is wired or a physical DevKit is used. |
+| Claim gate | Helios is described as a simulation-based twin until it is connected to a real installation with validated telemetry. A bench sensor reading of a room is not plant telemetry and does not open the claim. |
+| Embedded gate | No embedded phase passes on a paid path: AC-37 must stay green, and the replay path (AC-33) must work before the physical bench is touched. |
 
 ---
 
@@ -101,10 +118,10 @@ These gates from the roadmap are binding. A gate that fails stops the dependent 
 
 | Role | Name | Date | Signature |
 | --- | --- | --- | --- |
-| Author | Shawarma-Frikz | 2026-11-15 | digital sign-off, bound to the content digest in the header |
+| Author | Shawarma-Frikz | 2026-11-16 | digital sign-off, bound to the content digest in the header |
 | Supervisor (if required by the module) |  |  |  |
 
-By signing, the author confirms that the Must items, thresholds and gates above — exactly as covered by the content digest in the header — are the definition of done for v1, and that any later change requires a decision-log entry and a renewed digest and signature.
+By signing, the author confirms that the Must items, thresholds and gates above — exactly as covered by the content digest in the header — are the definition of done for v1, including the embedded criteria AC-29 – AC-37, and that any later change requires a decision-log entry and a renewed digest and signature.
 
 ---
 
@@ -115,6 +132,8 @@ By signing, the author confirms that the Must items, thresholds and gates above 
 | Confirm deadline and realistic weekly hours | Author | Phase 01 |
 | Confirm report language, format and page limit | Author / supervisor | Phase 01 |
 | Confirm that simulation-only is accepted for the module | Author / supervisor | Phase 01 |
+| Confirm the embedded deliverable: a simulated ESP32 with reading sensors, no real-load switching | Author / supervisor | Phase 12 |
+| Create the free Wokwi account and decide whether a physical DevKit is bought | Author | Phase 13 |
 | Verify STEG tariff values with a dated citation (enables AC-10 cost column) | Author | Phase 04 |
 | Select and cite a grid emission factor (enables CO₂ metric) | Author | Phase 04 |
 | Decide licence and branch/commit conventions | Author | Phase 01.1 |

@@ -96,9 +96,6 @@ for (const m of metrics) {
   for (const c of classes) {
     if (!Object.hasOwn(CLASS_WORDS, c)) fail(`${where}: class "${c}" is not one of M, X, S, F, E, D, C`);
   }
-  if (classes.includes('M')) {
-    fail(`${where}: class M cannot be registered before hardware exists (CON-01)`);
-  }
 
   const availability = String(m.availability ?? '');
   const kind = availabilityKind(availability);
@@ -109,6 +106,16 @@ for (const m of metrics) {
     if (!GATE.test(gate)) fail(`${where}: availability gate "${gate}" is not a dotted scenario field`);
   }
   if (kind === 'disabled' && !m.reason) fail(`${where}: a disabled metric must state a reason`);
+
+  // Class M is legal only for a bench channel behind a hardware gate: no
+  // measured value exists until the node is attached (DEC-027).
+  if (classes.includes('M')) {
+    if (kind === 'always') {
+      fail(`${where}: class M must be conditional or disabled until the bench node is attached (DEC-027)`);
+    } else if (!availability.slice(kind.length + 1).startsWith('hardware.')) {
+      fail(`${where}: class M requires a hardware.* availability gate (DEC-027)`);
+    }
+  }
 
   const inputs = m.inputs ?? [];
   if (!Array.isArray(inputs)) fail(`${where}: inputs must be an array`);
@@ -254,6 +261,7 @@ if (disabledDecl !== null && disabledDecl !== counts.disabled) {
 
 const CLASS_ROWS = {
   'Measured (M)': 'M',
+  'Measured or simulated (M / S)': 'M/S',
   'Weather (X / S)': 'X/S',
   'Simulated (S)': 'S',
   'Forecast (F)': 'F',

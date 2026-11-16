@@ -118,9 +118,13 @@ for (const [target, ids] of Object.entries(headline)) {
 }
 
 // Decision gates.
-for (const gate of ['Physics gate', 'Data gate', 'Optimizer gate', '3D gate', 'Hardware gate', 'Claim gate']) {
+for (const gate of ['Physics gate', 'Data gate', 'Optimizer gate', '3D gate', 'Hardware gate', 'Embedded gate', 'Claim gate']) {
   if (!checklist.includes(`| ${gate} |`)) fail(`section C: missing decision gate "${gate}"`);
 }
+const gateSection = checklist.split('## C · Decision gates')[1]?.split('## D · Sign-off')[0] ?? '';
+const gateCount = gateSection
+  .split(/\r?\n/)
+  .filter((l) => /^\| .+ \| .+ \|$/.test(l) && !l.startsWith('| Gate ') && !/^\| -/.test(l)).length;
 
 // Sign-off.
 const signOff = checklist.split('## D · Sign-off')[1] ?? '';
@@ -166,4 +170,4 @@ console.log(`  tasks: ${taskRows.length}/7 phase-00 rows Met`);
 console.log(`  criteria: ${acRows.length} defined, ${referenced.size} cross-document references resolve`);
 console.log(`  task 00.6 targets: ${Object.keys(headline).length}/6 covered`);
 console.log(`  provisional thresholds: ${provisional.join(', ') || 'none'} (frozen per task 11.1)`);
-console.log(`  decision gates: 6 present, sign-off complete`);
+console.log(`  decision gates: ${gateCount} present, sign-off complete`);

@@ -20,10 +20,10 @@ export function SiteNav() {
                 href={href}
                 prefetch={false}
                 aria-current={active ? 'page' : undefined}
-                className={`font-mono text-[11px] tracking-[0.14em] uppercase underline-offset-[6px] transition-colors ${
+                className={`inline-flex min-h-11 items-center font-mono text-[11px] tracking-[0.12em] uppercase underline-offset-[6px] transition-colors ${
                   active
-                    ? 'text-basalt underline decoration-oxide decoration-2'
-                    : 'text-ink/80 no-underline hover:text-basalt hover:underline hover:decoration-line'
+                    ? 'text-ink underline decoration-blue decoration-2'
+                    : 'text-ink2 no-underline hover:text-ink hover:underline hover:decoration-rule2'
                 }`}
               >
                 {label}

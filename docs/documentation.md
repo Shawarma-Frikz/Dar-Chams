@@ -24,7 +24,7 @@ authority; the other one links to it rather than restating it.
 
 | Document | Job | Authority for | Checked by |
 | --- | --- | --- | --- |
-| [`README.md`](../README.md) | Entry point: what Helios is, what runs, how to run it | Product statement, quick start, command list | `check-docs` |
+| [`README.md`](../README.md) | Entry point: what Dar Chams is, what runs, how to run it | Product statement, quick start, command list | `check-docs` |
 | [`CHANGELOG.md`](../CHANGELOG.md) | Released changes per phase | What changed and when | `check-docs` |
 | [`docs/00-scope-brief.md`](00-scope-brief.md) | Scope, operating scenario, MVP boundary, non-goals, risks | What is in scope | `check-acceptance`, `check-requirements` references |
 | [`docs/requirements.md`](requirements.md) | FR, NFR, constraints and external dependencies | What must be built and how it is verified | `check-requirements` |
@@ -33,6 +33,8 @@ authority; the other one links to it rather than restating it.
 | [`docs/acceptance-checklist.md`](acceptance-checklist.md) | Signed success criteria with thresholds | Whether a phase is done | `check-acceptance` |
 | [`docs/configuration.md`](configuration.md) | The four configuration layers | Where a configuration value lives | `check-config`; existence by `check-docs` |
 | [`docs/energy-balance.md`](energy-balance.md) | The step ledger: identity, sign convention, tolerance and proof | What a balanced step is | `check-balance`; existence by `check-docs` |
+| [`docs/identity.md`](identity.md) | Dar Chams name, mark, colours, type and interface rules | Product visual identity | `check-docs` identity audit |
+| [`docs/roadmap-adoption.md`](roadmap-adoption.md) | Crosswalk from the Dar Chams roadmap into the accepted engineering gates | Where roadmap additions enter | `check-docs` |
 | [`docs/conventions.md`](conventions.md) | Licence, branches, commits, evidence policy, checks | How the repository is kept | `check-docs` |
 | [`docs/quality-gates.md`](quality-gates.md) | Gates, CI job, demonstrated failure path | How a build turns red | `check-ci`; existence by `check-docs` |
 | [`docs/runtime-support.md`](runtime-support.md) | Pinned runtime, browsers, hardware, budgets | What the toolchain is | `check-runtime` |
@@ -114,7 +116,7 @@ The public surface is what another module may import. Everything else is interna
 promise.
 
 - **Engine.** [`packages/engine/src/index.ts`](../packages/engine/src/index.ts) is the complete public
-  surface of `@helios/engine`. [`docs/api.md`](api.md) documents every export it declares — constants,
+  surface of `@dar-chams/engine`. [`docs/api.md`](api.md) documents every export it declares — constants,
   classes, functions and types — with the contract each one carries. `check-docs` extracts the
   export names from the source and compares them with the table in both directions: an undocumented
   export fails, and a documented name that no longer exists fails.
@@ -159,7 +161,7 @@ Every entry is `## EXP-nnn · Title` followed by these fields, in this order:
 | `Hypothesis` | What was expected before seeing the result |
 | `Scenario` | The scenario file, which must exist |
 | `Seed` | The integer seed from that file |
-| `Engine` | `helios-engine` and the version from the run manifest |
+| `Engine` | `dar-chams-engine` and the version from the run manifest |
 | `Metrics` | The registered `MET-nn` identifiers reported |
 | `Result` | The measured outcome, including a negative one |
 | `Artefact` | The untracked manifest or report path |

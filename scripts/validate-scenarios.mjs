@@ -9,7 +9,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { createScenarioValidator, formatIssues } from '@helios/engine';
+import { createScenarioValidator, formatIssues } from '@dar-chams/engine';
 
 const DIR = path.resolve('scenarios');
 const SCHEMA_FILE = 'scenario.schema.json';

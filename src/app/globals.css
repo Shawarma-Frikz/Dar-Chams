@@ -1,41 +1,122 @@
 @import 'tailwindcss';
 
-/* Tokens mirror the graphic charter in the roadmap document. Text pairings are
-   chosen for contrast against limestone: basalt 11.4:1, ink 10.6:1. Muted and
-   line are for rules and non-text marks, never for small text (NFR-08). */
-@theme {
-  --color-basalt: #202b2a;
-  --color-limestone: #e9e3d5;
-  --color-oxide: #b86b45;
-  --color-sage: #8a9b83;
-  --color-lichen: #d3d86a;
-  --color-slate: #526c70;
-  --color-chalk: #f3efe6;
-  --color-clay: #a64f3d;
-  --color-ink: #26302e;
-  --color-muted: #68736d;
-  --color-line: #d1ccbf;
+/* Dar Chams identity tokens (DEC-040). docs/identity.md §3 is the authority; the
+   identity audit in scripts/check-docs.mjs compares these two blocks with it on
+   every run. Saffron is production only: on the day ground it is never text or a
+   thin line (1.82:1), so strokes use --sun-line. */
+/* identity-day:start */
+:root {
+  color-scheme: light;
 
-  --font-sans: var(--font-dm-sans), Arial, sans-serif;
-  --font-display: var(--font-literata), Georgia, serif;
-  --font-mono: var(--font-dm-mono), Consolas, monospace;
+  --wash: #edf0ee;
+  --surface: #f8faf9;
+  --inset: #e2e8e5;
+  --ink: #0e1b2c;
+  --ink2: #2f4157;
+  --muted: #4e6177;
+  --rule: #cbd4d0;
+  --rule2: #9daaa5;
+  --blue: #1456a0;
+  --blue-deep: #0b3a73;
+  --blue-soft: #dce8f6;
+  --sun: #efa51a;
+  --sun-soft: #fbebc8;
+  --sun-ink: #7a4e00;
+  --sun-line: #b26b00;
+  --cell: #0f7b6c;
+  --cell-soft: #d3ebe6;
+  --load: #b02a52;
+  --load-soft: #f3dae1;
+  --shed: #6b7a8c;
+  --arch-bg: #0b3a73;
+  --arch-fg: #eaf1fa;
+  --code-bg: #0b1b31;
+  --code-fg: #dce7f5;
+}
+/* identity-day:end */
+
+/* Night is designed, not inverted: a deep blue ground and lightened accents.
+   A token not listed here keeps its day value. */
+/* identity-night:start */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --wash: #0a1424;
+    --surface: #101c30;
+    --inset: #16243b;
+    --ink: #e8eef5;
+    --ink2: #c3cfdd;
+    --muted: #98a8bc;
+    --rule: #243551;
+    --rule2: #4a5f7f;
+    --blue: #6fa8f0;
+    --blue-deep: #a5c8f7;
+    --blue-soft: #17304f;
+    --sun: #f7be45;
+    --sun-soft: #3a2d10;
+    --sun-ink: #f7d488;
+    --sun-line: #f7be45;
+    --cell: #3cc1ab;
+    --cell-soft: #12362f;
+    --load: #ee7c9a;
+    --load-soft: #3c1a27;
+    --shed: #8796aa;
+    --arch-bg: #0f2a4f;
+  }
+}
+/* identity-night:end */
+
+/* `inline` keeps the runtime variables as the single source, so a token swap in
+   the blocks above reaches every utility without rebuilding the theme. */
+@theme inline {
+  --color-wash: var(--wash);
+  --color-surface: var(--surface);
+  --color-inset: var(--inset);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-rule2: var(--rule2);
+  --color-blue: var(--blue);
+  --color-blue-deep: var(--blue-deep);
+  --color-blue-soft: var(--blue-soft);
+  --color-sun: var(--sun);
+  --color-sun-soft: var(--sun-soft);
+  --color-sun-ink: var(--sun-ink);
+  --color-sun-line: var(--sun-line);
+  --color-cell: var(--cell);
+  --color-cell-soft: var(--cell-soft);
+  --color-load: var(--load);
+  --color-load-soft: var(--load-soft);
+  --color-shed: var(--shed);
+  --color-arch-bg: var(--arch-bg);
+  --color-arch-fg: var(--arch-fg);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+
+  --font-display: var(--font-bricolage), 'Trebuchet MS', system-ui, sans-serif;
+  --font-sans: var(--font-instrument), 'Segoe UI', system-ui, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, Consolas, monospace;
+  --font-arabic: var(--font-kufi), 'Segoe UI', Tahoma, sans-serif;
+
+  --radius-chip: 3px;
+  --radius-control: 4px;
+  --radius-panel: 6px;
 }
 
 @layer base {
-  html {
-    color-scheme: light;
-  }
-
   body {
-    @apply bg-limestone font-sans text-basalt antialiased;
+    @apply bg-wash font-sans text-ink antialiased;
   }
 
   ::selection {
-    @apply bg-oxide/25 text-basalt;
+    background-color: var(--blue-soft);
+    color: var(--ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-oxide);
+    outline: 2px solid var(--blue);
     outline-offset: 2px;
   }
 

@@ -9,7 +9,7 @@
 | Checked by | `scripts/check-provenance.mjs` (CI from phase 01.5) |
 | Related | [Requirements](requirements.md) NFR-07 · [Checklist](acceptance-checklist.md) AC-20, AC-28, AC-32 · [Decision log](decision-log.md) DEC-019, DEC-024, DEC-027 |
 
-**No value describing the installation in Helios v1 is a measurement.** The first release models a virtual installation; every generation, consumption and state figure it shows is simulated, forecast, external, inferred, derived or configured. The only class M values are three bench-node channels behind a hardware gate, and they describe the room the node sits in, never the plant. This document defines the categories, the register that enumerates every displayed metric, the rules that label it, and the claims the project may and may not make with it.
+**No value describing the installation in Dar Chams v1 is a measurement.** The first release models a virtual installation; every generation, consumption and state figure it shows is simulated, forecast, external, inferred, derived or configured. The only class M values are three bench-node channels behind a hardware gate, and they describe the room the node sits in, never the plant. This document defines the categories, the register that enumerates every displayed metric, the rules that label it, and the claims the project may and may not make with it.
 
 ---
 
@@ -40,7 +40,7 @@ The register is machine-readable because a labelling rule that lives only in pro
 | --- | --- | --- | --- | --- |
 | **M** | Measured | Read from a physical sensor on a real installation, with device identity and acquisition time. | A model output, however accurate. | Bench node only (3 channels, behind `hardware.node`) |
 | **X** | External | Supplied by a third party's product: forecast API, reanalysis archive, reference dataset, tariff document. | Measured by us; produced by our model. | Weather inputs (6 metrics) |
-| **S** | Simulated | Produced by a Helios model of the virtual installation: astronomy, weather generator, PV physics, battery, loads, grid, controller output. Ground truth *inside the simulation*. | Evidence about the real world. | 25 metrics |
+| **S** | Simulated | Produced by a Dar Chams model of the virtual installation: astronomy, weather generator, PV physics, battery, loads, grid, controller output. Ground truth *inside the simulation*. | Evidence about the real world. | 25 metrics |
 | **F** | Forecast | A prediction for an instant after its issue time; carries issue time and horizon. | An observed or simulated value for that instant. | 3 metrics |
 | **E** | Inferred | The twin's belief about a state it cannot observe directly, or a controller's expectation. | Ground truth; a probability. | 7 metrics |
 | **D** | Derived | Computed from other registered metrics for analysis or presentation: totals, ratios, loss attribution, costs, diagnostics, comparisons, forecast errors. Names its inputs. | A new model output. | 33 metrics |
@@ -54,7 +54,7 @@ Weather metrics carry `X / S` because the same field is external when a provider
 Apply these questions in order. The first match wins.
 
 1. Is it read from a sensor on a real installation? → **M**, and only from the physical bench node inside a `hardware.*` gate (impossible for any plant channel in v1).
-2. Was it supplied by an external product, without passing through a Helios model? → **X**.
+2. Was it supplied by an external product, without passing through a Dar Chams model? → **X**.
 3. Does it predict an instant after its issue time? → **F**.
 4. Is it a belief about state that is not directly observed, or a controller's expectation? → **E**.
 5. Is it declared in the scenario file? → **C**.
@@ -492,11 +492,11 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | "The household would save N TND" | **Forbidden** | No economic claim until a dated STEG tariff is cited; the cost metric is disabled (FR-GRD-03, CON-08). |
 | "The detector achieves precision / recall of …" | Allowed only on injected faults | State the fault types, counts and detection latency; the faults are synthetic and labelled (FR-ANM-02). |
 | "The forecast beats persistence" | Allowed if skill is positive per horizon | Report MAE and RMSE per horizon with sample counts; a negative result is reported, not hidden (FR-FCT-05). |
-| "Helios matches a real installation" | **Forbidden** | No measured values exist; PVGIS is a second model, not a field measurement. |
+| "Dar Chams matches a real installation" | **Forbidden** | No measured values exist; PVGIS is a second model, not a field measurement. |
 | "The PV model is validated" | **Forbidden** | Say "agrees with PVGIS within 15 % on 12 seasonal days (model-to-model)". |
 | "Battery health is predicted" | **Forbidden** | The fade proxy is disabled by default and is not a remaining-useful-life estimate (FR-BAT-06). |
 | "The demonstration works offline" | Allowed | Demonstrated with the network disabled (AC-19); the provenance label shows cached or synthetic data. |
-| "Helios controls a real installation" | **Forbidden** | No physical plant is monitored or actuated in v1 (CON-01, claim gate). |
+| "Dar Chams controls a real installation" | **Forbidden** | No physical plant is monitored or actuated in v1 (CON-01, claim gate). |
 | "The bench node measures the installation" | **Forbidden** | It reads room temperature, humidity and a relative light level; the installation stays modelled (DEC-026). |
 
 The claim gate in the [acceptance checklist](acceptance-checklist.md) remains binding regardless of what the interface can render.

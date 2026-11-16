@@ -53,8 +53,8 @@ The application dependencies arrive with the phases that need them. Installed at
 ## 2 · Install commands
 
 ```powershell
-git clone https://github.com/Shawarma-Frikz/Helios.git
-cd Helios
+git clone https://github.com/Shawarma-Frikz/Dar-Chams.git
+cd Dar-Chams
 npm ci
 npm run check
 ```

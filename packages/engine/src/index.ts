@@ -1,5 +1,5 @@
 /**
- * Public surface of the Helios engine package.
+ * Public surface of the Dar Chams engine package.
  *
  * Phase 01 built the boundary the simulation runs behind: engine identity, the
  * scenario contract and the validator any configuration must pass. Phase 02
@@ -14,7 +14,7 @@
  * experiments (DEC-002).
  */
 
-export const ENGINE_NAME = 'helios-engine';
+export const ENGINE_NAME = 'dar-chams-engine';
 export const ENGINE_VERSION = '0.1.0';
 
 export { ConfigError, describeValue, formatIssues, readPath, sortIssues } from './config/issues.ts';

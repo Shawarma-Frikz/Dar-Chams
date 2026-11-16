@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HELIOS — Project Roadmap & Graphic Charter</title>
-<meta name="description" content="A detailed engineering roadmap and visual identity system for Helios: a residential solar microgrid digital twin with a PlatformIO and Wokwi ESP32 embedded lab.">
+<title>Dar Chams — Engineering Roadmap</title>
+<meta name="description" content="The task-by-task engineering roadmap for Dar Chams, a simulation-first residential solar microgrid twin, with its established embedded lab and acceptance gates.">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap');
 :root{--basalt:#202B2A;--limestone:#E9E3D5;--oxide:#B86B45;--sage:#8A9B83;--lichen:#D3D86A;--slate:#526C70;--chalk:#F3EFE6;--clay:#A64F3D;--ink:#26302E;--muted:#68736D;--line:#D1CCBF;--serif:'Literata',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--mono:'DM Mono',Consolas,monospace}
@@ -22,12 +22,14 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
 @media(max-width:560px){main{padding:0 16px 55px}.topin{padding:0 16px}.hero{padding:30px 21px}.hero h1{font-size:48px}.hero-meta{gap:12px}.section-head h2{font-size:26px}.phase-head{grid-template-columns:48px 1fr;gap:12px}.phase-no{font-size:34px}.phase-head h2{font-size:24px}.flow,.rules,.metrics,.gate-grid{grid-template-columns:1fr}.tasks{min-width:760px}.palette{gap:8px}.swatch i{height:58px}.footline{display:block}}
 @media print{@page{size:A4;margin:12mm}body{background:white}.top{display:none}main{max-width:none;padding:0}.hero{break-inside:avoid}.phase-section{break-before:page}.tasks tr{break-inside:avoid}.charter-hero{break-inside:avoid}a{color:inherit}}
 </style>
+
+<style>.identity-note{width:calc(100% - 60px);max-width:1160px;margin:0 auto 24px;padding:14px 18px;border-left:3px solid #1456A0;background:#F8FAF9;color:#0E1B2C}.identity-note strong{font:600 11px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}.identity-note p{margin:5px 0 0;font-size:13px}.identity-note a{color:#1456A0;text-decoration:underline;text-underline-offset:3px}@media(max-width:560px){.identity-note{width:calc(100% - 32px)}}</style>
 </head>
 <body>
-<header class="top"><div class="topin"><div class="wordmark">HELIOS <span>ENGINEERING ROADMAP</span></div><nav><a href="#brief">Brief</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#embedded">Embedded lab</a><a href="#charter">Graphic charter</a><a href="#validation">Validation</a></nav></div></header>
+<header class="top"><div class="topin"><div class="wordmark">DAR CHAMS <span>ENGINEERING ROADMAP</span></div><nav><a href="#brief">Brief</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#embedded">Embedded lab</a><a href="#charter">Previous charter</a><a href="#validation">Validation</a></nav></div></header>
 <main>
 <section class="hero">
- <div class="hero-inner"><p class="eyebrow">RESIDENTIAL ENERGY SYSTEMS · SIMULATION · DIGITAL TWIN</p><h1>Helios</h1>
+ <div class="hero-inner"><p class="eyebrow">RESIDENTIAL ENERGY SYSTEMS · SIMULATION · DIGITAL TWIN</p><h1>Dar Chams</h1>
  <p class="lede">A simulation-first residential solar microgrid with an interactive 3D digital twin, plus a local embedded lab: ESP32 firmware built with PlatformIO, simulated circuits in Wokwi, and a telemetry bridge to the same energy model.</p></div>
  <div class="hero-meta">
   <div><span>Project class</span><b>Engineering prototype / digital twin</b></div>
@@ -36,10 +38,11 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
   <div><span>Build philosophy</span><b>Physics first, hardware-ready</b></div>
  </div>
 </section>
+<aside class="identity-note" aria-label="Dar Chams identity update"><strong>Dar Chams identity · 2026</strong><p>This document remains the detailed engineering schedule. Its original visual charter below is retained for history; the adopted <a href="Dar_Chams_Charter.html">Dar Chams identity charter</a> and <a href="docs/roadmap-adoption.md">roadmap adoption crosswalk</a> govern current product identity and additions.</p></aside>
 <section class="intro-grid" id="brief">
- <div><p class="eyebrow">01 · PROJECT DEFINITION</p><h2>What Helios is meant to prove</h2>
- <p>Helios is not a decorative smart-home dashboard. It is a configurable virtual energy installation. Its simulation engine models photovoltaic generation, household demand, battery storage, conversion limits and grid exchange at a defined timestep. A management layer first runs a transparent baseline, then a forecast-aware policy. The interface makes the resulting state and decisions inspectable.</p>
- <p>The core release remains software-first and fully useful without hardware. Alongside it, an embedded track builds an ESP32 sensor node locally with PlatformIO and simulates its circuit in Wokwi. Wokwi telemetry enters Helios through the same versioned ingestion contract that a physical ESP32 will use later. The embedded node supplies observations; the energy engine remains responsible for system-level energy accounting, forecasts and dispatch.</p>
+ <div><p class="eyebrow">01 · PROJECT DEFINITION</p><h2>What Dar Chams is meant to prove</h2>
+ <p>Dar Chams is not a decorative smart-home dashboard. It is a configurable virtual energy installation. Its simulation engine models photovoltaic generation, household demand, battery storage, conversion limits and grid exchange at a defined timestep. A management layer first runs a transparent baseline, then a forecast-aware policy. The interface makes the resulting state and decisions inspectable.</p>
+ <p>The core release remains software-first and fully useful without hardware. Alongside it, an embedded track builds an ESP32 sensor node locally with PlatformIO and simulates its circuit in Wokwi. Wokwi telemetry enters Dar Chams through the same versioned ingestion contract that a physical ESP32 will use later. The embedded node supplies observations; the energy engine remains responsible for system-level energy accounting, forecasts and dispatch.</p>
  </div>
  <div class="principles">
   <div class="principle"><b>01</b><div><strong>One source of truth</strong><small>The simulation engine owns state; charts and 3D are projections of it.</small></div></div>
@@ -74,17 +77,17 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
 <tr><td>Telemetry bridge</td><td><strong>Node.js MQTT subscriber / adapter</strong></td><td>Schema validation, provenance, timestamps, deduplication, liveness and event persistence.</td></tr>
 </tbody></table></div>
 
-<div class="section-head" id="embedded"><div class="section-index">03A</div><div><h2>Embedded lab · PlatformIO + Wokwi</h2><p>A parallel development track—not a replacement for the energy twin. Build firmware on the local machine, simulate the ESP32 circuit in VS Code, publish telemetry through MQTT, and ingest it into Helios using a stable device contract.</p></div></div>
+<div class="section-head" id="embedded"><div class="section-index">03A</div><div><h2>Embedded lab · PlatformIO + Wokwi</h2><p>A parallel development track—not a replacement for the energy twin. Build firmware on the local machine, simulate the ESP32 circuit in VS Code, publish telemetry through MQTT, and ingest it into Dar Chams using a stable device contract.</p></div></div>
 <div class="flow">
  <div><b>01 · FIRMWARE</b><strong>PlatformIO</strong><small>ESP32 source, drivers, tests and locally compiled firmware.bin / firmware.elf.</small></div>
  <div><b>02 · CIRCUIT</b><strong>Wokwi simulator</strong><small>ESP32 DevKit, DHT22, light proxy, controls and repeatable fault scenarios.</small></div>
  <div><b>03 · TRANSPORT</b><strong>MQTT · free path</strong><small>Free public broker for Wokwi data; local Mosquitto for the physical bench; replay needs neither.</small></div>
  <div><b>04 · INGESTION</b><strong>Telemetry adapter</strong><small>Schema validation, units, receipt timestamps, deduplication, liveness and append-only events.</small></div>
- <div><b>05 · DIGITAL TWIN</b><strong>Four source modes</strong><small>Scenario, Wokwi, Physical, Replay. Physics and energy accounting stay in Helios (FR-EMB-05).</small></div>
+ <div><b>05 · DIGITAL TWIN</b><strong>Four source modes</strong><small>Scenario, Wokwi, Physical, Replay. Physics and energy accounting stay in Dar Chams (FR-EMB-05).</small></div>
 </div>
 <div class="charter-hero" style="margin-top:12px">
  <h3>One contract. Three data sources.</h3>
- <p>Helios must treat Wokwi, a physical ESP32 and recorded telemetry as interchangeable sources at the ingestion boundary—not as interchangeable truth. Every field carries provenance, unit, quality and freshness. The dashboard always shows whether a value is simulated, measured, derived or estimated.</p>
+ <p>Dar Chams must treat Wokwi, a physical ESP32 and recorded telemetry as interchangeable sources at the ingestion boundary—not as interchangeable truth. Every field carries provenance, unit, quality and freshness. The dashboard always shows whether a value is simulated, measured, derived or estimated.</p>
 </div>
 <div class="table-wrap"><table class="tasks"><thead><tr><th>Component</th><th>Choice</th><th>Boundary / important note</th></tr></thead><tbody>
 <tr><td>Firmware IDE</td><td><strong>VS Code + PlatformIO</strong></td><td>PlatformIO builds locally. Firmware is shared between Wokwi and the physical ESP32 wherever the target board and peripherals match.</td></tr>
@@ -101,7 +104,7 @@ ESP32 bench ──MQTT──▶ Mosquitto (LAN) ──────────�
       │ PlatformIO firmware                       ├─ validate schema + units
       │ Wokwi diagram                             ├─ device liveness + event log
       ▼                                           ▼
-Wokwi simulator                             Helios data-source adapter
+Wokwi simulator                             Dar Chams data-source adapter
                                                   │
                                   ┌───────────────┴────────────────┐
                                   ▼                                ▼
@@ -109,8 +112,8 @@ Wokwi simulator                             Helios data-source adapter
                            scenario / wokwi / physical / replay   physics + optimizer
 </div>
 <div class="charter-grid">
- <div class="charter-panel"><h3>Local developer workflow</h3><ol><li>Open the embedded project in VS Code.</li><li>Run <code>pio run</code> to compile the ESP32 firmware.</li><li>Start Wokwi from the command palette; it loads the compiled binary.</li><li>For Wokwi, point the node at the free public broker; for the bench, run Mosquitto locally and the Helios adapter beside it.</li><li>Start the simulation and inspect incoming telemetry in Helios.</li><li>Save a replay fixture before changing firmware or circuit wiring.</li></ol></div>
- <div class="charter-panel"><h3>Truthfulness & constraints</h3><ul><li>Wokwi simulates the microcontroller and supported virtual components; it does not reproduce analog tolerances, electrical noise, sensor calibration or real PV/battery dynamics perfectly.</li><li>The solar microgrid physics engine remains a separate model. Sensor readings inform selected inputs; they do not magically become full PV/battery measurements.</li><li>Use measured / simulated / estimated labels and freshness indicators everywhere.</li><li>Keep a deterministic offline mode so Helios still works when Wokwi, MQTT or the network is unavailable.</li></ul></div>
+ <div class="charter-panel"><h3>Local developer workflow</h3><ol><li>Open the embedded project in VS Code.</li><li>Run <code>pio run</code> to compile the ESP32 firmware.</li><li>Start Wokwi from the command palette; it loads the compiled binary.</li><li>For Wokwi, point the node at the free public broker; for the bench, run Mosquitto locally and the Dar Chams adapter beside it.</li><li>Start the simulation and inspect incoming telemetry in Dar Chams.</li><li>Save a replay fixture before changing firmware or circuit wiring.</li></ol></div>
+ <div class="charter-panel"><h3>Truthfulness & constraints</h3><ul><li>Wokwi simulates the microcontroller and supported virtual components; it does not reproduce analog tolerances, electrical noise, sensor calibration or real PV/battery dynamics perfectly.</li><li>The solar microgrid physics engine remains a separate model. Sensor readings inform selected inputs; they do not magically become full PV/battery measurements.</li><li>Use measured / simulated / estimated labels and freshness indicators everywhere.</li><li>Keep a deterministic offline mode so Dar Chams still works when Wokwi, MQTT or the network is unavailable.</li></ul></div>
 </div>
 
 <div class="section-head" id="roadmap"><div class="section-index">04</div><div><h2>Complete implementation roadmap</h2><p>Each task has a stable ID, concrete implementation work, and a definition of done. Work in order where dependencies matter. A phase is not complete because a screen exists; it is complete when its acceptance conditions pass.</p></div></div>
@@ -118,13 +121,13 @@ Wokwi simulator                             Helios data-source adapter
     <section class="phase-section" id="phase-00">
       <div class="phase-head">
         <div class="phase-no">00</div>
-        <div><p class="eyebrow">PHASE 00 · Week 1</p><h2>Project definition &amp; engineering decisions</h2><p class="phase-desc">Lock what Helios is, what it is not, and what counts as a successful simulation.</p></div>
+        <div><p class="eyebrow">PHASE 00 · Week 1</p><h2>Project definition &amp; engineering decisions</h2><p class="phase-desc">Lock what Dar Chams is, what it is not, and what counts as a successful simulation.</p></div>
       </div>
       <div class="deliverable"><span>PHASE OUTPUT</span><strong>Scope brief, requirements register, decision log, provenance register, signed checklist, three scenarios</strong></div>
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
         <tr>
           <td class="task-id">00.1</td>
-          <td><strong>Write the product statement</strong><p>Describe Helios as a simulation-first residential solar microgrid and energy-management digital twin. State that the first release models a virtual installation; physical ESP32/sensor integration is a later extension.</p></td>
+          <td><strong>Write the product statement</strong><p>Describe Dar Chams as a simulation-first residential solar microgrid and energy-management digital twin. State that the first release models a virtual installation; physical ESP32/sensor integration is a later extension.</p></td>
           <td><span class="done-label">DONE WHEN</span><p>One paragraph appears in README and report; it does not claim a real installation is being controlled.</p></td>
         </tr>
 
@@ -185,7 +188,7 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.3</td>
-          <td><strong>Create the application shell</strong><p>Set up Next.js, React, TypeScript, linting, formatting, and a minimal route structure. Keep simulation logic in a separate package/module. Next.js 16.4.6 App Router, React 19.3.1 and TypeScript 5.9.3 in strict mode share one ESLint 9 flat config and one Prettier 3 rule set; Tailwind CSS 4 carries the graphic-charter palette as theme tokens, and six routes share one layout. The engine is the separate workspace package <code>@helios/engine</code> in <code>packages/engine</code>, and lint forbids it from importing React, Next or the application (FR-SIM-01, NFR-06, DEC-002, DEC-032).</p></td>
+          <td><strong>Create the application shell</strong><p>Set up Next.js, React, TypeScript, linting, formatting, and a minimal route structure. Keep simulation logic in a separate package/module. Next.js 16.4.6 App Router, React 19.3.1 and TypeScript 5.9.3 in strict mode share one ESLint 9 flat config and one Prettier 3 rule set; Tailwind CSS 4 carries the graphic-charter palette as theme tokens, and six routes share one layout. The engine is the separate workspace package <code>@dar-chams/engine</code> in <code>packages/engine</code>, and lint forbids it from importing React, Next or the application (FR-SIM-01, NFR-06, DEC-002, DEC-032).</p></td>
           <td><span class="done-label">DONE WHEN</span><p>The app starts and the TypeScript/lint checks pass: <code>npm run dev</code> serves it, <code>npm run build</code> writes the static export to <code>out/</code>, and type-check, lint and format check pass (NFR-06).</p></td>
         </tr>
 
@@ -210,7 +213,7 @@ Wokwi simulator                             Helios data-source adapter
     <section class="phase-section" id="phase-02">
       <div class="phase-head">
         <div class="phase-no">02</div>
-        <div><p class="eyebrow">PHASE 02 · Weeks 2–3</p><h2>System model &amp; energy mathematics</h2><p class="phase-desc">Build the numerical heart of Helios before the 3D house. The simulator is the source of truth.</p></div>
+        <div><p class="eyebrow">PHASE 02 · Weeks 2–3</p><h2>System model &amp; energy mathematics</h2><p class="phase-desc">Build the numerical heart of Dar Chams before the 3D house. The simulator is the source of truth.</p></div>
       </div>
       <div class="deliverable"><span>PHASE OUTPUT</span><strong>Deterministic energy engine with unit tests</strong></div>
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
@@ -808,7 +811,7 @@ Wokwi simulator                             Helios data-source adapter
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task &amp; implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
         <tr>
           <td class="task-id">13.1</td>
-          <td><strong>Create the embedded workspace</strong><p>Add an /embedded/helios-node PlatformIO project with platformio.ini, src/, include/, lib/, test/, and README. Keep it in the same repository or a clearly versioned companion repository.</p></td>
+          <td><strong>Create the embedded workspace</strong><p>Add an /embedded/dar-chams-node PlatformIO project with platformio.ini, src/, include/, lib/, test/, and README. Keep it in the same repository or a clearly versioned companion repository.</p></td>
           <td><span class="done-label">DONE WHEN</span><p>A clean clone can build the firmware using documented commands (FR-EMB-01).</p></td>
         </tr><tr>
           <td class="task-id">13.2</td>
@@ -846,7 +849,7 @@ Wokwi simulator                             Helios data-source adapter
     <section class="phase-section" id="phase-14">
       <div class="phase-head">
         <div class="phase-no">14</div>
-        <div><p class="eyebrow">PHASE 14 · Weeks 15–17 · EMBEDDED TRACK</p><h2>Wokwi circuit, virtual sensors &amp; local integration</h2><p class="phase-desc">Create a repeatable circuit in Wokwi and feed the same local Helios ingestion path that will later receive physical ESP32 telemetry. Wokwi simulates the board and components; the energy engine remains the authority for system-level physics.</p></div>
+        <div><p class="eyebrow">PHASE 14 · Weeks 15–17 · EMBEDDED TRACK</p><h2>Wokwi circuit, virtual sensors &amp; local integration</h2><p class="phase-desc">Create a repeatable circuit in Wokwi and feed the same local Dar Chams ingestion path that will later receive physical ESP32 telemetry. Wokwi simulates the board and components; the energy engine remains the authority for system-level physics.</p></div>
       </div>
       <div class="deliverable"><span>PHASE OUTPUT</span><strong>Wokwi diagram, simulator configuration, live telemetry path, scenario controls</strong></div>
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task &amp; implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
@@ -876,7 +879,7 @@ Wokwi simulator                             Helios data-source adapter
           <td><span class="done-label">DONE WHEN</span><p>Each profile is repeatable and produces distinguishable, documented telemetry that can be recorded as a replay fixture (FR-EMB-09).</p></td>
         </tr><tr>
           <td class="task-id">14.7</td>
-          <td><strong>Implement MQTT topics</strong><p>Use a namespaced topic convention such as helios/{site_id}/{device_id}/telemetry, /status, /events and /cmd. Define retained status and command expiry. Keep the topic prefix configurable.</p></td>
+          <td><strong>Implement MQTT topics</strong><p>Use a namespaced topic convention such as dar-chams/{site_id}/{device_id}/telemetry, /status, /events and /cmd. Define retained status and command expiry. Keep the topic prefix configurable.</p></td>
           <td><span class="done-label">DONE WHEN</span><p>A topic contract document and example publish/subscribe messages are committed (FR-EMB-03).</p></td>
         </tr><tr>
           <td class="task-id">14.8</td>
@@ -892,7 +895,7 @@ Wokwi simulator                             Helios data-source adapter
           <td><span class="done-label">DONE WHEN</span><p>Malformed, duplicated, late and valid messages each follow a tested path (AC-30).</p></td>
         </tr><tr>
           <td class="task-id">14.11</td>
-          <td><strong>Add a source-mode selector to Helios</strong><p>Add an explicit selector: Scenario Simulation, Wokwi Node, Physical Node and Recorded Replay. Selecting a mode must not mutate a stored run, and every run manifest records <code>source_mode</code>. Live data is visibly marked and never overwrites the deterministic scenario.</p></td>
+          <td><strong>Add a source-mode selector to Dar Chams</strong><p>Add an explicit selector: Scenario Simulation, Wokwi Node, Physical Node and Recorded Replay. Selecting a mode must not mutate a stored run, and every run manifest records <code>source_mode</code>. Live data is visibly marked and never overwrites the deterministic scenario.</p></td>
           <td><span class="done-label">DONE WHEN</span><p>Switching source modes is explicit, reversible and visible across the dashboard and 3D twin, and 100% of manifests carry <code>source_mode</code> (AC-31).</p></td>
         </tr><tr>
           <td class="task-id">14.12</td>
@@ -1001,14 +1004,14 @@ Wokwi simulator                             Helios data-source adapter
       </tbody></table></div>
     </section>
 
-<div class="section-head" id="charter"><div class="section-index">06</div><div><h2>Graphic charter · visual identity system</h2><p>The visual direction is an architectural field atlas: part energy instrumentation, part material study, part domestic cutaway drawing. It should feel designed by a small product studio—not like a generic AI dashboard or a stock green-energy template.</p></div></div>
-<div class="charter-hero"><p class="eyebrow">HELIOS · VISUAL IDENTITY 01</p><h3>“Energy, made legible.”</h3><p>Quiet mineral surfaces, dark structural ink, oxidized copper for captured solar energy, sage for storage, and a restrained lichen accent for active flows. The visual language borrows from architectural section drawings, field instruments, and printed technical atlases.</p></div>
+<div class="section-head" id="charter"><div class="section-index">06</div><div><h2>Previous visual charter · historical</h2><p>This original Dar Chams palette and motif are preserved as project history and are superseded by the adopted <a href="Dar_Chams_Charter.html">Dar Chams charter</a>. Use the current charter for product identity, colour, typography and interface decisions.</p></div></div>
+<div class="charter-hero"><p class="eyebrow">DAR CHAMS · VISUAL IDENTITY 01</p><h3>“Energy, made legible.”</h3><p>Quiet mineral surfaces, dark structural ink, oxidized copper for captured solar energy, sage for storage, and a restrained lichen accent for active flows. The visual language borrows from architectural section drawings, field instruments, and printed technical atlases.</p></div>
 <h3 style="font:500 22px var(--serif);color:var(--basalt)">01 · Core palette</h3>
 <div class="palette"><div class="swatch"><i style="--sw:#202B2A"></i><b>Basalt</b><code>#202B2A</code><small>Primary dark / structure</small></div><div class="swatch"><i style="--sw:#E9E3D5"></i><b>Limestone</b><code>#E9E3D5</code><small>Main canvas / light surfaces</small></div><div class="swatch"><i style="--sw:#B86B45"></i><b>Oxide</b><code>#B86B45</code><small>Primary accent / solar energy</small></div><div class="swatch"><i style="--sw:#8A9B83"></i><b>Sage</b><code>#8A9B83</code><small>Storage / healthy state</small></div><div class="swatch"><i style="--sw:#D3D86A"></i><b>Lichen</b><code>#D3D86A</code><small>Highlights / active energy</small></div><div class="swatch"><i style="--sw:#526C70"></i><b>Slate Blue</b><code>#526C70</code><small>Grid / secondary information</small></div><div class="swatch"><i style="--sw:#F3EFE6"></i><b>Chalk</b><code>#F3EFE6</code><small>Panels / elevated surfaces</small></div><div class="swatch"><i style="--sw:#A64F3D"></i><b>Signal Clay</b><code>#A64F3D</code><small>Warnings / faults only</small></div></div>
 <div class="charter-grid">
  <div class="charter-panel"><h3>02 · Typography</h3><p class="type-sample">A house in balance.</p><p>Literata — editorial headlines, chapter titles, large metrics when emphasis is needed. Use a restrained weight and avoid oversized display text in everyday UI.</p><p class="type-ui">Generation · 2.4 kW</p><p>DM Sans — navigation, controls, body copy, labels and explanatory text. Prioritize legibility and compact rhythm.</p><p class="type-mono">PV-02 / 14:35 / 0840 WH</p><p>DM Mono — timestamps, IDs, units, sensor values, model versions and small technical annotations only.</p></div>
  <div class="charter-panel"><h3>03 · Graphic motif</h3><p>The signature motif is the <b>sun path / circuit trace</b>: a measured arc crossing a rectilinear house plan, punctuated by small node marks. It can appear as a section divider, loading mark, chart annotation, or cover graphic.</p>
- <div class="motif-box"><svg viewBox="0 0 620 190" role="img" aria-label="Helios sun-path graphic motif"><path d="M25 150 H595 M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#526C70" stroke-width="2" stroke-dasharray="5 7"/><path d="M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#B86B45" stroke-width="3"/><circle cx="310" cy="18" r="13" fill="#D3D86A" stroke="#202B2A" stroke-width="2"/><path d="M310 32 V80 H400 V116 H500" fill="none" stroke="#202B2A" stroke-width="2"/><rect x="392" y="108" width="16" height="16" fill="#8A9B83" stroke="#202B2A"/><circle cx="500" cy="116" r="6" fill="#B86B45"/><path d="M115 150 V132 H205 V150 M415 150 V132 H505 V150" fill="none" stroke="#202B2A" stroke-width="2"/><g fill="#526C70"><circle cx="80" cy="150" r="4"/><circle cx="540" cy="150" r="4"/></g></svg></div></div>
+ <div class="motif-box"><svg viewBox="0 0 620 190" role="img" aria-label="Dar Chams sun-path graphic motif"><path d="M25 150 H595 M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#526C70" stroke-width="2" stroke-dasharray="5 7"/><path d="M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#B86B45" stroke-width="3"/><circle cx="310" cy="18" r="13" fill="#D3D86A" stroke="#202B2A" stroke-width="2"/><path d="M310 32 V80 H400 V116 H500" fill="none" stroke="#202B2A" stroke-width="2"/><rect x="392" y="108" width="16" height="16" fill="#8A9B83" stroke="#202B2A"/><circle cx="500" cy="116" r="6" fill="#B86B45"/><path d="M115 150 V132 H205 V150 M415 150 V132 H505 V150" fill="none" stroke="#202B2A" stroke-width="2"/><g fill="#526C70"><circle cx="80" cy="150" r="4"/><circle cx="540" cy="150" r="4"/></g></svg></div></div>
  <div class="charter-panel"><h3>04 · Icon and illustration style</h3><ul><li>Use thin, consistent 1.5–2 px strokes and simple geometric silhouettes.</li><li>Prefer custom line icons for PV, battery, grid, inverter, appliance and weather.</li><li>3D assets use a coherent low-poly architectural style, matte materials and restrained edge detail.</li><li>Use diagram labels and leader lines rather than decorative floating labels.</li><li>Avoid gradients, glowing neon outlines, glassmorphism, generic AI sparkles and random green leaves.</li></ul></div>
  <div class="charter-panel"><h3>05 · Layout and composition</h3><ul><li>Use a 12-column desktop grid, generous outer margins, and consistent 8 px spacing increments.</li><li>Favor editorial sections, aligned data tables, thin rules and one strong visual per screen.</li><li>Use cards only when they group a real object or action; not every metric needs a card.</li><li>Keep chart axes, units and time ranges explicit. Do not remove context to make charts look cleaner.</li><li>On mobile, prioritize current system state and appliance controls; collapse the 3D scene to a compact view or 2D map.</li></ul></div>
  <div class="charter-panel"><h3>06 · Data color semantics</h3><ul><li>Oxide: solar generation and PV-derived energy.</li><li>Sage: battery storage, reserve and healthy component state.</li><li>Slate blue: grid exchange and environmental context.</li><li>Lichen: active energy route or selected/interactive state; use sparingly.</li><li>Signal clay: warning, anomaly or fault. Pair every color with text/icon/pattern; never rely on color alone.</li></ul></div>
@@ -1053,8 +1056,8 @@ Wokwi simulator                             Helios data-source adapter
  <div class="gate"><b>OPTIMIZER GATE</b><p>Do not claim improvement unless the baseline and optimizer use identical scenarios, forecasts, initial states and random seeds.</p></div>
  <div class="gate"><b>3D GATE</b><p>Do not add detailed models before the semantic object map and state binding work. The scene is a client of the simulation.</p></div>
  <div class="gate"><b>HARDWARE GATE</b><p>Physical integration is a scheduled track (phases 12–16), not a future milestone. It stays on the free path (CON-14), keeps the node outside every control loop (FR-EMB-07), activates class M only for bench channels (DEC-027), and passes AC-29…AC-37 before the phase-16 handoff.</p></div>
- <div class="gate"><b>CLAIM GATE</b><p>Describe Helios as a simulation-based digital twin until it is connected to a real installation with validated telemetry.</p></div>
+ <div class="gate"><b>CLAIM GATE</b><p>Describe Dar Chams as a simulation-based digital twin until it is connected to a real installation with validated telemetry.</p></div>
 </div>
-<footer><h2>The Helios standard</h2><p>Build a coherent energy model first. Make every decision inspectable. Let the 3D house show the same state the equations calculate. Compare strategies fairly, publish the limitations, and leave a clean path from virtual sensors to physical hardware.</p><div class="footline"><span>HELIOS · ENGINEERING ROADMAP & GRAPHIC CHARTER</span><span>17-PHASE PLAN · DIGITAL TWIN + EMBEDDED LAB</span></div></footer>
+<footer><h2>The Dar Chams standard</h2><p>Build a coherent energy model first. Make every decision inspectable. Let the 3D house show the same state the equations calculate. Compare strategies fairly, publish the limitations, and leave a clean path from virtual sensors to physical hardware.</p><div class="footline"><span>DAR CHAMS · ENGINEERING ROADMAP & GRAPHIC CHARTER</span><span>17-PHASE PLAN · DIGITAL TWIN + EMBEDDED LAB</span></div></footer>
 </main>
 </body></html>

@@ -13,8 +13,8 @@
  * rendering a page with half a configuration.
  */
 
-import { ConfigError, ENGINE_NAME, ENGINE_VERSION } from '@helios/engine';
-import type { Scenario } from '@helios/engine';
+import { ConfigError, ENGINE_NAME, ENGINE_VERSION } from '@dar-chams/engine';
+import type { Scenario } from '@dar-chams/engine';
 
 import { DEFAULT_SETTINGS } from './defaults.ts';
 import { parseUserSettings } from './settings.ts';

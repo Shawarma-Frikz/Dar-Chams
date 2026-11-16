@@ -156,7 +156,7 @@ server.on('error', (error) => {
 });
 
 server.listen(port, () => {
-  console.log(`Helios static preview — http://localhost:${port}`);
+  console.log(`Dar Chams static preview — http://localhost:${port}`);
   console.log(`Serving ${root}`);
   console.log('Ctrl+C to stop.');
 });

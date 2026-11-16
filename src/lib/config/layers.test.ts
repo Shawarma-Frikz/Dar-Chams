@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
-import { ConfigError } from '@helios/engine';
+import { ConfigError } from '@dar-chams/engine';
 
 import { DEFAULT_SCENARIO_SOURCE, DEFAULT_SETTINGS } from './defaults.ts';
 import { resolveConfiguration } from './resolve.ts';

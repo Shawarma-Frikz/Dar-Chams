@@ -1,5 +1,5 @@
 {
-  "$comment": "Single source of truth for every value Helios may display. The contract is described in data-provenance.md; scripts/check-provenance.mjs validates this file, regenerates the register table in that document and fails the build if the two disagree.",
+  "$comment": "Single source of truth for every value Dar Chams may display. The contract is described in data-provenance.md; scripts/check-provenance.mjs validates this file, regenerates the register table in that document and fails the build if the two disagree.",
   "register_version": "1.1.0",
   "schema_version": "0.1.0",
   "created": "2026-11-15",

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: { unoptimized: true },
   // The engine ships TypeScript source inside the workspace (DEC-002).
-  transpilePackages: ['@helios/engine'],
+  transpilePackages: ['@dar-chams/engine'],
 };
 
 export default nextConfig;

@@ -7,7 +7,7 @@
  */
 
 import scenarioSchema from '../../../scenarios/scenario.schema.json' with { type: 'json' };
-import { createScenarioValidator } from '@helios/engine';
+import { createScenarioValidator } from '@dar-chams/engine';
 
 export const SCENARIO_SCHEMA_SOURCE = 'scenarios/scenario.schema.json';
 

@@ -30,7 +30,7 @@ import {
   stepsInSiteDay,
   wattsFromKilowatts,
   zoneOffsetMinutes,
-} from '@helios/engine';
+} from '@dar-chams/engine';
 
 const ROOT = path.resolve('.');
 const SCENARIOS = path.join(ROOT, 'scenarios');

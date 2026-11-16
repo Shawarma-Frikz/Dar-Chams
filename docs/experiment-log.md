@@ -29,7 +29,7 @@ order. `check-docs` rejects a record that omits one.
 | `Hypothesis` | What was expected before seeing the result |
 | `Scenario` | A scenario file that exists in `scenarios/` |
 | `Seed` | The integer seed taken from that file |
-| `Engine` | `helios-engine` and the version from the run manifest |
+| `Engine` | `dar-chams-engine` and the version from the run manifest |
 | `Metrics` | The registered `MET-nn` identifiers the record reports |
 | `Result` | The measured outcome, including a negative one |
 | `Artefact` | The untracked manifest or report path |
@@ -66,7 +66,7 @@ fixtures); the template below is a format illustration and is not counted as a r
 - Hypothesis: Sunrise and solar noon stay within ±2 minutes, and noon elevation within ±0.5°.
 - Scenario: scenarios/tunis-typical-v1.json
 - Seed: 42
-- Engine: helios-engine 0.1.0
+- Engine: dar-chams-engine 0.1.0
 - Metrics: MET-01, MET-02
 - Result: pending — this is the template, not a result.
 - Artefact: runs/exp-001/manifest.json

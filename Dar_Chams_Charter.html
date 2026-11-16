@@ -1,0 +1,908 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Dar Chams Charter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:wght@400..700&family=Martian+Mono:wght@400..700&family=Noto+Kufi+Arabic:wght@400..800&display=swap">
+<style>
+/* Layout concept: a left-aligned reference document on cool lime-wash. The hero is a doorway arch holding a real sun-path diagram for Tunis. Saffron is reserved for energy, never decoration. */
+:root{
+  --wash:#EDF0EE; --surface:#F8FAF9; --inset:#E2E8E5;
+  --ink:#0E1B2C; --ink2:#2F4157; --muted:#4E6177;
+  --rule:#CBD4D0; --rule2:#9DAAA5;
+  --blue:#1456A0; --blue-deep:#0B3A73; --blue-soft:#DCE8F6;
+  --sun:#EFA51A; --sun-soft:#FBEBC8; --sun-ink:#7A4E00;
+  --cell:#0F7B6C; --cell-soft:#D3EBE6;
+  --load:#B02A52; --load-soft:#F3DAE1;
+  --shed:#6B7A8C;
+  --arch-bg:#0B3A73; --arch-fg:#EAF1FA;
+  --code-bg:#0B1B31; --code-fg:#DCE7F5;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --sans:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Consolas,monospace;
+  --arabic:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --wash:#0A1424; --surface:#101C30; --inset:#16243B;
+  --ink:#E8EEF5; --ink2:#C3CFDD; --muted:#98A8BC;
+  --rule:#243551; --rule2:#4A5F7F;
+  --blue:#6FA8F0; --blue-deep:#A5C8F7; --blue-soft:#17304F;
+  --sun:#F7BE45; --sun-soft:#3A2D10; --sun-ink:#F7D488;
+  --cell:#3CC1AB; --cell-soft:#12362F;
+  --load:#EE7C9A; --load-soft:#3C1A27;
+  --shed:#8796AA;
+  --arch-bg:#0F2A4F;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --wash:#0A1424; --surface:#101C30; --inset:#16243B;
+  --ink:#E8EEF5; --ink2:#C3CFDD; --muted:#98A8BC;
+  --rule:#243551; --rule2:#4A5F7F;
+  --blue:#6FA8F0; --blue-deep:#A5C8F7; --blue-soft:#17304F;
+  --sun:#F7BE45; --sun-soft:#3A2D10; --sun-ink:#F7D488;
+  --cell:#3CC1AB; --cell-soft:#12362F;
+  --load:#EE7C9A; --load-soft:#3C1A27;
+  --shed:#8796AA;
+  --arch-bg:#0F2A4F;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--wash);z-index:30}
+a{color:var(--blue);text-underline-offset:3px}
+a:hover{color:var(--blue-deep)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px}
+p{margin:0 0 12px;max-width:74ch}
+ul,ol{margin:8px 0 14px;padding-left:22px;max-width:78ch}
+li{margin:5px 0}
+b,strong{font-weight:600}
+code{font:12.5px/1.4 var(--mono);background:var(--inset);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+pre{background:var(--code-bg);color:var(--code-fg);padding:16px 18px;border-radius:4px;overflow-x:auto;font:12.5px/1.65 var(--mono);margin:12px 0 20px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit;overflow-wrap:normal}
+.m-arch{fill:var(--blue)}.m-sun{fill:var(--sun)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:31;background:var(--wash);border-bottom:1px solid var(--rule)}
+.top .in{max-width:1180px;margin:auto;display:flex;align-items:center;gap:22px;min-height:52px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{display:flex;align-items:center;gap:9px;font:700 17px/1 var(--display);letter-spacing:-.01em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand svg{width:22px;height:22px;flex:none}
+.top nav{margin-left:auto;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.top nav a{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap;padding:12px 0}
+.top nav a:hover{color:var(--blue)}
+
+.wrap{max-width:1180px;margin:0 auto;padding-top:0;padding-bottom:96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:48px;align-items:end;padding-top:56px;padding-bottom:40px}
+.eyebrow,.k{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.k{display:block;margin-bottom:6px;font-size:10.5px}
+.hero h1{font:800 clamp(46px,8.4vw,96px)/.92 var(--display);letter-spacing:-.035em;margin:14px 0 20px;text-wrap:balance}
+.lede{font:400 clamp(17px,2.2vw,20px)/1.5 var(--sans);color:var(--ink2);max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin:32px 0 0;padding-top:18px;border-top:1px solid var(--rule2)}
+.facts dt{font:500 10.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.facts dd{margin:0;font-weight:600;font-size:14px;line-height:1.4}
+.arch{background:var(--arch-bg);color:var(--arch-fg);border-radius:999px 999px 0 0;aspect-ratio:3/4;width:100%;max-width:360px;justify-self:end;overflow:hidden}
+.arch svg{display:block;width:100%;height:100%}
+
+.part{margin-top:84px;scroll-margin-top:70px}
+.part>header{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:24px;border-top:2px solid var(--ink);padding-top:18px;margin-bottom:26px}
+.part .tag{font:500 11px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.part h2{font:700 clamp(28px,4.2vw,46px)/1.04 var(--display);letter-spacing:-.025em;margin:0 0 10px;text-wrap:balance}
+.part>header p{color:var(--muted);margin:0}
+h3{font:650 22px/1.2 var(--display);letter-spacing:-.015em;margin:36px 0 10px;text-wrap:balance}
+h4{font:600 15px/1.3 var(--sans);margin:20px 0 6px}
+
+.g2,.g3,.g4{display:grid;gap:18px;margin:14px 0}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px 20px;min-width:0}
+.box h4{margin-top:0}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);margin:8px 0 24px}
+.how>div{padding:22px 24px 22px 0;min-width:0}
+.how>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+.how b{display:block;font:700 22px/1.15 var(--display);letter-spacing:-.015em;margin-bottom:6px}
+.how p{font-size:14.5px;color:var(--ink2);margin:0}
+
+.note{background:var(--inset);border-radius:4px;padding:14px 18px;margin:18px 0;font-size:14.5px;color:var(--ink2);max-width:80ch}
+.note .k{color:var(--blue)}
+.note p{margin:0}
+.note.sun{background:var(--sun-soft)}.note.sun .k{color:var(--sun-ink)}
+.note.red{background:var(--load-soft)}.note.red .k{color:var(--load)}
+
+.tw{overflow-x:auto;margin:14px 0 22px;border-top:1px solid var(--rule2)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font:500 10.5px/1.3 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;background:var(--inset);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink2)}
+td:first-child{font-weight:600;color:var(--ink)}
+table.mn td{font-size:13.5px}
+.m{font-family:var(--mono);font-size:12.5px}
+table.tasks{min-width:760px}
+table.tasks td:first-child{font:600 12px/1.5 var(--mono);color:var(--blue);white-space:nowrap;width:62px}
+table.tasks td:nth-child(2){font-weight:600;color:var(--ink);width:24%}
+table.tasks td:nth-child(3){width:46%}
+.gnote{color:var(--muted);font-size:14px;margin:0 0 6px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{font:500 11.5px/1.2 var(--mono);padding:5px 9px;background:var(--inset);border-radius:3px;color:var(--ink)}
+.chip.sun{background:var(--sun-soft)}.chip.cell{background:var(--cell-soft)}.chip.load{background:var(--load-soft)}.chip.blue{background:var(--blue-soft)}
+
+.phase{display:grid;grid-template-columns:96px minmax(0,1fr);gap:20px;background:var(--arch-bg);color:var(--arch-fg);border-radius:4px;padding:26px 28px;margin:38px 0 6px}
+.phase .pn{font:800 52px/.9 var(--display);color:var(--sun);letter-spacing:-.03em}
+.phase .pl{font:500 10.5px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#A9C0DE;display:block;margin-bottom:6px}
+.phase h3{margin:0 0 6px;color:var(--arch-fg);font-size:26px}
+.phase p{color:#C7D6EA;margin:0;font-size:14.5px}
+.phase .out{font:500 10.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sun);margin-top:10px;display:block}
+.step{border-top:1px solid var(--rule);padding:18px 0 4px}
+.step h4{margin:0 0 6px;font:650 19px/1.2 var(--display)}
+.step .meta{font:500 10.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
+.proof{background:var(--blue-soft);border-radius:4px;padding:10px 14px;margin:12px 0;font-size:13.5px;color:var(--ink)}
+.proof b{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-right:8px}
+
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:16px 0}
+.week{border-top:3px solid var(--blue);padding-top:8px;min-width:0}
+.week b{font:600 11px var(--mono);letter-spacing:.1em;color:var(--blue)}
+.week span{display:block;font-size:13px;color:var(--muted);margin-top:4px;line-height:1.4}
+.week.last{border-top-color:var(--sun)}.week.last b{color:var(--sun-ink)}
+.gate{display:grid;grid-template-columns:130px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid var(--rule)}
+.gate b{font:600 11px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--load)}
+.gate span{font-size:14.5px;color:var(--ink2)}
+.sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 28px;margin-top:8px}
+.src{border-top:1px solid var(--rule);padding:12px 0}
+.src b{display:block;font-size:14px}
+.src p{font-size:12.5px;color:var(--muted);margin:2px 0 0}
+.foot{margin-top:84px;padding-top:20px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:500 11px/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* diagram classes */
+.dg{min-width:780px;width:100%;height:auto;display:block}
+.dg .bx{fill:var(--surface);stroke:var(--rule2);stroke-width:1}
+.dg .bx.s{stroke:var(--sun);stroke-width:2}.dg .bx.b{stroke:var(--blue);stroke-width:2}.dg .bx.c{stroke:var(--cell);stroke-width:2}.dg .bx.k{stroke:var(--ink);stroke-width:2}.dg .bx.l{stroke:var(--load);stroke-width:2}
+.dg .t{font:600 13px var(--sans);fill:var(--ink)}
+.dg .ts{font:500 10.5px var(--mono);fill:var(--muted)}
+.dg .cl{font:500 10.5px var(--mono);letter-spacing:.1em;fill:var(--muted)}
+.dg .ar{stroke:var(--rule2);stroke-width:1.6;fill:none}
+.dg .lp{stroke:var(--blue);stroke-width:1.6;fill:none;stroke-dasharray:5 4}
+.dg .ah{fill:var(--rule2)}.dg .ah2{fill:var(--blue)}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:32px}
+  .arch{justify-self:start;max-width:300px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .part>header{grid-template-columns:1fr;gap:8px}
+  .g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .how{grid-template-columns:1fr}.how>div,.how>div+div{padding:18px 0;border-left:0}.how>div+div{border-top:1px solid var(--rule)}
+  .phase{grid-template-columns:1fr;gap:8px;padding:22px 20px}
+  .gate{grid-template-columns:1fr;gap:4px}
+}
+@media (max-width:760px){
+  table.tasks{min-width:0}
+  table.tasks,table.tasks tbody,table.tasks tr,table.tasks td{display:block;width:100%!important}
+  table.tasks thead{display:none}
+  table.tasks tr{padding:12px 0;border-bottom:1px solid var(--rule)}
+  table.tasks td{border:0;padding:3px 0}
+  table.tasks td:nth-child(n+3)::before{content:attr(data-l);display:block;font:500 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+}
+@media (max-width:480px){.g4{grid-template-columns:1fr}.hero{padding-top:36px}.part{margin-top:64px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Charter-only layer on top of shared.css */
+:root{--sun-line:#B26B00;--ground-night:#0A1424}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--sun-line:#F7BE45}}
+:root[data-theme="dark"]{--sun-line:#F7BE45}
+
+.cband{background:var(--arch-bg);color:var(--arch-fg)}
+.cband .in{max-width:1180px;margin:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chero{padding-block:64px 0}
+.chero .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:end}
+.chero .eyebrow{color:#A9C0DE}
+.chero h1{font:800 clamp(52px,10vw,124px)/.88 var(--display);letter-spacing:-.04em;margin:16px 0 8px}
+.chero .ar-name{font:700 clamp(30px,5vw,54px)/1.2 var(--arabic);color:var(--sun);margin:0 0 18px}
+.chero .lede{color:#C7D6EA}
+.chero .meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin:22px 0 40px;font:500 10.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#A9C0DE}
+.chero .bigmark{justify-self:end;width:100%;max-width:420px}
+.chero .bigmark svg{display:block;width:100%;height:auto}
+.strip{display:flex;height:22px}
+.strip i{display:block;height:100%}
+.cnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:31;background:var(--wash);border-bottom:1px solid var(--rule)}
+.cnav .in{max-width:1180px;margin:auto;display:flex;align-items:center;gap:22px;min-height:52px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.cnav nav{margin-left:auto;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.cnav nav a{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap;padding:12px 0}
+.cnav nav a:hover{color:var(--blue)}
+
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;margin:14px 0 22px}
+.sw .c{min-width:0}
+.sw .chip-c{height:92px;border-radius:4px;border:1px solid var(--rule);display:flex;align-items:flex-end;padding:8px 10px;font:600 12px/1 var(--mono)}
+.sw b{display:block;margin-top:8px;font-size:14px}
+.sw span{display:block;font:500 11px/1.5 var(--mono);color:var(--muted);letter-spacing:.04em}
+.sw p{font-size:12.5px;color:var(--muted);margin:3px 0 0}
+.ratio{display:flex;height:46px;border-radius:4px;overflow:hidden;border:1px solid var(--rule);margin:10px 0 6px}
+.ratio i{display:block;height:100%}
+.pass{font:600 11px var(--mono);color:var(--cell)}.fail{font:600 11px var(--mono);color:var(--load)}
+.twin{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--rule2);border-radius:6px;overflow:hidden;margin:14px 0 24px}
+.twin>div{padding:22px;min-width:0}
+.twin .day{background:#EDF0EE;color:#0E1B2C}
+.twin .night{background:#0A1424;color:#E8EEF5}
+.twin h4{margin:0 0 12px;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.twin .row{display:flex;gap:6px;margin:8px 0}
+.twin .row i{display:block;flex:1;height:34px;border-radius:3px}
+.twin p{font-size:13px;margin:12px 0 0}
+
+.spec{border-top:1px solid var(--rule2);display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:20px 0;align-items:baseline}
+.spec .lab{font:500 10.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.spec .sample{min-width:0;overflow-wrap:anywhere}
+.s-disp{font:800 clamp(40px,7vw,76px)/.95 var(--display);letter-spacing:-.035em}
+.s-h2{font:700 36px/1.05 var(--display);letter-spacing:-.025em}
+.s-h3{font:650 22px/1.2 var(--display);letter-spacing:-.015em}
+.s-body{font:400 16px/1.6 var(--sans)}
+.s-lab{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.s-num{font:500 34px/1 var(--mono);letter-spacing:-.02em}
+.s-ar{font:700 34px/1.3 var(--arabic);direction:rtl}
+
+.mk{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:14px 0 22px}
+.mk .tile{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px;min-width:0}
+.mk .tile .pad{height:130px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.mk .tile b{display:block;margin-top:10px;font-size:14px}
+.mk .tile span{display:block;font:500 11px/1.5 var(--mono);color:var(--muted)}
+.mk svg{display:block}
+.plate{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px;margin:14px 0 22px;min-width:0}
+.plate.flush{padding:0;overflow:hidden}
+.plate svg{display:block;width:100%;height:auto}
+.dos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:14px 0}
+.dos>div{border-top:3px solid var(--cell);padding-top:10px}
+.dos>div.no{border-top-color:var(--load)}
+.dos h4{margin:0 0 6px}
+.icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin:14px 0 22px}
+.icons div{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 8px 10px;text-align:center;min-width:0}
+.icons svg{width:32px;height:32px;stroke:var(--ink);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.icons span{display:block;font:500 10.5px/1.4 var(--mono);color:var(--muted);margin-top:8px;letter-spacing:.04em}
+
+/* live components */
+.demo{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px;margin:14px 0 22px;min-width:0}
+.demo>.k{margin-bottom:14px}
+.btn{font:600 14px/1 var(--sans);padding:11px 16px;border-radius:4px;border:1.5px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer;min-height:44px}
+.btn.alt{background:transparent;color:var(--blue)}
+.btn.quiet{background:var(--inset);border-color:var(--inset);color:var(--ink)}
+.btn.danger{background:var(--load);border-color:var(--load)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.brow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tier{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--mono);letter-spacing:.06em;padding:5px 8px 5px 6px;border-radius:3px;border:1.5px solid var(--blue-deep);color:var(--blue-deep);background:transparent;white-space:nowrap}
+.tier::before{content:"";width:9px;height:9px;display:block;background:currentColor}
+.tier.t0{background:var(--blue-deep);color:var(--wash)}.tier.t0::before{background:var(--wash)}
+.tier.t1{border-color:var(--blue);color:var(--blue)}.tier.t1::before{border-radius:50%}
+.tier.t2{border-color:var(--shed);color:var(--ink2);border-style:solid}.tier.t2::before{background:none;border:1.5px solid currentColor;border-radius:50%}
+.tier.t3{border-color:var(--shed);color:var(--muted);border-style:dashed}.tier.t3::before{background:none;border:1.5px dashed currentColor}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{border:1px solid var(--rule);border-radius:6px;padding:14px 16px;background:var(--wash);min-width:0}
+.kpi .k{margin-bottom:8px}
+.kpi .v{font:500 30px/1 var(--mono);letter-spacing:-.03em}
+.kpi .v small{font:500 13px var(--mono);color:var(--muted);letter-spacing:0;margin-left:4px}
+.kpi .d{font:500 12px var(--sans);color:var(--muted);margin-top:8px;display:block}
+.kpi.sunk{border-left:4px solid var(--sun)}.kpi.blk{border-left:4px solid var(--blue)}.kpi.ldk{border-left:4px solid var(--load)}.kpi.okk{border-left:4px solid var(--cell)}
+.bat{height:12px;border-radius:2px;background:var(--inset);position:relative;margin-top:10px;overflow:hidden}
+.bat i{position:absolute;inset:0 auto 0 0;background:var(--blue)}
+.bat u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+.dev{display:grid;grid-template-columns:34px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--rule)}
+.dev:first-of-type{border-top:0}
+.dev .ic{width:34px;height:34px;border-radius:4px;display:grid;place-items:center;background:var(--inset)}
+.dev .ic svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.dev b{font-size:14.5px;display:block}
+.dev small{font:500 11px var(--mono);color:var(--muted)}
+.dev .w{font:500 13px var(--mono)}
+.st{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:3px;white-space:nowrap}
+.st svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.st.run{background:var(--cell-soft);color:var(--ink)}
+.st.run svg{stroke:var(--cell)}
+.st.shed{background:var(--inset);color:var(--ink2);border:1px dashed var(--shed)}
+.st.wait{background:var(--blue-soft);color:var(--ink)}
+.st.done{background:transparent;color:var(--muted);border:1px solid var(--rule2)}
+.st.fon{background:var(--sun-soft);color:var(--sun-ink)}
+.st.foff{background:var(--load-soft);color:var(--ink)}
+.log{border-left:3px solid var(--blue);padding:4px 0 4px 14px;margin:10px 0;font-size:14px}
+.log .tm{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em;display:block}
+.log code{font-size:11.5px}
+.log.shedl{border-left-color:var(--shed)}.log.alertl{border-left-color:var(--load)}.log.sunl{border-left-color:var(--sun)}
+.src-chip{display:inline-flex;align-items:center;gap:6px;font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:3px;border:1.5px solid var(--ink);color:var(--ink)}
+.src-chip.sim{border-style:solid}.src-chip.wok{border-style:double;border-width:4px;padding:2px 6px}.src-chip.syn{border-style:dashed;border-color:var(--muted);color:var(--muted)}.src-chip.hw{background:var(--ink);color:var(--wash)}
+.stale{display:inline-flex;align-items:center;gap:6px;font:500 11px var(--mono);color:var(--muted)}
+.stale::before{content:"";width:8px;height:8px;border-radius:50%;border:1.5px solid var(--muted)}
+.live{display:inline-flex;align-items:center;gap:6px;font:500 11px var(--mono);color:var(--ink2)}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cell)}
+.tbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--wash);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+.tbar .seg{display:flex;border:1px solid var(--rule2);border-radius:4px;overflow:hidden}
+.tbar .seg span{font:600 12px var(--mono);padding:9px 12px;min-height:40px;display:flex;align-items:center;border-left:1px solid var(--rule2)}
+.tbar .seg span:first-child{border-left:0}
+.tbar .seg span.on{background:var(--ink);color:var(--wash)}
+.tbar time{font:500 13px var(--mono);margin-left:auto}
+.alert{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;border:1.5px solid var(--load);background:var(--load-soft);border-radius:6px;padding:12px 14px}
+.alert svg{width:24px;height:24px;stroke:var(--load);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.alert b{display:block;font-size:14.5px}
+.alert p{font-size:13.5px;margin:2px 0 0;color:var(--ink2)}
+.scn{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--rule)}
+.scn .sw2{width:44px;height:26px;border-radius:13px;background:var(--inset);border:1.5px solid var(--rule2);position:relative;flex:none}
+.scn .sw2::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--muted)}
+.scn.on .sw2{background:var(--ink);border-color:var(--ink)}.scn.on .sw2::after{left:21px;background:var(--wash)}
+.scn span{font-size:14px}.scn small{display:block;font:500 11px var(--mono);color:var(--muted)}
+.oled{background:#000;border-radius:6px;padding:14px;display:inline-block;border:6px solid #1B2433}
+.oled svg{display:block;width:100%;max-width:388px;height:auto}
+.leds{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0}
+.leds div{display:flex;align-items:center;gap:8px;font:500 12px var(--mono)}
+.leds i{width:14px;height:14px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.skyrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--rule)}
+.skyrow div{height:112px;padding:10px;font:500 11px/1.4 var(--mono)}
+.chk{list-style:none;padding:0;margin:10px 0 18px;max-width:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.chk li{padding:9px 0 9px 28px;border-top:1px solid var(--rule);position:relative;font-size:14.5px;color:var(--ink2);margin:0}
+.chk li::before{content:"";position:absolute;left:2px;top:12px;width:14px;height:14px;border:1.5px solid var(--ink);border-radius:2px}
+.refuse{counter-reset:r;list-style:none;padding:0;max-width:none;margin:10px 0 18px}
+.refuse li{counter-increment:r;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:12px 0;border-top:1px solid var(--rule);margin:0}
+.refuse li::before{content:counter(r,decimal-leading-zero);font:700 20px/1 var(--display);color:var(--load)}
+.refuse b{display:block}.refuse span{color:var(--ink2);font-size:14.5px}
+
+@media (max-width:900px){
+  .chero .grid{grid-template-columns:1fr}.chero .bigmark{justify-self:start;max-width:260px}
+  .spec{grid-template-columns:1fr;gap:6px}
+  .twin{grid-template-columns:1fr}.dos{grid-template-columns:1fr}.chk{grid-template-columns:1fr}
+  .skyrow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .dev{grid-template-columns:34px minmax(0,1fr) auto}.dev .w{display:none}
+  .chero{padding-block:40px 0}
+}
+
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="mark" viewBox="0 0 24 24"><path class="m-arch" d="M4 22V10a8 8 0 0 1 16 0v12z"/><circle class="m-sun" cx="12" cy="10" r="3.6"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></symbol><symbol id="i-battery" viewBox="0 0 24 24"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M7 10v4M11 10v4"/></symbol><symbol id="i-house" viewBox="0 0 24 24"><path d="M4 21V11a8 8 0 0 1 16 0v10z"/><path d="M9.5 21v-5.5h5V21"/></symbol><symbol id="i-load" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></symbol><symbol id="i-panel" viewBox="0 0 24 24"><path d="M5 15l3-8h11l-3 8z"/><path d="M12 15v5M8.5 20h7M11 7l-1.5 8M15 7l-1.5 8"/></symbol><symbol id="i-forecast" viewBox="0 0 24 24"><path d="M7 18a4 4 0 1 1 .8-7.9A5.5 5.5 0 0 1 18 11a3.5 3.5 0 0 1 0 7z"/></symbol><symbol id="i-shed" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/></symbol><symbol id="i-node" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol><symbol id="i-twin3D" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol><symbol id="i-time" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M3 9a14 14 0 0 1 18 0M6 12.5a9.5 9.5 0 0 1 12 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r=".8"/></symbol><symbol id="i-critical" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></symbol><symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8"/></symbol><symbol id="i-tilt" viewBox="0 0 24 24"><path d="M4 18L20 9"/><path d="M6 8a8 8 0 0 1 6-3.5"/><path d="M10 4.5l2-.1-.4 2"/></symbol><symbol id="i-fridge" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 10h12M9 6v2M9 13v3"/></symbol><symbol id="i-lamp" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8.5 14.5A6 6 0 1 1 15.5 14.5c-.9.8-1.5 1.7-1.5 2.5h-4c0-.8-.6-1.7-1.5-2.5z"/></symbol><symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+</defs></svg>
+
+<div class="cnav"><div class="in"><a class="brand" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#mark"/></svg>Dar Chams</a>
+<nav aria-label="Sections"><a href="#idea">Idea</a><a href="#mark-s">Mark</a><a href="#colour">Colour</a><a href="#energy">Energy</a><a href="#type">Type</a><a href="#layout">Layout</a><a href="#data">Data</a><a href="#icons">Icons</a><a href="#parts">Parts</a><a href="#states">States</a><a href="#scene">3D and node</a><a href="#voice">Voice</a><a href="#motion">Motion</a><a href="#access">Access</a><a href="#tokens">Tokens</a><a href="#handoff">Handoff</a></nav></div></div>
+
+<header class="cband chero" id="top"><div class="in">
+<div class="grid">
+<div>
+<span class="eyebrow">Graphic charter · v1.0 · Digital twin of a solar house</span>
+<h1>Dar Chams</h1>
+<p class="ar-name" lang="ar" dir="rtl">دار شمس</p>
+<p class="lede">The look of a house that lives on the sun. A doorway, a disc, and a strict rule that saffron only ever means energy. Built for glancing at a phone in daylight and for reading the evidence at night.</p>
+<div class="meta"><span>Dashboard · PWA</span><span>3D twin</span><span>Wokwi node</span><span>Report and slides</span></div>
+</div>
+<div class="bigmark" role="img" aria-label="The Dar Chams mark: an arched doorway with a saffron sun disc in it">
+<svg viewBox="0 0 24 26"><path d="M4 24V10a8 8 0 0 1 16 0v14z" fill="#1456A0"/><path d="M6.4 24V10.4a5.6 5.6 0 0 1 11.2 0V24z" fill="#0B3A73"/><circle cx="12" cy="10" r="3.6" fill="#EFA51A"/><rect x="2" y="24" width="20" height=".6" fill="#EAF1FA" opacity=".6"/></svg>
+</div>
+</div>
+</div>
+<div class="strip" aria-hidden="true"><i style="flex:46;background:#EDF0EE"></i><i style="flex:20;background:#0E1B2C"></i><i style="flex:16;background:#1456A0"></i><i style="flex:8;background:#0F7B6C"></i><i style="flex:6;background:#B02A52"></i><i style="flex:4;background:#EFA51A"></i></div>
+</header>
+
+<main class="wrap">
+
+<section class="part" id="idea">
+<header><div class="tag">01<br>Idea</div><div><h2>A door left open to the sun</h2><p>The charter turns one sentence into a look: a house in Tunis that thinks about the sun before it thinks about anything else.</p></div></header>
+<div class="how">
+<div><span class="k">Name</span><b>Dar Chams</b><p>Dar is house and Chams is sun, in the Tunisian spelling. The name is used in Latin letters on screen, with the Arabic form دار شمس as a quiet second line wherever there is room.</p></div>
+<div><span class="k">Mark</span><b>Doorway and disc</b><p>An arched doorway, as seen in Tunisian houses, framing a sun disc. The disc sits exactly on the spring line of the arch, where the curve starts. It is the only place the mark uses saffron.</p></div>
+<div><span class="k">Rule</span><b>Saffron means energy</b><p>Production is saffron. Nothing else is: not a button, not a badge, not a highlight. When a viewer sees saffron they are looking at sun power.</p></div>
+</div>
+<h3>Personality</h3>
+<div class="chips"><span class="chip blue">Precise</span><span class="chip blue">Calm</span><span class="chip blue">Warm without cute</span><span class="chip blue">Evidence first</span><span class="chip blue">Local</span></div>
+<p>Think of an instrument panel in a well-kept house: clear labels, honest numbers, nothing blinking without a reason. It should feel like it was drawn for Tunis, not exported from a template.</p>
+<h3>Choices we refuse</h3>
+<p>These are the habits that make a generated interface look generated. Each one has a replacement.</p>
+<ol class="refuse">
+<li><div><b>The purple-to-blue gradient and glowing glass cards</b><span>Flat colour on a cool grey-green ground, with one dark arch band per page.</span></div></li>
+<li><div><b>A sun with a ring of rays as the logo</b><span>A plain disc in a doorway. Rays are only drawn as data: a sun path, an angle, a ray in the 3D scene.</span></div></li>
+<li><div><b>Emoji or stock icons standing in for devices</b><span>One drawn icon set, 1.75 px strokes, in a 24 px grid.</span></div></li>
+<li><div><b>Three equal cards, each with an icon, a heading and two lines</b><span>Left-aligned reference pages, tables, rules and a real diagram.</span></div></li>
+<li><div><b>A round gauge with a needle for battery charge</b><span>A flat bar with a marker at the cutoff. It reads faster and does not pretend to be more precise than the model.</span></div></li>
+<li><div><b>Cream paper backgrounds and a serif headline</b><span>A cool wash and a variable grotesque with a friendly width, set tight.</span></div></li>
+<li><div><b>Copy that says smart, powerful, seamless or AI-powered</b><span>Plain statements with a number and a reason.</span></div></li>
+</ol>
+</section>
+
+<section class="part" id="mark-s">
+<header><div class="tag">02<br>Mark and name</div><div><h2>The doorway and the disc</h2><p>One shape, built on a 24 unit grid so it can be redrawn exactly in code, in a favicon and in a 3D scene.</p></div></header>
+<div class="g2" style="align-items:start">
+<div class="plate"><svg viewBox="0 0 24 24" role="img" aria-label="Construction of the mark: a 24 unit grid, an arch of radius 8 centred on the spring line at y 10, a sun disc of radius 3.6 on the same centre">
+<g stroke="var(--rule)" stroke-width=".08">
+<path d="M0 2H24M0 4H24M0 6H24M0 8H24M0 10H24M0 12H24M0 14H24M0 16H24M0 18H24M0 20H24M0 22H24M2 0V24M4 0V24M6 0V24M8 0V24M10 0V24M12 0V24M14 0V24M16 0V24M18 0V24M20 0V24M22 0V24"/></g>
+<path d="M4 22V10a8 8 0 0 1 16 0v12z" fill="var(--blue)" opacity=".92"/>
+<circle cx="12" cy="10" r="8" fill="none" stroke="var(--ink)" stroke-width=".12" stroke-dasharray=".5 .5"/>
+<line x1="2" x2="22" y1="10" y2="10" stroke="var(--ink)" stroke-width=".12" stroke-dasharray=".5 .5"/>
+<circle cx="12" cy="10" r="3.6" fill="var(--sun)"/>
+<text x="12" y="16.6" text-anchor="middle" font-family="Martian Mono,monospace" font-size=".95" fill="var(--arch-fg)">arch r = 8</text>
+<text x="12" y="9.2" text-anchor="middle" font-family="Martian Mono,monospace" font-size=".8" fill="var(--ink)">r 3.6</text>
+<text x="2.1" y="9.5" font-family="Martian Mono,monospace" font-size=".8" fill="var(--ink)">spring line</text>
+</svg></div>
+<div>
+<ul>
+<li><b>Grid.</b> 24 × 24 units. The arch is 16 units wide, from x 4 to x 20, and 20 tall, from y 2 to y 22.</li>
+<li><b>Arch.</b> A half circle of radius 8 on the spring line at y 10, then straight sides down to y 22.</li>
+<li><b>Disc.</b> Radius 3.6, which is 0.45 of the arch radius. Centre on the spring line, on the vertical axis.</li>
+<li><b>Colour.</b> Arch in doorway blue, disc in saffron. In one-colour use the disc becomes a hole.</li>
+<li><b>Clear space.</b> Keep one disc radius, 3.6 units, free on every side.</li>
+<li><b>Smallest size.</b> 16 px on screen, 8 mm in print. Below that use the favicon variant, which drops the grid margin.</li>
+</ul>
+<div class="note sun"><span class="k">Why this shape</span><p>The arch is a window onto the sky, the disc is the sun at the moment the day begins, and the geometry is plain enough to build in CSS, in SVG, and as a 3D door in the scene.</p></div>
+</div>
+</div>
+<h3>Variants</h3>
+<div class="mk">
+<div class="tile"><div class="pad" style="background:#EDF0EE"><svg width="72" height="72" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V10a8 8 0 0 1 16 0v12z" fill="#1456A0"/><circle cx="12" cy="10" r="3.6" fill="#EFA51A"/></svg></div><b>Full colour</b><span>On the day ground</span></div>
+<div class="tile"><div class="pad" style="background:#0B3A73"><svg width="72" height="72" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V10a8 8 0 0 1 16 0v12z" fill="#EAF1FA"/><circle cx="12" cy="10" r="3.6" fill="#F7BE45"/></svg></div><b>Reversed</b><span>On the arch band and night ground</span></div>
+<div class="tile"><div class="pad" style="background:#EDF0EE"><svg width="72" height="72" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M4 22V10a8 8 0 0 1 16 0v12zM12 6.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2z" fill="#0E1B2C"/></svg></div><b>One colour</b><span>Stamps, fax, engraving</span></div>
+<div class="tile"><div class="pad" style="background:#E2E8E5"><svg width="64" height="64" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0B3A73"/><path d="M7 28V14a9 9 0 0 1 18 0v14z" fill="#EAF1FA"/><circle cx="16" cy="14" r="4" fill="#F7BE45"/></svg></div><b>App icon</b><span>Favicon and home screen, 7 of 32 corner</span></div>
+<div class="tile"><div class="pad" style="background:#E2E8E5"><svg width="76" height="76" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="#0B3A73"/><circle cx="20" cy="20" r="16" fill="none" stroke="#EAF1FA" stroke-opacity=".35" stroke-dasharray="2 2"/><g transform="translate(10 8) scale(.84)"><path d="M4 22V10a8 8 0 0 1 16 0v12z" fill="#EAF1FA"/><circle cx="12" cy="10" r="3.6" fill="#F7BE45"/></g></svg></div><b>Maskable</b><span>Mark inside the 80 % safe circle</span></div>
+</div>
+<h3>Wordmark and lock-ups</h3>
+<div class="spec"><div class="lab">Wordmark</div><div class="sample"><span class="s-disp">Dar Chams</span></div></div>
+<div class="spec"><div class="lab">Horizontal</div><div class="sample" style="display:flex;align-items:center;gap:14px"><svg width="46" height="46" viewBox="0 0 24 24" aria-hidden="true"><use href="#mark"/></svg><span style="font:800 40px/1 var(--display);letter-spacing:-.035em">Dar Chams</span><span lang="ar" dir="rtl" style="font:600 22px var(--arabic);color:var(--muted)">دار شمس</span></div></div>
+<div class="spec"><div class="lab">Rules</div><div class="sample"><p style="margin:0">Wordmark is Bricolage Grotesque 800, tracking −3.5 %, set as two words with a normal space. Mark height equals the cap height times 2.4. The Arabic line is Noto Kufi Arabic 600 at 55 % of the Latin size and never replaces it on screen.</p></div></div>
+<div class="dos">
+<div><h4>Do</h4><ul><li>Use the mark on the wash, the surface or the arch band.</li><li>Redraw it from the grid for any new size.</li><li>Keep saffron on the disc only.</li></ul></div>
+<div class="no"><h4>Do not</h4><ul><li>Add rays, glow, shadows or gradients.</li><li>Recolour the disc blue or the arch saffron.</li><li>Place it on a photograph without a solid band.</li><li>Stretch, rotate or outline it.</li></ul></div>
+</div>
+</section>
+
+<section class="part" id="colour">
+<header><div class="tag">03<br>Colour</div><div><h2>A cool ground and five kinds of meaning</h2><p>Every colour is a token with a job. The palette is small on purpose, and each hue carries a fixed meaning that never changes between screens.</p></div></header>
+<h4>Ground</h4><p style="color:var(--muted);font-size:14px">The page is never white. A cool lime-grey keeps it off the usual cream and off paper-white.</p><div class="sw"><div class="c"><div class="chip-c" style="background:#EDF0EE;color:#0E1B2C">#EDF0EE</div><b>Wash</b><span>--wash</span><span>night #0A1424</span><p>Page background</p></div><div class="c"><div class="chip-c" style="background:#F8FAF9;color:#0E1B2C">#F8FAF9</div><b>Surface</b><span>--surface</span><span>night #101C30</span><p>Cards and panels</p></div><div class="c"><div class="chip-c" style="background:#E2E8E5;color:#0E1B2C">#E2E8E5</div><b>Inset</b><span>--inset</span><span>night #16243B</span><p>Wells, table heads, chips</p></div></div><h4>Ink</h4><p style="color:var(--muted);font-size:14px">Three levels of text, all with a blue bias so they sit with the ground.</p><div class="sw"><div class="c"><div class="chip-c" style="background:#0E1B2C;color:#EAF1FA">#0E1B2C</div><b>Ink</b><span>--ink</span><span>night #E8EEF5</span><p>Headings and body</p></div><div class="c"><div class="chip-c" style="background:#2F4157;color:#EAF1FA">#2F4157</div><b>Ink 2</b><span>--ink2</span><span>night #C3CFDD</span><p>Secondary text</p></div><div class="c"><div class="chip-c" style="background:#4E6177;color:#EAF1FA">#4E6177</div><b>Muted</b><span>--muted</span><span>night #98A8BC</span><p>Labels, captions</p></div></div><h4>Identity</h4><p style="color:var(--muted);font-size:14px">The house colour. The arch, links, storage and primary actions.</p><div class="sw"><div class="c"><div class="chip-c" style="background:#1456A0;color:#EAF1FA">#1456A0</div><b>Doorway blue</b><span>--blue</span><span>night #6FA8F0</span><p>Brand, links, battery</p></div><div class="c"><div class="chip-c" style="background:#0B3A73;color:#EAF1FA">#0B3A73</div><b>Deep doorway</b><span>--blue-deep</span><span>night #A5C8F7</span><p>Arch band, top tier</p></div><div class="c"><div class="chip-c" style="background:#DCE8F6;color:#0E1B2C">#DCE8F6</div><b>Blue wash</b><span>--blue-soft</span><span>night #17304F</span><p>Soft fill for blue things</p></div></div><h4>Energy, with fixed meanings</h4><p style="color:var(--muted);font-size:14px">One colour per kind of energy. Nothing else may use these colours.</p><div class="sw"><div class="c"><div class="chip-c" style="background:#EFA51A;color:#0E1B2C">#EFA51A</div><b>Saffron</b><span>--sun</span><span>night #F7BE45</span><p>Sun and production only</p></div><div class="c"><div class="chip-c" style="background:#B26B00;color:#EAF1FA">#B26B00</div><b>Saffron line</b><span>--sun-line</span><span>night #F7BE45</span><p>Saffron strokes on the light ground</p></div><div class="c"><div class="chip-c" style="background:#7A4E00;color:#EAF1FA">#7A4E00</div><b>Saffron ink</b><span>--sun-ink</span><span>night #F7D488</span><p>Text on saffron wash</p></div><div class="c"><div class="chip-c" style="background:#FBEBC8;color:#0E1B2C">#FBEBC8</div><b>Saffron wash</b><span>--sun-soft</span><span>night #3A2D10</span><p>Soft fill for energy notes</p></div><div class="c"><div class="chip-c" style="background:#B02A52;color:#EAF1FA">#B02A52</div><b>Rose</b><span>--load</span><span>night #EE7C9A</span><p>Consumption, alerts, faults</p></div><div class="c"><div class="chip-c" style="background:#F3DAE1;color:#0E1B2C">#F3DAE1</div><b>Rose wash</b><span>--load-soft</span><span>night #3C1A27</span><p>Soft fill for rose things</p></div><div class="c"><div class="chip-c" style="background:#0F7B6C;color:#EAF1FA">#0F7B6C</div><b>Teal</b><span>--cell</span><span>night #3CC1AB</span><p>Healthy, running, the brain</p></div><div class="c"><div class="chip-c" style="background:#D3EBE6;color:#0E1B2C">#D3EBE6</div><b>Teal wash</b><span>--cell-soft</span><span>night #12362F</span><p>Soft fill for teal things</p></div><div class="c"><div class="chip-c" style="background:#6B7A8C;color:#EAF1FA">#6B7A8C</div><b>Slate</b><span>--shed</span><span>night #8796AA</span><p>Shed, off, waiting, unknown</p></div></div>
+<h3>Proportion</h3>
+<p>Most of any screen is ground and ink. Brand blue is a structural colour. The energy colours are small and sharp.</p>
+<div class="ratio" role="img" aria-label="Colour proportion: ground 62, ink 20, blue 12, teal and rose 5, saffron 1"><i style="flex:62;background:var(--wash)"></i><i style="flex:20;background:var(--ink)"></i><i style="flex:12;background:var(--blue)"></i><i style="flex:3;background:var(--cell)"></i><i style="flex:2;background:var(--load)"></i><i style="flex:1;background:var(--sun)"></i></div>
+<p style="color:var(--muted);font-size:13px">Ground 62 · ink 20 · blue 12 · teal 3 · rose 2 · saffron 1. Saffron stays the smallest area on purpose, so when it appears it means something.</p>
+<h3>Day and night</h3>
+<p>The dashboard is read in sunlight on a phone and in a dark room on a laptop, so both themes are designed, not inverted. Night is a deep blue, not black. Saturated colours are lightened, not left alone, so they keep their contrast.</p>
+<div class="twin">
+<div class="day"><h4>Day · jour</h4>
+<div class="row"><i style="background:#EDF0EE;border:1px solid #CBD4D0"></i><i style="background:#F8FAF9;border:1px solid #CBD4D0"></i><i style="background:#0E1B2C"></i><i style="background:#1456A0"></i></div>
+<div class="row"><i style="background:#EFA51A"></i><i style="background:#B02A52"></i><i style="background:#0F7B6C"></i><i style="background:#6B7A8C"></i></div>
+<p>Saffron is a fill here. For a thin saffron line on this ground use the deeper saffron line, #B26B00.</p></div>
+<div class="night"><h4>Night · nuit</h4>
+<div class="row"><i style="background:#0A1424;border:1px solid #243551"></i><i style="background:#101C30;border:1px solid #243551"></i><i style="background:#E8EEF5"></i><i style="background:#6FA8F0"></i></div>
+<div class="row"><i style="background:#F7BE45"></i><i style="background:#EE7C9A"></i><i style="background:#3CC1AB"></i><i style="background:#8796AA"></i></div>
+<p>The same meanings, lightened. Saffron is the same colour for fills and lines.</p></div>
+</div>
+<h3>Contrast, computed</h3>
+<p>These ratios were calculated from the exact hex values with the standard WCAG formula. Text needs 4.5 to 1. Lines, icons and control edges need 3 to 1.</p>
+<div class="tw"><table class="mn"><thead><tr><th>Use</th><th>Pair</th><th>Needs</th><th>Day</th><th>Night</th></tr></thead><tbody><tr><td>Body text</td><td class="m">ink on wash</td><td class="m">4.5</td><td class="m">15.10 <span class="pass">PASS</span></td><td class="m">15.79 <span class="pass">PASS</span></td></tr><tr><td>Secondary text</td><td class="m">ink2 on wash</td><td class="m">4.5</td><td class="m">9.08 <span class="pass">PASS</span></td><td class="m">11.67 <span class="pass">PASS</span></td></tr><tr><td>Labels and captions</td><td class="m">muted on wash</td><td class="m">4.5</td><td class="m">5.54 <span class="pass">PASS</span></td><td class="m">7.61 <span class="pass">PASS</span></td></tr><tr><td>Links, brand blue</td><td class="m">blue on wash</td><td class="m">4.5</td><td class="m">6.38 <span class="pass">PASS</span></td><td class="m">7.50 <span class="pass">PASS</span></td></tr><tr><td>Consumption text</td><td class="m">load on wash</td><td class="m">4.5</td><td class="m">5.55 <span class="pass">PASS</span></td><td class="m">7.01 <span class="pass">PASS</span></td></tr><tr><td>Healthy state text</td><td class="m">cell on wash</td><td class="m">4.5</td><td class="m">4.50 <span class="fail">NOT FOR THIS USE</span></td><td class="m">8.26 <span class="pass">PASS</span></td></tr><tr><td>Saffron note text</td><td class="m">sunink on sunsoft</td><td class="m">4.5</td><td class="m">6.11 <span class="pass">PASS</span></td><td class="m">9.42 <span class="pass">PASS</span></td></tr><tr><td>Button label</td><td class="m">white on blue</td><td class="m">4.5</td><td class="m">7.32 <span class="pass">PASS</span></td><td class="m">2.46 <span class="fail">NOT FOR THIS USE</span></td></tr><tr><td>Text on the arch band</td><td class="m">archfg on arch</td><td class="m">4.5</td><td class="m">9.89 <span class="pass">PASS</span></td><td class="m">12.61 <span class="pass">PASS</span></td></tr><tr><td>Saffron on the arch band</td><td class="m">sun on arch</td><td class="m">4.5</td><td class="m">5.39 <span class="pass">PASS</span></td><td class="m">8.47 <span class="pass">PASS</span></td></tr><tr><td>Shed line and icon</td><td class="m">shed on wash</td><td class="m">3.0</td><td class="m">3.82 <span class="pass">PASS</span></td><td class="m">6.13 <span class="pass">PASS</span></td></tr><tr><td>Saffron line on the ground</td><td class="m">sunline on wash</td><td class="m">3.0</td><td class="m">3.66 <span class="pass">PASS</span></td><td class="m">10.90 <span class="pass">PASS</span></td></tr><tr><td>Saffron fill edge on the ground</td><td class="m">sun on wash</td><td class="m">3.0</td><td class="m">1.82 <span class="fail">NOT FOR THIS USE</span></td><td class="m">10.90 <span class="pass">PASS</span></td></tr></tbody></table></div>
+<div class="note red"><span class="k">What the numbers forbid</span><p>Saffron on the day ground is only 1.8 to 1. So on the light theme saffron is never a text colour or a thin line. Use it as a filled area with an ink label, or switch to saffron line for strokes. Text on a soft tint always uses ink or the matching ink token, never the accent itself.</p></div>
+</section>
+
+<section class="part" id="energy">
+<header><div class="tag">04<br>Energy language</div><div><h2>Colour, shape and word say the same thing</h2><p>Meaning never rides on colour alone. Every state and every kind of power has a colour, a shape and a word, and the three always appear together.</p></div></header>
+<div class="g2">
+<div><h4>What each colour means</h4>
+<div class="tw"><table class="mn"><thead><tr><th>Kind</th><th>Colour</th><th>Word</th></tr></thead><tbody>
+<tr><td>Production</td><td><span class="chip sun">Saffron</span></td><td>Production, sun</td></tr>
+<tr><td>Storage</td><td><span class="chip blue">Doorway blue</span></td><td>Battery, stored</td></tr>
+<tr><td>Consumption</td><td><span class="chip load">Rose</span></td><td>Use, load</td></tr>
+<tr><td>Healthy, running</td><td><span class="chip cell">Teal</span></td><td>Running, OK</td></tr>
+<tr><td>Off, shed, waiting</td><td><span class="chip">Slate</span></td><td>Shed, waiting</td></tr>
+</tbody></table></div></div>
+<div><h4>Flow lines</h4><div class="plate" style="margin-top:0"><svg viewBox="0 0 640 230" role="img" aria-label="Power flow style: line thickness follows power. Panels send 2.1 kilowatts to the inverter, 0.9 goes to the house and 1.2 charges the battery">
+<style>.ax{font:500 11px var(--mono);fill:var(--muted)}.nd{font:600 13px var(--sans);fill:var(--ink)}</style>
+<defs><marker id="fa" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8z" fill="var(--ink2)"/></marker></defs>
+<rect x="10" y="80" width="130" height="70" rx="4" fill="var(--surface)" stroke="var(--sun-line)" stroke-width="2"/><text x="26" y="110" class="nd">Panels</text><text x="26" y="132" class="ax">2.1 kW</text>
+<rect x="250" y="80" width="130" height="70" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/><text x="266" y="110" class="nd">Inverter</text><text x="266" y="132" class="ax">96 %</text>
+<rect x="500" y="14" width="130" height="70" rx="4" fill="var(--surface)" stroke="var(--load)" stroke-width="2"/><text x="516" y="44" class="nd">House</text><text x="516" y="66" class="ax">0.9 kW</text>
+<rect x="500" y="146" width="130" height="70" rx="4" fill="var(--surface)" stroke="var(--blue)" stroke-width="2"/><text x="516" y="176" class="nd">Battery</text><text x="516" y="198" class="ax">+1.1 kW</text>
+<path d="M142 115H246" stroke="var(--sun)" stroke-width="14" fill="none" marker-end="url(#fa)"/>
+<path d="M382 105L420 105L420 49L496 49" stroke="var(--load)" stroke-width="6" fill="none" marker-end="url(#fa)"/>
+<path d="M382 125L420 125L420 181L496 181" stroke="var(--blue)" stroke-width="8" fill="none" marker-end="url(#fa)"/>
+<text x="150" y="98" class="ax">production</text><text x="426" y="40" class="ax" dy="-2">use</text><text x="426" y="205" class="ax">stored</text>
+</svg></div></div>
+</div>
+<p>Flow line thickness follows power: 2 px per 0.25 kW, never below 2 px, never above 18 px. Lines are straight with right-angle bends. Arrowheads are small and sit on the target edge. A line that carries no power is not drawn.</p>
+<h3>Priority tiers</h3>
+<p>Tiers are ordered, so they use one ramp from solid to dashed. They are shown with a shape, a number and a fill, and their colour is blue and slate, never an energy colour.</p>
+<div class="demo"><span class="k">Tier chips</span>
+<div class="brow"><span class="tier t0">T0 Critical</span><span class="tier t1">T1 Important</span><span class="tier t2">T2 Comfort</span><span class="tier t3">T3 Deferrable</span></div></div>
+<div class="tw"><table class="mn"><thead><tr><th>Tier</th><th>Shape</th><th>Fill</th><th>Line</th><th>Hardware LED</th></tr></thead><tbody>
+<tr><td>T0 Critical</td><td>Solid square</td><td>Deep doorway, solid</td><td>Solid</td><td>White</td></tr>
+<tr><td>T1 Important</td><td>Solid circle</td><td>None, blue edge</td><td>Solid</td><td>Blue</td></tr>
+<tr><td>T2 Comfort</td><td>Open circle</td><td>None, slate edge</td><td>Solid</td><td>Cyan</td></tr>
+<tr><td>T3 Deferrable</td><td>Dashed square</td><td>None</td><td>Dashed</td><td>Magenta</td></tr>
+</tbody></table></div>
+<p>The dashed look for T3 is deliberate: it reads as "can be cut" even when colour is not seen.</p>
+</section>
+
+<section class="part" id="type">
+<header><div class="tag">05<br>Typography</div><div><h2>Four faces, four jobs</h2><p>All four are free on Google Fonts. Display and interface are loaded as variable fonts so the files stay small on a phone.</p></div></header>
+<div class="spec"><div class="lab">Display<br>Bricolage Grotesque</div><div class="sample"><span class="s-disp">Who gets the power?</span><p style="color:var(--muted);font-size:13.5px;margin-top:10px">Headlines and hero numbers over 40 px. Weights 650 to 800, tracking −1.5 % to −3.5 %. A friendly width with sharp details; it does the personality so the colours do not have to.</p></div></div>
+<div class="spec"><div class="lab">Interface<br>Instrument Sans</div><div class="sample"><span class="s-body">Water heater waits. Tomorrow looks cloudy, so it will run at 12:40 when the panels are strongest.</span><p style="color:var(--muted);font-size:13.5px;margin-top:10px">Body text, buttons, form fields. Weights 400 to 700. 16 px on a phone, never smaller than 14 px.</p></div></div>
+<div class="spec"><div class="lab">Data and labels<br>Martian Mono</div><div class="sample"><span class="s-num">3.62 kWh</span><br><span class="s-lab">Battery · reading 10:42 UTC+1</span><p style="color:var(--muted);font-size:13.5px;margin-top:10px">Every live number, every unit, every ID, every uppercase label. A monospace face stops numbers from jittering as they change.</p></div></div>
+<div class="spec"><div class="lab">Arabic<br>Noto Kufi Arabic</div><div class="sample"><span class="s-ar" lang="ar">دار شمس · الطاقة الشمسية</span><p style="color:var(--muted);font-size:13.5px;margin-top:10px">Name line and any Arabic interface text. A geometric Kufi that matches the arch. Right to left, with mirrored layout.</p></div></div>
+<h3>Scale</h3>
+<div class="tw"><table class="mn"><thead><tr><th>Role</th><th>Face</th><th>Size and line</th><th>Weight and tracking</th></tr></thead><tbody>
+<tr><td>Display</td><td>Bricolage</td><td>46 to 96 px, line 0.92</td><td>800, −3.5 %</td></tr>
+<tr><td>Page title</td><td>Bricolage</td><td>28 to 46 px, line 1.04</td><td>700, −2.5 %</td></tr>
+<tr><td>Section title</td><td>Bricolage</td><td>22 px, line 1.2</td><td>650, −1.5 %</td></tr>
+<tr><td>Body</td><td>Instrument Sans</td><td>16 px, line 1.6, max 74 characters</td><td>400</td></tr>
+<tr><td>Small</td><td>Instrument Sans</td><td>14 px, line 1.5</td><td>400 to 600</td></tr>
+<tr><td>Label</td><td>Martian Mono</td><td>10.5 to 11 px, uppercase</td><td>500, +10 % to +12 %</td></tr>
+<tr><td>Live number</td><td>Martian Mono</td><td>30 px KPI, 13 px in rows</td><td>500, −2 % to −3 %</td></tr>
+</tbody></table></div>
+<h3>Numbers and units</h3>
+<ul>
+<li><b>Space before units.</b> A narrow no-break space between a number and its unit: 3.2 kW, 72 %, 1,250 W. Units are never bold.</li>
+<li><b>Decimals.</b> A point in English, a comma in French: 3.6 kWh and 3,6 kWh. Thousands use a narrow space in French, a comma in English.</li>
+<li><b>Precision.</b> Power in kW with one decimal above 1 kW, in W below. Energy in kWh with one decimal. Charge in whole percent. Temperatures in whole degrees. Forecasts are never shown with more precision than their band.</li>
+<li><b>Time.</b> 24 hour clock. Stored in UTC, shown in local time with the label UTC+1 beside the clock.</li>
+<li><b>Signs.</b> Battery power is positive when charging and negative when discharging, with the word beside the sign.</li>
+</ul>
+</section>
+
+<section class="part" id="layout">
+<header><div class="tag">06<br>Layout</div><div><h2>One column on a phone, a reading desk on a laptop</h2><p>Reference pages are left-aligned with strong rules. The dashboard is a set of blocks that reflow, never a fixed canvas.</p></div></header>
+<ul>
+<li><b>Base unit.</b> 4 px. Gaps are 8, 12, 16, 24, 32, 48, 84.</li>
+<li><b>Gutter.</b> At least 16 px on every side, plus the phone's safe area. Content width 1,180 px at most; text blocks 74 characters.</li>
+<li><b>Shape.</b> Corners are 3 px on chips, 4 px on controls, 6 px on panels. The only large curve is the arch.</li>
+<li><b>Lines over boxes.</b> Use rules and spacing to group. A bordered box is for a distinct object such as a device or an alert, not for every paragraph.</li>
+<li><b>Breakpoints.</b> 480, 760, 900 and 1,180 px. Four columns fall to two, then one. Tables scroll inside their own frame.</li>
+<li><b>Touch.</b> Targets 44 px high at least, with 8 px between neighbours.</li>
+</ul>
+<h3>Dashboard frames</h3>
+<div class="plate"><svg viewBox="0 0 1000 380" role="img" aria-label="Wireframes: a phone with a stacked dashboard and a bottom bar, and a laptop with a sidebar, a main area and a decision log column">
+<style>.w{fill:var(--surface);stroke:var(--rule2)}.wb{fill:var(--inset)}.wt{font:500 10px var(--mono);fill:var(--muted)}.wh{font:700 13px var(--display);fill:var(--ink)}</style>
+<rect x="30" y="20" width="200" height="340" rx="22" fill="var(--wash)" stroke="var(--ink)" stroke-width="2"/>
+<rect x="44" y="40" width="172" height="30" class="wb" rx="3"/><text x="52" y="59" class="wh">Dar Chams</text>
+<rect x="44" y="80" width="172" height="62" class="w" rx="4"/><text x="52" y="98" class="wt">BATTERY</text><rect x="52" y="108" width="156" height="10" class="wb" rx="2"/><rect x="52" y="108" width="112" height="10" fill="var(--blue)" rx="2"/><text x="52" y="134" class="wh">72 %</text>
+<rect x="44" y="150" width="82" height="52" class="w" rx="4"/><text x="52" y="168" class="wt">PRODUCTION</text><rect x="52" y="178" width="66" height="14" fill="var(--sun)" rx="2"/>
+<rect x="134" y="150" width="82" height="52" class="w" rx="4"/><text x="142" y="168" class="wt">USE</text><rect x="142" y="178" width="40" height="14" fill="var(--load)" opacity=".8" rx="2"/>
+<rect x="44" y="210" width="172" height="80" class="w" rx="4"/><text x="52" y="228" class="wt">NEXT 48 H</text><path d="M52 276 Q90 236 130 262 T208 240" stroke="var(--sun-line)" stroke-width="2" fill="none"/>
+<rect x="44" y="298" width="172" height="26" class="w" rx="4"/><text x="52" y="315" class="wt">2 DEVICES SHED</text>
+<rect x="44" y="330" width="172" height="20" fill="var(--ink)" rx="3"/>
+<rect x="290" y="20" width="680" height="340" rx="6" fill="var(--wash)" stroke="var(--ink)" stroke-width="2"/>
+<rect x="290" y="20" width="120" height="340" fill="var(--inset)"/><text x="304" y="48" class="wh">Dar Chams</text>
+<g class="wt"><text x="304" y="84">OVERVIEW</text><text x="304" y="108">FORECAST</text><text x="304" y="132">BATTERY</text><text x="304" y="156">LOADS</text><text x="304" y="180">TRACKER</text><text x="304" y="204">ALERTS</text><text x="304" y="228">SCENARIOS</text></g>
+<rect x="428" y="38" width="350" height="150" class="w" rx="4"/><text x="440" y="58" class="wt">A DAY</text><path d="M440 170 Q500 70 560 100 T680 140" stroke="var(--sun-line)" stroke-width="2" fill="none"/><path d="M440 150 L520 140 L600 126 L760 150" stroke="var(--load)" stroke-width="2" fill="none"/>
+<rect x="428" y="200" width="110" height="64" class="w" rx="4"/><rect x="546" y="200" width="110" height="64" class="w" rx="4"/><rect x="664" y="200" width="114" height="64" class="w" rx="4"/>
+<rect x="428" y="272" width="350" height="72" class="w" rx="4"/><text x="440" y="292" class="wt">LOADS · TIERS T0 T1 T2 T3</text>
+<rect x="794" y="38" width="160" height="306" class="w" rx="4"/><text x="806" y="58" class="wt">DECISION LOG</text><g stroke="var(--rule2)"><path d="M806 76H942M806 112H942M806 148H942M806 184H942M806 220H942"/></g>
+<rect x="428" y="364" width="1" height="1" fill="none"/>
+</svg></div>
+<div class="g3">
+<div class="box"><h4>Phone, one column</h4><p>Battery first, then production and use, then the next two days, then what was shed. Bottom bar for time control. Nothing needs a second tap to be read.</p></div>
+<div class="box"><h4>Laptop, three zones</h4><p>A slim navigation column, a main area with the day and the loads, and a log column that explains every decision with its reason.</p></div>
+<div class="box"><h4>Presentation</h4><p>One diagram per slide on the deep doorway ground, with the arch cropped at the left edge. Slides use the same tokens as the app.</p></div>
+</div>
+</section>
+
+<section class="part" id="data">
+<header><div class="tag">07<br>Data display</div><div><h2>Charts that show the evidence and the doubt</h2><p>The numbers here are illustrative, drawn from a simple sun model for a clear 21 December in Tunis so the plates look real. They are not outputs of the project.</p></div></header>
+<h3>A day</h3>
+<div class="plate"><svg viewBox="0 0 1000 360" role="img" aria-label="Illustrative winter day: solar production peaks near 2.5 kilowatts at midday, household load has a midday bump from the water heater and an evening bump, and the battery charge rises from 30 percent to near full then falls after sunset">
+<style>.ax{font:500 11px var(--mono);fill:var(--muted)}.lb{font:600 12px var(--sans)}</style>
+<rect x="60.0" y="24" width="287.5" height="276" fill="var(--inset)" opacity=".75"/><rect x="692.5" y="24" width="287.5" height="276" fill="var(--inset)" opacity=".75"/><line x1="60" x2="980" y1="300.0" y2="300.0" stroke="var(--rule)" stroke-width="1"/><text x="52" y="304.0" text-anchor="end" class="ax">0</text><line x1="60" x2="980" y1="208.0" y2="208.0" stroke="var(--rule)" stroke-width="1"/><text x="52" y="212.0" text-anchor="end" class="ax">1</text><line x1="60" x2="980" y1="116.0" y2="116.0" stroke="var(--rule)" stroke-width="1"/><text x="52" y="120.0" text-anchor="end" class="ax">2</text><line x1="60" x2="980" y1="24.0" y2="24.0" stroke="var(--rule)" stroke-width="1"/><text x="52" y="28.0" text-anchor="end" class="ax">3</text><text x="60.0" y="320" text-anchor="middle" class="ax">00</text><text x="175.0" y="320" text-anchor="middle" class="ax">03</text><text x="290.0" y="320" text-anchor="middle" class="ax">06</text><text x="405.0" y="320" text-anchor="middle" class="ax">09</text><text x="520.0" y="320" text-anchor="middle" class="ax">12</text><text x="635.0" y="320" text-anchor="middle" class="ax">15</text><text x="750.0" y="320" text-anchor="middle" class="ax">18</text><text x="865.0" y="320" text-anchor="middle" class="ax">21</text><text x="980.0" y="320" text-anchor="middle" class="ax">24</text>
+<path d="M60.0 300 L60.0 300.0 L69.6 300.0 L79.2 300.0 L88.8 300.0 L98.3 300.0 L107.9 300.0 L117.5 300.0 L127.1 300.0 L136.7 300.0 L146.2 300.0 L155.8 300.0 L165.4 300.0 L175.0 300.0 L184.6 300.0 L194.2 300.0 L203.8 300.0 L213.3 300.0 L222.9 300.0 L232.5 300.0 L242.1 300.0 L251.7 300.0 L261.2 300.0 L270.8 300.0 L280.4 300.0 L290.0 300.0 L299.6 300.0 L309.2 300.0 L318.8 300.0 L328.3 300.0 L337.9 300.0 L347.5 290.0 L357.1 278.6 L366.7 267.1 L376.2 255.8 L385.8 244.7 L395.4 234.0 L405.0 223.7 L414.6 214.1 L424.2 205.0 L433.8 196.6 L443.3 189.0 L452.9 182.2 L462.5 176.2 L472.1 171.0 L481.7 166.8 L491.2 163.4 L500.8 161.0 L510.4 159.6 L520.0 159.1 L529.6 159.6 L539.2 161.0 L548.8 163.4 L558.3 166.8 L567.9 171.0 L577.5 176.2 L587.1 182.2 L596.7 189.0 L606.2 196.6 L615.8 205.0 L625.4 214.1 L635.0 223.7 L644.6 234.0 L654.2 244.7 L663.8 255.8 L673.3 267.1 L682.9 278.6 L692.5 290.0 L702.1 300.0 L711.7 300.0 L721.2 300.0 L730.8 300.0 L740.4 300.0 L750.0 300.0 L759.6 300.0 L769.2 300.0 L778.8 300.0 L788.3 300.0 L797.9 300.0 L807.5 300.0 L817.1 300.0 L826.7 300.0 L836.2 300.0 L845.8 300.0 L855.4 300.0 L865.0 300.0 L874.6 300.0 L884.2 300.0 L893.8 300.0 L903.3 300.0 L912.9 300.0 L922.5 300.0 L932.1 300.0 L941.7 300.0 L951.2 300.0 L960.8 300.0 L970.4 300.0 L980.0 300.0 L980.0 300 Z" fill="var(--sun)" opacity=".55"/>
+<path d="M60.0 300.0 L69.6 300.0 L79.2 300.0 L88.8 300.0 L98.3 300.0 L107.9 300.0 L117.5 300.0 L127.1 300.0 L136.7 300.0 L146.2 300.0 L155.8 300.0 L165.4 300.0 L175.0 300.0 L184.6 300.0 L194.2 300.0 L203.8 300.0 L213.3 300.0 L222.9 300.0 L232.5 300.0 L242.1 300.0 L251.7 300.0 L261.2 300.0 L270.8 300.0 L280.4 300.0 L290.0 300.0 L299.6 300.0 L309.2 300.0 L318.8 300.0 L328.3 300.0 L337.9 300.0 L347.5 290.0 L357.1 278.6 L366.7 267.1 L376.2 255.8 L385.8 244.7 L395.4 234.0 L405.0 223.7 L414.6 214.1 L424.2 205.0 L433.8 196.6 L443.3 189.0 L452.9 182.2 L462.5 176.2 L472.1 171.0 L481.7 166.8 L491.2 163.4 L500.8 161.0 L510.4 159.6 L520.0 159.1 L529.6 159.6 L539.2 161.0 L548.8 163.4 L558.3 166.8 L567.9 171.0 L577.5 176.2 L587.1 182.2 L596.7 189.0 L606.2 196.6 L615.8 205.0 L625.4 214.1 L635.0 223.7 L644.6 234.0 L654.2 244.7 L663.8 255.8 L673.3 267.1 L682.9 278.6 L692.5 290.0 L702.1 300.0 L711.7 300.0 L721.2 300.0 L730.8 300.0 L740.4 300.0 L750.0 300.0 L759.6 300.0 L769.2 300.0 L778.8 300.0 L788.3 300.0 L797.9 300.0 L807.5 300.0 L817.1 300.0 L826.7 300.0 L836.2 300.0 L845.8 300.0 L855.4 300.0 L865.0 300.0 L874.6 300.0 L884.2 300.0 L893.8 300.0 L903.3 300.0 L912.9 300.0 L922.5 300.0 L932.1 300.0 L941.7 300.0 L951.2 300.0 L960.8 300.0 L970.4 300.0 L980.0 300.0" fill="none" stroke="var(--sun-line)" stroke-width="2.4"/>
+<path d="M60.0 292.9 L69.6 292.9 L79.2 292.9 L88.8 292.9 L98.3 292.9 L107.9 292.9 L117.5 292.9 L127.1 292.9 L136.7 292.9 L146.2 292.9 L155.8 292.9 L165.4 292.9 L175.0 292.9 L184.6 292.9 L194.2 292.9 L203.8 292.9 L213.3 292.9 L222.9 292.9 L232.5 292.9 L242.1 292.9 L251.7 292.9 L261.2 292.9 L270.8 292.9 L280.4 292.9 L290.0 292.9 L299.6 292.9 L309.2 292.9 L318.8 292.9 L328.3 292.9 L337.9 292.9 L347.5 292.9 L357.1 292.9 L366.7 292.9 L376.2 292.9 L385.8 292.9 L395.4 292.9 L405.0 292.9 L414.6 292.9 L424.2 292.9 L433.8 292.9 L443.3 154.9 L452.9 154.9 L462.5 154.9 L472.1 154.9 L481.7 154.9 L491.2 154.9 L500.8 246.9 L510.4 246.9 L520.0 246.9 L529.6 246.9 L539.2 246.9 L548.8 246.9 L558.3 292.9 L567.9 292.9 L577.5 292.9 L587.1 292.9 L596.7 269.9 L606.2 269.9 L615.8 269.9 L625.4 269.9 L635.0 292.9 L644.6 292.9 L654.2 292.9 L663.8 292.9 L673.3 287.4 L682.9 287.4 L692.5 287.4 L702.1 287.4 L711.7 287.4 L721.2 287.4 L730.8 287.4 L740.4 287.4 L750.0 280.8 L759.6 280.8 L769.2 280.8 L778.8 280.8 L788.3 271.6 L797.9 271.6 L807.5 271.6 L817.1 271.6 L826.7 271.6 L836.2 271.6 L845.8 271.6 L855.4 271.6 L865.0 271.6 L874.6 271.6 L884.2 271.6 L893.8 271.6 L903.3 277.1 L912.9 277.1 L922.5 277.1 L932.1 277.1 L941.7 286.3 L951.2 286.3 L960.8 286.3 L970.4 286.3 L980.0 292.9" fill="none" stroke="var(--load)" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M60.0 218.3 L69.6 219.4 L79.2 220.5 L88.8 221.6 L98.3 222.7 L107.9 223.8 L117.5 224.9 L127.1 226.1 L136.7 227.2 L146.2 228.3 L155.8 229.4 L165.4 230.5 L175.0 231.6 L184.6 232.7 L194.2 233.8 L203.8 234.9 L213.3 236.0 L222.9 237.1 L232.5 238.2 L242.1 239.3 L251.7 240.4 L261.2 241.6 L270.8 242.7 L280.4 243.8 L290.0 244.9 L299.6 246.0 L309.2 247.1 L318.8 248.2 L328.3 249.3 L337.9 250.4 L347.5 250.0 L357.1 247.9 L366.7 244.2 L376.2 238.9 L385.8 231.9 L395.4 223.4 L405.0 213.5 L414.6 202.1 L424.2 189.5 L433.8 175.6 L443.3 180.9 L452.9 185.2 L462.5 188.5 L472.1 191.0 L481.7 192.9 L491.2 194.2 L500.8 181.8 L510.4 169.2 L520.0 156.6 L529.6 144.0 L539.2 131.7 L548.8 119.6 L558.3 101.5 L567.9 83.9 L577.5 67.1 L587.1 51.2 L596.7 39.5 L606.2 29.0 L615.8 24.0 L625.4 24.0 L635.0 24.0 L644.6 24.0 L654.2 24.0 L663.8 24.0 L673.3 24.0 L682.9 24.0 L692.5 24.4 L702.1 26.4 L711.7 28.3 L721.2 30.3 L730.8 32.3 L740.4 34.3 L750.0 37.3 L759.6 40.3 L769.2 43.3 L778.8 46.3 L788.3 50.7 L797.9 55.2 L807.5 59.6 L817.1 64.0 L826.7 68.5 L836.2 72.9 L845.8 77.4 L855.4 81.8 L865.0 86.3 L874.6 90.7 L884.2 95.1 L893.8 99.6 L903.3 103.2 L912.9 106.7 L922.5 110.3 L932.1 113.9 L941.7 116.0 L951.2 118.2 L960.8 120.3 L970.4 122.5 L980.0 123.6" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-dasharray="1 0"/>
+<text x="52" y="16" text-anchor="end" class="ax">kW</text><text x="980" y="16" text-anchor="end" class="ax">battery 0 to 100 % on the same height</text>
+<text x="528.0" y="149.1" class="lb" fill="var(--sun-ink)">Production</text>
+<text x="796.0" y="261.6" class="lb" fill="var(--load)">House load</text>
+<text x="642.7" y="16.0" class="lb" fill="var(--blue)">Battery charge</text>
+<text x="98.3" y="40" class="ax">night</text><text x="903.3" y="40" class="ax">night</text>
+</svg></div>
+<ul>
+<li><b>Direct labels.</b> Name each line on the line, not in a legend. The three series use the three energy colours and nothing else.</li>
+<li><b>Night is a band.</b> Hours without sun are shaded from the sun's own altitude, not a fixed clock time.</li>
+<li><b>Stroke weights.</b> 2.2 to 2.4 px for data, 1 px for grid. Production is an area with a stroke so it can be read at a glance.</li>
+<li><b>Axes.</b> Few ticks, mono labels, the unit once at the top. Battery charge shares the height with power and is labelled.</li>
+<li><b>Synthetic data.</b> Any chart of invented or fallback weather carries the chip "synthetic weather" in the chart header.</li>
+</ul>
+<h3>A forecast with its doubt</h3>
+<div class="g2" style="align-items:center">
+<div class="plate" style="margin:0"><svg viewBox="0 0 540 270" role="img" aria-label="Illustrative three-day forecast: expected daily energy with a hatched band for the likely range. Tomorrow is the low day.">
+<style>.ax{font:500 11px var(--mono);fill:var(--muted)}.lb{font:600 12px var(--sans)}</style>
+<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--sun-soft)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--sun-line)" stroke-width="1.2"/></pattern></defs>
+<line x1="50" x2="520" y1="230" y2="230" stroke="var(--rule2)"/>
+<rect x="70" y="79" width="80" height="45" fill="url(#hatch)" stroke="var(--sun-line)" stroke-width="1"/><rect x="70" y="98" width="80" height="132" fill="var(--sun)" opacity=".9"/><line x1="64" x2="156" y1="98" y2="98" stroke="var(--ink)" stroke-width="2"/><text x="110" y="252" text-anchor="middle" class="ax">Today</text><text x="110" y="71" text-anchor="middle" class="lb" fill="var(--ink)">9.4 kWh</text><rect x="220" y="129" width="80" height="55" fill="url(#hatch)" stroke="var(--sun-line)" stroke-width="1"/><rect x="220" y="159" width="80" height="71" fill="var(--sun)" opacity=".9"/><line x1="214" x2="306" y1="159" y2="159" stroke="var(--ink)" stroke-width="2"/><text x="260" y="252" text-anchor="middle" class="ax">Tomorrow</text><text x="260" y="121" text-anchor="middle" class="lb" fill="var(--ink)">5.1 kWh</text><rect x="370" y="48" width="80" height="45" fill="url(#hatch)" stroke="var(--sun-line)" stroke-width="1"/><rect x="370" y="68" width="80" height="162" fill="var(--sun)" opacity=".9"/><line x1="364" x2="456" y1="68" y2="68" stroke="var(--ink)" stroke-width="2"/><text x="410" y="252" text-anchor="middle" class="ax">Day after</text><text x="410" y="40" text-anchor="middle" class="lb" fill="var(--ink)">11.6 kWh</text>
+<text x="52" y="22" class="ax">Hatched band: likely range. Solid bar and line: expected value. Illustrative numbers.</text>
+</svg></div>
+<div><p>Never show a forecast as one confident number. The hatched band is the likely range and it is always drawn. A low day is not painted red; the label says what will happen, for example "Tomorrow is low. Dishwasher-type loads wait for Thursday."</p>
+<p>The forecast card also states how sure it is, with a word and a number: "Medium confidence. Band 3.3 to 7.2 kWh."</p></div>
+</div>
+<h3>Rules for every chart</h3>
+<div class="dos">
+<div><h4>Do</h4><ul><li>Zero-base bars. Print the unit once.</li><li>Use hatching for uncertain values and solid fill for known ones.</li><li>Put a table view behind every chart for screen readers.</li><li>Show the source chip: sim, wokwi or hardware.</li></ul></div>
+<div class="no"><h4>Do not</h4><ul><li>Use a red to green scale for good and bad.</li><li>Draw a pie or a donut for energy.</li><li>Show a forecast as a bare line with no band.</li><li>Animate a chart on every refresh.</li></ul></div>
+</div>
+</section>
+
+<section class="part" id="icons">
+<header><div class="tag">08<br>Icons</div><div><h2>One set, drawn on a 24 unit grid</h2><p>Strokes only, 1.75 px, round caps and joins, no fills. They are drawn from the same geometry as the mark: arches, circles and straight lines.</p></div></header>
+<div class="icons"><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg><span>sun</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-battery"/></svg><span>battery</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-house"/></svg><span>house</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-load"/></svg><span>load</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-panel"/></svg><span>panel</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-forecast"/></svg><span>forecast</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shed"/></svg><span>shed</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert"/></svg><span>alert</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-node"/></svg><span>node</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-twin3D"/></svg><span>twin 3D</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg><span>chat</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-time"/></svg><span>time</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg><span>link</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-critical"/></svg><span>critical</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wind"/></svg><span>wind</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tilt"/></svg><span>tilt</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fridge"/></svg><span>fridge</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lamp"/></svg><span>lamp</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wave"/></svg><span>wave</span></div></div>
+<ul>
+<li><b>Size.</b> 20 px in rows, 24 px in buttons, 32 px in empty states. Always with a text label nearby unless the control has an accessible name.</li>
+<li><b>Colour.</b> Ink by default. The icon takes the state colour only when it is itself the state, for example the alert icon in rose.</li>
+<li><b>Devices.</b> The eleven appliances map to this set. Where no icon fits, use the plug icon and the device name. Do not use emoji.</li>
+</ul>
+</section>
+
+<section class="part" id="parts">
+<header><div class="tag">09<br>Components</div><div><h2>The parts the dashboard is made of</h2><p>Live examples, built from the tokens on this page. Switch your device between day and night to see both themes.</p></div></header>
+<div class="demo"><span class="k">Buttons · height 44 px</span>
+<div class="brow"><button class="btn" type="button">Run scenario</button><button class="btn alt" type="button">Pin device</button><button class="btn quiet" type="button">Reset</button><button class="btn danger" type="button">Stop all</button><button class="btn" type="button" disabled>Unavailable</button></div></div>
+<div class="demo"><span class="k">Time control</span>
+<div class="tbar"><button class="btn quiet" type="button" aria-label="Pause" style="padding:8px 12px"><svg width="16" height="16" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round"><use href="#i-pause"/></svg></button><div class="seg" role="group" aria-label="Speed"><span class="on">1×</span><span>60×</span><span>1 day / min</span></div><span class="chip">21 Dec 2026</span><time datetime="2026-12-21T10:42:00+01:00">10:42 UTC+1</time></div></div>
+<div class="demo"><span class="k">Readings</span>
+<div class="kpis">
+<div class="kpi sunk"><span class="k">Production</span><span class="v">1.9<small>kW</small></span><span class="d">Fixed array</span></div>
+<div class="kpi ldk"><span class="k">House use</span><span class="v">0.8<small>kW</small></span><span class="d">9 of 11 devices on</span></div>
+<div class="kpi blk"><span class="k">Battery</span><span class="v">72<small>%</small></span><span class="d">3.6 kWh · charging 1.1 kW</span><div class="bat" role="img" aria-label="Battery 72 percent, cutoff marker at 8 percent"><i style="width:72%"></i><u style="left:8%"></u></div></div>
+<div class="kpi okk"><span class="k">Tomorrow</span><span class="v">5.1<small>kWh</small></span><span class="d">Low · band 3.3 to 7.2</span></div>
+</div></div>
+<div class="demo"><span class="k">Device rows</span>
+<div class="dev"><div class="ic"><svg viewBox="0 0 24 24"><use href="#i-fridge"/></svg></div><div><b>Fridge-freezer</b><small>150 W</small></div><span class="tier t0">T0</span><span class="st run"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg>Running</span></div>
+<div class="dev"><div class="ic"><svg viewBox="0 0 24 24"><use href="#i-wave"/></svg></div><div><b>Air conditioner</b><small>900 W</small></div><span class="tier t2">T2</span><span class="st shed"><svg viewBox="0 0 24 24"><use href="#i-shed"/></svg>Shed</span></div>
+<div class="dev"><div class="ic"><svg viewBox="0 0 24 24"><use href="#i-load"/></svg></div><div><b>Water heater</b><small>1,500 W · hot by 19:00</small></div><span class="tier t3">T3</span><span class="st wait"><svg viewBox="0 0 24 24"><use href="#i-time"/></svg>Waits for 12:40</span></div></div>
+<div class="demo"><span class="k">Decision log entries</span>
+<div class="log shedl"><span class="tm">10:42 · PRIORITY · <code>SHED_T3_LOW_SOC</code></span>Water heater paused. Battery 28 %, below the Tier 3 limit of 30 %.</div>
+<div class="log sunl"><span class="tm">09:10 · FORECAST · <code>SAVE_FOR_TOMORROW</code></span>Washing machine waits. Tomorrow is expected to be low, so it runs at midday.</div>
+<div class="log"><span class="tm">08:30 · TRACKER · <code>HOLD_GAIN_LOW</code></span>Panels hold position. Extra energy 8 Wh, motor cost 11 Wh.</div></div>
+<div class="demo"><span class="k">Alert and source chips</span>
+<div class="alert"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Panel output is 34 % below what the light predicts</b><p>Possible fault or shading. Measured 1.2 kW, expected 1.8 kW at 12:20.</p></div></div>
+<div class="brow" style="margin-top:14px"><span class="src-chip sim">Sim</span><span class="src-chip wok">Wokwi node</span><span class="src-chip syn">Synthetic weather</span><span class="src-chip hw">Hardware</span><span class="live">Live · 3 s ago</span><span class="stale">Stale · 4 min</span></div></div>
+<div class="demo"><span class="k">Scenario toggles</span>
+<div class="scn on"><span class="sw2"></span><span>Cloudy day<small>Cuts direct light, raises diffuse light</small></span></div>
+<div class="scn"><span class="sw2"></span><span>Dust event<small>Soiling jumps, direct light drops</small></span></div></div>
+</section>
+
+<section class="part" id="states">
+<header><div class="tag">10<br>States</div><div><h2>Every state looks different, in colour, shape and word</h2><p>The state matrix is the reference for developers. A state that is missing here does not exist in the product.</p></div></header>
+<div class="tw"><table class="mn"><thead><tr><th>State</th><th>Chip</th><th>Meaning</th><th>Non-colour cue</th></tr></thead><tbody>
+<tr><td>Running</td><td><span class="st run"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg>Running</span></td><td>Device is on and served</td><td>Check mark</td></tr>
+<tr><td>Shed</td><td><span class="st shed"><svg viewBox="0 0 24 24"><use href="#i-shed"/></svg>Shed</span></td><td>Cut by the priority engine, reason shown</td><td>Dashed border, power icon</td></tr>
+<tr><td>Waiting</td><td><span class="st wait"><svg viewBox="0 0 24 24"><use href="#i-time"/></svg>Waiting</span></td><td>Planned for a later time</td><td>Clock icon and the start time</td></tr>
+<tr><td>Done</td><td><span class="st done">Done</span></td><td>Daily job finished</td><td>Outline only</td></tr>
+<tr><td>Forced on</td><td><span class="st fon"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg>Pinned on</span></td><td>User pinned it on</td><td>Lock icon</td></tr>
+<tr><td>Forced off</td><td><span class="st foff"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg>Pinned off</span></td><td>User pinned it off</td><td>Lock icon and the word off</td></tr>
+</tbody></table></div>
+<h3>Data and system states</h3>
+<div class="tw"><table class="mn"><thead><tr><th>State</th><th>Shown as</th><th>Behaviour</th></tr></thead><tbody>
+<tr><td>Live</td><td><span class="live">Live · 3 s ago</span></td><td>Filled teal dot, relative time</td></tr>
+<tr><td>Stale</td><td><span class="stale">Stale · 4 min</span></td><td>Hollow grey dot, values greyed, nothing hidden</td></tr>
+<tr><td>Simulated, synthetic</td><td><span class="src-chip syn">Synthetic weather</span></td><td>Dashed chip in the chart header</td></tr>
+<tr><td>Wokwi node</td><td><span class="src-chip wok">Wokwi node</span></td><td>Double-edge chip, link state and last heard time</td></tr>
+<tr><td>Loading</td><td>Grey blocks in the final layout</td><td>No spinner for under one second</td></tr>
+<tr><td>Empty</td><td>One sentence and one action</td><td>"No alerts today. The twin and the measurements agree."</td></tr>
+<tr><td>Error</td><td>Rose border, sentence, retry</td><td>Never a blank panel</td></tr>
+<tr><td>Offline</td><td>Banner with the last saved time</td><td>The PWA shows the last known state</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="part" id="scene">
+<header><div class="tag">11<br>3D twin and the node</div><div><h2>The same identity in the scene and on the board</h2><p>The 3D house, the Wokwi board and the phone screen should feel like one product.</p></div></header>
+<div class="plate flush"><svg viewBox="0 0 1000 440" role="img" aria-label="Isometric style plate: a flat-roofed house with an arched door, two tilted panels on the roof, lit windows, and a sun travelling along a dotted arc">
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD9F2"/><stop offset="1" stop-color="#EAF1FA"/></linearGradient></defs>
+<rect width="1000" height="440" fill="url(#sk)"/>
+<path d="M200.0 250.0 L215.0 235.1 L230.0 220.3 L245.0 205.6 L260.0 191.3 L275.0 177.3 L290.0 163.7 L305.0 150.7 L320.0 138.3 L335.0 126.6 L350.0 115.6 L365.0 105.5 L380.0 96.3 L395.0 88.0 L410.0 80.7 L425.0 74.5 L440.0 69.3 L455.0 65.2 L470.0 62.3 L485.0 60.6 L500.0 60.0 L515.0 60.6 L530.0 62.3 L545.0 65.2 L560.0 69.3 L575.0 74.5 L590.0 80.7 L605.0 88.0 L620.0 96.3 L635.0 105.5 L650.0 115.6 L665.0 126.6 L680.0 138.3 L695.0 150.7 L710.0 163.7 L725.0 177.3 L740.0 191.3 L755.0 205.6 L770.0 220.3 L785.0 235.1 L800.0 250.0" fill="none" stroke="var(--blue-deep)" stroke-width="1.5" stroke-dasharray="2 6" stroke-linecap="round" opacity=".7"/>
+<circle cx="425.0" cy="74.5" r="22" fill="var(--sun)"/>
+<text x="200" y="272" font-family="Martian Mono,monospace" font-size="11" fill="#0B3A73">EAST</text><text x="766" y="272" font-family="Martian Mono,monospace" font-size="11" fill="#0B3A73">WEST</text>
+<polygon points="500.0,232.0 800.3,405.4 558.9,544.8 258.6,371.4" fill="var(--inset)"/><polygon points="500.0,289.8 694.3,402.0 558.9,480.2 364.6,368.0" fill="var(--rule)"/><polygon points="676.7,402.0 558.9,470.0 558.9,368.0 676.7,300.0" fill="var(--surface)" stroke="var(--blue-deep)" stroke-width="1.5"/><polygon points="382.2,368.0 558.9,470.0 558.9,368.0 382.2,266.0" fill="var(--blue-soft)" stroke="var(--blue-deep)" stroke-width="1.5"/><polygon points="500.0,198.0 676.7,300.0 558.9,368.0 382.2,266.0" fill="var(--wash)" stroke="var(--blue-deep)" stroke-width="1.5"/><g transform="matrix(29.445 17.000 0 -34.000 382.22 368.00)"><path d="M2.4 0V1.5a0.6 0.6 0 0 1 1.2 0V0z" fill="var(--blue)" transform="translate(0 0)"/><path d="M1.0 0V1.4a1 1 0 0 1 2 0V0z" fill="var(--arch-bg)"/><circle cx="2" cy="1.25" r=".38" fill="var(--sun)"/></g><g transform="matrix(29.445 17.000 0 -34.000 382.22 368.00)"><rect x="3.6" y="1.2" width=".9" height="1" fill="var(--sun-soft)" stroke="var(--sun-line)" stroke-width=".05"/><rect x="4.9" y="1.2" width=".9" height="1" fill="var(--sun-soft)" stroke="var(--sun-line)" stroke-width=".05"/><rect x=".25" y="2.5" width="5.5" height=".08" fill="var(--blue-deep)" opacity=".4"/></g><g transform="matrix(-29.445 17.000 0 -34.000 676.67 402.00)"><rect x="0.7" y="1.2" width=".9" height="1" fill="var(--sun)" stroke="var(--sun-line)" stroke-width=".05"/><rect x="2.2" y="1.2" width=".9" height="1" fill="var(--sun-soft)" stroke="var(--sun-line)" stroke-width=".05"/></g><polygon points="417.6,260.9 485.3,300.0 523.6,247.3 455.8,208.2" fill="var(--blue-deep)" stroke="var(--ink)" stroke-width="1.2"/><line x1="440.1" y1="273.9" x2="478.4" y2="221.2" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><line x1="462.7" y1="287.0" x2="501.0" y2="234.3" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><line x1="436.7" y1="234.6" x2="504.4" y2="273.7" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><polygon points="491.2,303.4 558.9,342.5 597.2,289.8 529.4,250.7" fill="var(--blue-deep)" stroke="var(--ink)" stroke-width="1.2"/><line x1="513.7" y1="316.4" x2="552.0" y2="263.7" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><line x1="536.3" y1="329.5" x2="574.6" y2="276.8" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><line x1="510.3" y1="277.1" x2="578.0" y2="316.2" stroke="var(--arch-fg)" stroke-opacity=".5" stroke-width=".8"/><path d="M547.1 262.6 C547.1 170.8 736.7 311.0 653.1 371.4" fill="none" stroke="var(--sun-line)" stroke-width="2.2" stroke-dasharray="2 7" stroke-linecap="round"/>
+</svg></div>
+<h3>3D scene style</h3>
+<ul>
+<li><b>Look.</b> Flat shaded, low detail, no textures. Materials are the palette: walls in blue wash and surface, panels in deep doorway, the arched door with its sun disc, windows in saffron when something inside is on.</li>
+<li><b>Sun.</b> A saffron disc on a dotted arc. Its position follows the simulated time, and its arc follows the date.</li>
+<li><b>Energy.</b> Dashed saffron lines for production, blue for the battery, rose for the use. Line speed follows power but stops at a fixed maximum.</li>
+<li><b>Shed devices.</b> A shed appliance's light goes out and its icon takes the dashed outline.</li>
+<li><b>Camera.</b> Three presets: front, roof and cutaway. Default is isometric at 35° from above. No free camera on a phone by default.</li>
+<li><b>Quality.</b> Low has no shadows and one light. High adds soft shadows. The setting is remembered and the app chooses Low on a weak computer.</li>
+</ul>
+<h3>Sky by hour</h3>
+<div class="skyrow"><div style="background:linear-gradient(#F2B880,#8FB4D9);color:#0E1B2C">Dawn · 07:00</div><div style="background:linear-gradient(#7FB0E0,#BFD9F2);color:#0E1B2C">Noon · 12:00</div><div style="background:linear-gradient(#3B4F7E,#E58D6B);color:#EAF1FA">Dusk · 17:30</div><div style="background:linear-gradient(#0A1424,#12223D);color:#EAF1FA">Night · 22:00</div></div>
+<h3>The Wokwi node</h3>
+<div class="g2" style="align-items:start">
+<div><span class="k">Screen, 128 × 64 pixels, shown at double size</span><div class="oled"><svg viewBox="0 0 256 128" role="img" aria-label="Layout of the 128 by 64 pixel node screen, shown at double size: name and link, charge bar, power line, shed line"><rect width="256" height="128" fill="#000"/>
+<g font-family="Martian Mono,monospace" font-size="11" fill="#fff">
+<text x="4" y="14" font-weight="700">DAR CHAMS</text><text x="252" y="14" text-anchor="end">LINK</text><circle cx="205" cy="10" r="3" fill="#fff"/>
+<line x1="0" y1="20" x2="256" y2="20" stroke="#fff"/>
+<text x="4" y="42" font-size="20" font-weight="700">72%</text><text x="252" y="42" text-anchor="end">3.6kWh</text>
+<rect x="4" y="50" width="248" height="10" fill="none" stroke="#fff"/><rect x="6" y="52" width="176" height="6" fill="#fff"/><rect x="63" y="48" width="2" height="14" fill="#fff"/>
+<text x="4" y="82">PV 1.9kW</text><text x="252" y="82" text-anchor="end">LOAD 0.8kW</text>
+<text x="4" y="100">SHED 2</text><text x="252" y="100" text-anchor="end">T3 T3</text>
+<line x1="0" y1="108" x2="256" y2="108" stroke="#fff" stroke-dasharray="2 3"/>
+<text x="4" y="123" font-size="10">B2 tmrw cloudy</text><text x="252" y="123" text-anchor="end" font-size="10">10:42</text></g></svg></div>
+<p style="margin-top:12px;font-size:14px">One pixel font, white on black, four rows. Name and link on top, charge as a flat bar with a marker at the cutoff, power line, shed line. The screen follows the same words as the app.</p></div>
+<div><span class="k">LED colours by tier</span>
+<div class="leds"><div><i style="background:#fff"></i>T0 white</div><div><i style="background:#2f6fe0"></i>T1 blue</div><div><i style="background:#22d3ee"></i>T2 cyan</div><div><i style="background:#d946ef"></i>T3 magenta</div></div>
+<span class="k" style="margin-top:14px">Status lights</span>
+<div class="leds"><div><i style="background:#22c55e"></i>Link</div><div><i style="background:#facc15"></i>Shedding</div><div><i style="background:#ef4444"></i>Fault</div><div><i style="background:#f97316"></i>Charging</div></div>
+<p style="font-size:14px">The tier LEDs avoid the saffron family, so a lit LED never reads as production. Status lights use the usual signal colours because on a physical board people expect them.</p></div>
+</div>
+</section>
+
+<section class="part" id="voice">
+<header><div class="tag">12<br>Voice</div><div><h2>Short, plain, with a number and a reason</h2><p>Every sentence says what happened, why, and what happens next. English and French are first class. Arabic is a stretch language for the name line.</p></div></header>
+<div class="g2">
+<div class="box"><h4>Say</h4><ul><li>"Water heater waits. Tomorrow looks cloudy, so it will run at 12:40."</li><li>"Battery 72 %. At this load it lasts about 9 hours."</li><li>"Panels hold position. Moving would use more energy than it gains."</li><li>"Measured 1.2 kW, expected 1.8 kW."</li></ul></div>
+<div class="box"><h4>Avoid</h4><ul><li>"Our smart AI optimises your energy!"</li><li>"Oops! Something went wrong."</li><li>"Guaranteed savings" or any promise about a real house.</li><li>Exclamation marks, emoji, "seamless", "supercharge", "revolutionary".</li></ul></div>
+</div>
+<h3>English and French</h3>
+<div class="tw"><table class="mn"><thead><tr><th>Where</th><th>English</th><th>Français</th></tr></thead><tbody>
+<tr><td>Shed reason</td><td>Water heater paused. Battery 28 %, below the Tier 3 limit of 30 %.</td><td>Chauffe-eau mis en pause. Batterie à 28 %, sous la limite de 30 % du niveau 3.</td></tr>
+<tr><td>Forecast</td><td>Tomorrow is low: 5.1 kWh, likely 3.3 to 7.2.</td><td>Demain sera faible : 5,1 kWh, probablement entre 3,3 et 7,2.</td></tr>
+<tr><td>Alert</td><td>Panel output is 34 % below what the light predicts. Possible fault.</td><td>La production est inférieure de 34 % à ce que la lumière laisse prévoir. Défaut possible.</td></tr>
+<tr><td>Node offline</td><td>No link to the node for 4 minutes. It keeps critical loads on.</td><td>Aucune liaison avec le nœud depuis 4 minutes. Il garde les charges critiques allumées.</td></tr>
+<tr><td>Empty state</td><td>No alerts today. The twin and the measurements agree.</td><td>Aucune alerte aujourd'hui. Le jumeau et les mesures concordent.</td></tr>
+<tr><td>Chat fallback</td><td>The assistant is offline, so this answer comes from the app's own numbers.</td><td>L'assistant est hors ligne ; cette réponse vient des chiffres de l'application.</td></tr>
+<tr><td>Tier names</td><td>Critical · Important · Comfort · Deferrable</td><td>Critique · Important · Confort · Différable</td></tr>
+</tbody></table></div>
+<ul>
+<li><b>Honest words.</b> "Simulated", "assumed", "expected", "measured". Never "proves" or "guaranteed".</li>
+<li><b>Every alert</b> says what was seen, what was expected, and what to look at first.</li>
+<li><b>The chat</b> uses only numbers the app gives it, and it says so when a number is missing.</li>
+</ul>
+</section>
+
+<section class="part" id="motion">
+<header><div class="tag">13<br>Motion</div><div><h2>Things move because the world moved</h2><p>The sun travels, panels turn, lights go out. Nothing moves for decoration.</p></div></header>
+<div class="tw"><table class="mn"><thead><tr><th>Use</th><th>Duration</th><th>Easing</th><th>Rule</th></tr></thead><tbody>
+<tr><td>Press feedback</td><td>120 ms</td><td>ease-out</td><td>Colour or 1 px shift only</td></tr>
+<tr><td>State change on a device row</td><td>240 ms</td><td>cubic-bezier(.2,.7,.2,1)</td><td>Fade chip, no sliding rows</td></tr>
+<tr><td>Number change</td><td>240 ms</td><td>ease-out</td><td>Crossfade, never count up</td></tr>
+<tr><td>Panel tilt in 3D</td><td>Real motor speed</td><td>Linear</td><td>0.5° per second at 1× speed</td></tr>
+<tr><td>Sun in 3D</td><td>Follows the clock</td><td>Linear</td><td>Speeds up with the time control</td></tr>
+<tr><td>Page and panel transitions</td><td>240 ms</td><td>ease-out</td><td>Fade only</td></tr>
+</tbody></table></div>
+<ul>
+<li><b>Reduced motion.</b> When the viewer asks for it, all transitions become instant and the 3D energy lines stop moving, but every value stays visible.</li>
+<li><b>No loops.</b> Nothing pulses forever. A new alert appears once and stays.</li>
+<li><b>Time control wins.</b> Animations scale with the simulation speed, and stop when paused.</li>
+</ul>
+</section>
+
+<section class="part" id="access">
+<header><div class="tag">14<br>Accessibility</div><div><h2>Checks before anything ships</h2><p>Treat each line as a test. Tick it in the pull request.</p></div></header>
+<ul class="chk">
+<li>Text contrast 4.5 to 1, large text and controls 3 to 1, checked in both themes.</li>
+<li>No meaning carried by colour alone: every state has a word and a shape.</li>
+<li>Every control has a visible focus ring, 2 px, doorway blue, 2 px offset.</li>
+<li>Targets at least 44 px, with 8 px between them.</li>
+<li>Everything reachable and usable by keyboard, with a logical order.</li>
+<li>Every chart has a table version and a one-sentence summary.</li>
+<li>Live values announce politely, no more than once every 10 seconds.</li>
+<li>The page works at 200 % zoom and at 320 px width.</li>
+<li>Reduced motion is respected everywhere, including the 3D scene.</li>
+<li>Language is set on every block, and Arabic blocks are right to left.</li>
+<li>3D has a full 2D alternative with the same information.</li>
+<li>No flashing faster than three times a second, ever.</li>
+</ul>
+</section>
+
+<section class="part" id="tokens">
+<header><div class="tag">15<br>Design tokens</div><div><h2>The only source for colour and type</h2><p>Copy these into <code>app/globals.css</code>. The roadmap page uses exactly the same values. One extra token, <code>--sun-line</code>, exists for saffron strokes on the light ground.</p></div></header>
+<pre><code>:root{
+  --sun-line:#B26B00;
+  --wash:#EDF0EE; --surface:#F8FAF9; --inset:#E2E8E5;
+  --ink:#0E1B2C; --ink2:#2F4157; --muted:#4E6177;
+  --rule:#CBD4D0; --rule2:#9DAAA5;
+  --blue:#1456A0; --blue-deep:#0B3A73; --blue-soft:#DCE8F6;
+  --sun:#EFA51A; --sun-soft:#FBEBC8; --sun-ink:#7A4E00;
+  --cell:#0F7B6C; --cell-soft:#D3EBE6;
+  --load:#B02A52; --load-soft:#F3DAE1;
+  --shed:#6B7A8C;
+  --arch-bg:#0B3A73; --arch-fg:#EAF1FA;
+  --code-bg:#0B1B31; --code-fg:#DCE7F5;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --sans:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Consolas,monospace;
+  --arabic:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --wash:#0A1424; --surface:#101C30; --inset:#16243B;
+  --ink:#E8EEF5; --ink2:#C3CFDD; --muted:#98A8BC;
+  --rule:#243551; --rule2:#4A5F7F;
+  --blue:#6FA8F0; --blue-deep:#A5C8F7; --blue-soft:#17304F;
+  --sun:#F7BE45; --sun-soft:#3A2D10; --sun-ink:#F7D488;
+  --cell:#3CC1AB; --cell-soft:#12362F;
+  --load:#EE7C9A; --load-soft:#3C1A27;
+  --shed:#8796AA;
+  --arch-bg:#0F2A4F;
+  --sun-line:#F7BE45;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --wash:#0A1424; --surface:#101C30; --inset:#16243B;
+  --ink:#E8EEF5; --ink2:#C3CFDD; --muted:#98A8BC;
+  --rule:#243551; --rule2:#4A5F7F;
+  --blue:#6FA8F0; --blue-deep:#A5C8F7; --blue-soft:#17304F;
+  --sun:#F7BE45; --sun-soft:#3A2D10; --sun-ink:#F7D488;
+  --cell:#3CC1AB; --cell-soft:#12362F;
+  --load:#EE7C9A; --load-soft:#3C1A27;
+  --shed:#8796AA;
+  --arch-bg:#0F2A4F;
+  --sun-line:#F7BE45;
+  color-scheme:dark}
+
+</code></pre>
+<h3>Use in Next.js and Tailwind</h3>
+<pre><code>// app/layout.tsx
+import { Bricolage_Grotesque, Instrument_Sans, Martian_Mono, Noto_Kufi_Arabic } from 'next/font/google'
+
+const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display', display: 'swap' })
+const sans    = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
+const mono    = Martian_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' })
+const arabic  = Noto_Kufi_Arabic({ subsets: ['arabic'], variable: '--font-arabic', display: 'swap' })
+
+// tailwind.config.ts  (extend only, keep the CSS variables as the single source)
+theme: { extend: {
+  colors: { wash: 'var(--wash)', surface: 'var(--surface)', inset: 'var(--inset)',
+            ink: 'var(--ink)', ink2: 'var(--ink2)', muted: 'var(--muted)',
+            blue: 'var(--blue)', sun: 'var(--sun)', cell: 'var(--cell)',
+            load: 'var(--load)', shed: 'var(--shed)', rule: 'var(--rule)' },
+  fontFamily: { display: ['var(--font-display)'], sans: ['var(--font-sans)'],
+                mono: ['var(--font-mono)'], arabic: ['var(--font-arabic)'] },
+  borderRadius: { chip: '3px', control: '4px', panel: '6px' } } }</code></pre>
+<p>If you use shadcn/ui, point its variables at the Dar Chams tokens instead of its defaults:</p>
+<div class="tw"><table class="mn"><thead><tr><th>shadcn variable</th><th>Dar Chams token</th></tr></thead><tbody>
+<tr><td>background</td><td>--wash</td></tr><tr><td>foreground</td><td>--ink</td></tr><tr><td>card, popover</td><td>--surface</td></tr>
+<tr><td>muted</td><td>--inset, with muted-foreground = --muted</td></tr><tr><td>primary</td><td>--blue, with white text</td></tr>
+<tr><td>secondary</td><td>--inset, with --ink text</td></tr><tr><td>destructive</td><td>--load</td></tr>
+<tr><td>border, input</td><td>--rule, with --rule2 for strong edges</td></tr><tr><td>ring</td><td>--blue</td></tr>
+<tr><td>accent</td><td>--blue-soft. Saffron is never mapped to accent.</td></tr>
+</tbody></table></div>
+<h3>PWA manifest values</h3>
+<pre><code>{
+  "name": "Dar Chams", "short_name": "Dar Chams",
+  "start_url": "/", "display": "standalone",
+  "background_color": "#EDF0EE", "theme_color": "#0B3A73",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}</code></pre>
+</section>
+
+<section class="part" id="handoff">
+<header><div class="tag">16<br>Handoff</div><div><h2>Files, Figma and the definition of done</h2><p>What to export, where it lives, and how to know a screen follows the charter.</p></div></header>
+<h3>Asset list</h3>
+<div class="tw"><table class="mn"><thead><tr><th>File</th><th>Size</th><th>Use</th></tr></thead><tbody>
+<tr><td>mark.svg, mark-reversed.svg, mark-mono.svg</td><td>24 unit grid</td><td>Everywhere the mark appears</td></tr>
+<tr><td>wordmark.svg</td><td>Text converted to outlines</td><td>Report cover, slides, README</td></tr>
+<tr><td>favicon.ico, icon-32.png, apple-touch-icon.png</td><td>32, 32, 180 px</td><td>Browser tab and home screen</td></tr>
+<tr><td>icon-192.png, icon-512.png, maskable-512.png</td><td>192, 512, 512 px</td><td>PWA</td></tr>
+<tr><td>og-image.png</td><td>1200 × 630 px</td><td>Link preview, arch crop on the left</td></tr>
+<tr><td>icons/*.svg</td><td>24 unit grid</td><td>The icon set in this charter</td></tr>
+<tr><td>tokens.css</td><td>Text</td><td>Colour, type, radius, motion</td></tr>
+<tr><td>scene-palette.ts</td><td>Text</td><td>Colours for the 3D materials, taken from the tokens</td></tr>
+<tr><td>node-style.md</td><td>Text</td><td>Screen layout and LED colours for the Wokwi sketch</td></tr>
+</tbody></table></div>
+<h3>Figma file, free plan</h3>
+<ol>
+<li><b>Cover.</b> Mark, name, version.</li>
+<li><b>Foundations.</b> Colour styles for both themes, text styles, grid, icons.</li>
+<li><b>Components.</b> Button, chip, tier, device row, KPI, log entry, alert, scenario toggle, time bar, source chip. Each with its states.</li>
+<li><b>Screens.</b> Overview, forecast, battery, loads, tracker, alerts, scenarios, at phone and laptop width, day and night.</li>
+<li><b>3D.</b> Reference views of the scene and the camera presets.</li>
+<li><b>Node.</b> Screen and LED reference.</li>
+<li><b>Documents.</b> Report cover and slide master.</li>
+</ol>
+<h3>Document templates</h3>
+<div class="g3">
+<div class="box"><h4>Report cover</h4><p>Deep doorway ground, the arch cropped large at the right, title in Bricolage 800 in arch-fg, one saffron disc, and the date. Inside pages use the wash ground, a left rule and the same type scale.</p></div>
+<div class="box"><h4>Slide master</h4><p>16:9. Wash ground for evidence slides, deep doorway ground for section slides. Title top left, one diagram or table, source chip bottom left, slide number in mono bottom right.</p></div>
+<div class="box"><h4>README header</h4><p>The mark at 48 px, the name, one sentence, the three source chips, and a screenshot in day and night.</p></div>
+</div>
+<h3>Definition of done for a screen</h3>
+<ul class="chk">
+<li>Only token colours, no hard-coded hex.</li>
+<li>Saffron appears only for production.</li>
+<li>Every state in the state matrix is drawn.</li>
+<li>Day and night both checked at phone and laptop width.</li>
+<li>All numbers are in Martian Mono with a spaced unit.</li>
+<li>The copy has a number and a reason.</li>
+<li>Source chip present wherever data comes from the node or from fixtures.</li>
+<li>The accessibility checklist above is ticked.</li>
+</ul>
+<footer class="foot"><span>Dar Chams · graphic charter v1.0</span><span>Simulation project · Tunis</span><span>Fonts: Google Fonts, open licences</span></footer>
+</section>
+</main>
+
+
+</body></html>

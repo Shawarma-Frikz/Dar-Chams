@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Helios are recorded here.
+All notable changes to Dar Chams are recorded here. DEC-040 adopted the identity; DEC-041 aligns the repository and current code identifiers.
 
 The format follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), and the project
 follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html). A version number is a phase gate:
@@ -10,10 +10,16 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base, the canonical units and the energy ledger.
+Phase 02 — the simulation time base, canonical units, energy ledger and Dar Chams identity.
 
 ### Added
 
+- Dar Chams product identity (DEC-040): the name and Arabic form, doorway-and-sun mark, audited
+  day/night colour tokens, self-hosted type and the identity charter.
+- Repository and code identity (DEC-041): GitHub links, npm package names, engine identity, settings
+  key, schema URL and current roadmap filenames now use Dar Chams identifiers.
+- The supplied Dar Chams charter and roadmap, plus an adoption crosswalk that routes new model
+  detail through the existing acceptance gates without treating proposals as completed work.
 - Engine time base (DEC-037): timestamps stored as epoch instants and rendered in the site's IANA
   zone, site-day boundaries that keep daylight-saving days at their real 23–25 hours, a configurable
   whole-minute step grid of 5, 15, 30 or 60 minutes, and power and energy kept in W and Wh with
@@ -52,7 +58,7 @@ Phase 01 — toolchain and scaffold.
 - Node 26.13.1 and npm 11.20.0 pinned with `engine-strict`, exact dependency versions, a committed
   lockfile and a recorded browser and hardware baseline (DEC-031, DEC-036).
 - Next.js 16 shell: six routes, a static export, strict TypeScript, ESLint, Prettier and the
-  `@helios/engine` workspace boundary (DEC-032).
+  `@dar-chams/engine` workspace boundary (DEC-032).
 - Four configuration layers with an Ajv-validated scenario contract, relational invariants and a unit
   audit that stops an invalid boot scenario with a field, a value and a fix (DEC-033).
 - Six quality gates, 22 Vitest and fast-check tests, an aggregate `verify` that ends in the
@@ -81,6 +87,6 @@ Phase 00 — project definition.
   checklist.
 - Three validated scenarios and the JSON Schema they share, with a dependency-free validator.
 
-[Unreleased]: https://github.com/Shawarma-Frikz/Helios/compare/v0.1...HEAD
-[0.1.0]: https://github.com/Shawarma-Frikz/Helios/releases/tag/v0.1
-[0.0.0]: https://github.com/Shawarma-Frikz/Helios/releases/tag/v0.0
+[Unreleased]: https://github.com/Shawarma-Frikz/Dar-Chams/compare/v0.1...HEAD
+[0.1.0]: https://github.com/Shawarma-Frikz/Dar-Chams/releases/tag/v0.1
+[0.0.0]: https://github.com/Shawarma-Frikz/Dar-Chams/releases/tag/v0.0

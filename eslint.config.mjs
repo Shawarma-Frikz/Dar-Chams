@@ -40,8 +40,8 @@ const config = [
         {
           patterns: [
             {
-              group: ['@helios/engine/src/*', '@helios/engine/dist/*'],
-              message: 'Import the engine through its public entry point: @helios/engine.',
+              group: ['@dar-chams/engine/src/*', '@dar-chams/engine/dist/*'],
+              message: 'Import the engine through its public entry point: @dar-chams/engine.',
             },
           ],
         },

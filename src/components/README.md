@@ -10,7 +10,8 @@
 
 ## Purpose
 
-`src/components` holds the small, shared building blocks used by the route shell: the header, the
+`src/components` holds the small, shared building blocks used by the route shell: the Dar Chams
+wordmark and doorway-and-sun mark, the header, the
 primary navigation, the page intro, the planned-item list and the reference list. They render what
 they are given and own no application state. They are not a design system: a component earns its
 place here only when two routes need it, and a component that needs the engine belongs to the module
@@ -23,9 +24,10 @@ that has the engine.
   identifier strings to render.
 - `PRIMARY_ROUTES` is the one context-like input: `SiteNav` reads it to build the navigation, and
   `usePathname()` supplies the current route. It is the only client component (`'use client'`).
-- Tailwind theme tokens and utility classes; no inline palette values.
+- Tailwind theme tokens and utility classes; no inline palette values. The mark and colour palette
+  follow [the identity charter](../../docs/identity.md) (DEC-041).
 
-No component fetches data, reads storage or imports `@helios/engine`.
+No component fetches data, reads storage or imports `@dar-chams/engine`.
 
 ## Outputs
 

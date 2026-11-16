@@ -1,9 +1,9 @@
 {
-  "name": "@helios/engine",
+  "name": "@dar-chams/engine",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "description": "Deterministic energy engine for Helios. No UI, no React, no browser APIs.",
+  "description": "Deterministic energy engine for Dar Chams. No UI, no React, no browser APIs.",
   "type": "module",
   "sideEffects": false,
   "exports": {

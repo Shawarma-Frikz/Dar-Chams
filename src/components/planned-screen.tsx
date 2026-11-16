@@ -16,8 +16,8 @@ export function PlannedScreen({ eyebrow, title, lede, phase, refs, items }: Plan
       <PageIntro eyebrow={eyebrow} title={title} lede={lede} phase={phase} refs={refs} />
       <section className="mt-12">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-display text-2xl text-basalt">Planned contents</h2>
-          <p className="font-mono text-[11px] tracking-[0.14em] text-ink uppercase">
+          <h2 className="font-display text-2xl text-ink">Planned contents</h2>
+          <p className="font-mono text-[11px] tracking-[0.14em] text-muted uppercase">
             Not built yet
           </p>
         </div>
@@ -25,7 +25,7 @@ export function PlannedScreen({ eyebrow, title, lede, phase, refs, items }: Plan
           <PlannedItems items={items} />
         </div>
       </section>
-      <p className="mt-8 max-w-2xl text-sm leading-relaxed text-ink">
+      <p className="mt-8 max-w-2xl text-sm leading-relaxed text-ink2">
         This route exists so the structure and the requirement mapping can be reviewed before the
         engine exists. It displays no values: a screenshot of this page is a plan, not a result.
       </p>

@@ -1,4 +1,4 @@
-# Helios ignore rules.
+# Dar Chams ignore rules.
 # Rule of thumb: regenerable output never enters Git, evidence always does.
 # Evidence (committed): docs/, scenarios/*.json, fixtures/, firmware source,
 # Wokwi diagram.json, lockfile. See docs/conventions.md section 5.

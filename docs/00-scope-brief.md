@@ -11,7 +11,7 @@
 
 ## 1 · Product statement
 
-> Helios is a simulation-first residential solar microgrid and energy-management digital twin. It models a virtual installation — photovoltaic array, battery storage, grid connection and a configurable household — inside a deterministic TypeScript engine, then compares a transparent rule-based controller against a forecast-aware scheduler that predicts generation and demand, coordinates flexible loads, protects battery reserve and explains every decision. The first release runs entirely in a browser against simulated telemetry and public weather data; no physical plant is monitored or controlled. Physical ESP32 and sensor integration is a later extension that must connect through the same observation and actuation contracts without rewriting the energy-management rules.
+> Dar Chams (دار شمس), the house of the sun, is a simulation-first residential solar microgrid and energy-management digital twin. It models a virtual installation — photovoltaic array, battery storage, grid connection and a configurable household — inside a deterministic TypeScript engine, then compares a transparent rule-based controller against a forecast-aware scheduler that predicts generation and demand, coordinates flexible loads, protects battery reserve and explains every decision. The first release runs entirely in a browser against simulated telemetry and public weather data; no physical plant is monitored or controlled. Physical ESP32 and sensor integration is a later extension that must connect through the same observation and actuation contracts without rewriting the energy-management rules.
 
 Canonical text. Mirrored in [`README.md`](../README.md) and [`docs/report/01-product-statement.md`](report/01-product-statement.md).
 
@@ -23,7 +23,7 @@ Canonical text. Mirrored in [`README.md`](../README.md) and [`docs/report/01-pro
 
 A residential solar installation is a control problem under uncertainty: production depends on weather that is only forecast, consumption depends on people, storage is finite, and every scheduling decision has a cost. Evaluating a management policy normally requires hardware, months of weather, and a real household — none of which are available to this project.
 
-Helios replaces the installation with a configurable model so that policies can be compared **under identical conditions, on demand, and reproducibly**. The deliverable is therefore not "a dashboard" but an experimental apparatus: a simulation whose assumptions are written down, a baseline any reader can reproduce, and a forecast-aware policy measured against that baseline and against a perfect-foresight upper bound.
+Dar Chams replaces the installation with a configurable model so that policies can be compared **under identical conditions, on demand, and reproducibly**. The deliverable is therefore not "a dashboard" but an experimental apparatus: a simulation whose assumptions are written down, a baseline any reader can reproduce, and a forecast-aware policy measured against that baseline and against a perfect-foresight upper bound.
 
 The honest claim is comparative, not absolute: *policy A serves critical load better than threshold rules under the same synthetic weather and household, with the gain quantified.* Everything else — 3D, charts, alerts — exists to make that claim inspectable.
 
@@ -31,14 +31,14 @@ The honest claim is comparative, not absolute: *policy A serves critical load be
 
 ## 3 · Intended users
 
-| User | What they need from Helios |
+| User | What they need from Dar Chams |
 | --- | --- |
 | Author and jury | A reproducible experiment, explicit assumptions, inspectable decisions, an honest limitations section |
 | Instructor / evaluator | A runnable demo that does not depend on hardware or live internet |
 | Student or hobbyist planning an installation | A configurable testbed to explore array size, battery size and load priorities before buying parts |
 | Reader of the report | Enough provenance to judge which numbers are simulated, forecast, derived or external |
 
-Helios is **not** aimed at utilities, installers, or control-room operators; it has no certified metering, no grid-code compliance claims, and no multi-user operation.
+Dar Chams is **not** aimed at utilities, installers, or control-room operators; it has no certified metering, no grid-code compliance claims, and no multi-user operation.
 
 ---
 
@@ -194,7 +194,7 @@ The track is inside the MVP gate but outside the ten items, exactly like §6.2: 
 
 ## 7 · Non-goals
 
-- Proving that Helios saves a specific household a specific amount of money.
+- Proving that Dar Chams saves a specific household a specific amount of money.
 - Reproducing a real installation's measured behaviour (there is no installation).
 - Replacing engineering design tools (PVsyst, PVGIS, Homer).
 - Making "intelligence" the selling point; the selling point is a fair, inspectable comparison.

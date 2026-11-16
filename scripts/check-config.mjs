@@ -18,7 +18,7 @@ import {
   auditSchemaUnits,
   createScenarioValidator,
   formatIssues,
-} from '@helios/engine';
+} from '@dar-chams/engine';
 
 import {
   DEFAULT_SCENARIO_ID,

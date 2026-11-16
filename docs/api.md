@@ -2,25 +2,25 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.3.0 |
+| Version | 1.4.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041) |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
 promise that its name and meaning stay stable until a decision-log entry changes them.
 
-## 1 · `@helios/engine`
+## 1 · `@dar-chams/engine`
 
 The engine is a workspace package that exports TypeScript source; Next.js transpiles it and Node 26
 strips its types, so there is no build step between the source and either consumer. It may not import
 React, Next.js, the DOM or the application (DEC-002).
 
 ```ts
-import { createScenarioValidator, formatIssues } from '@helios/engine';
-import type { Scenario } from '@helios/engine';
+import { createScenarioValidator, formatIssues } from '@dar-chams/engine';
+import type { Scenario } from '@dar-chams/engine';
 ```
 
 `ENGINE_VERSION` is `0.1.0`. It is the version written into a run manifest (NFR-03), so it changes
@@ -29,7 +29,7 @@ with the engine and not only with the application.
 <!-- engine-exports:start -->
 | Export | Kind | Contract |
 | --- | --- | --- |
-| `ENGINE_NAME` | const | `'helios-engine'`; the name written into a run manifest |
+| `ENGINE_NAME` | const | `'dar-chams-engine'`; the name written into a run manifest |
 | `ENGINE_VERSION` | const | `'0.1.0'`; the engine version written into a run manifest |
 | `ConfigError` | class | `Error` subclass carrying `source` and the full `issues` list; its message is the formatted report |
 | `describeValue` | function | Renders any value as a reader would write it back into a scenario, capped at 80 characters |
@@ -168,7 +168,7 @@ the tests, never by the engine.
 | `DEFAULT_SCENARIO_SOURCE` | const | `scenarios/tunis-typical-v1.json`; the source label quoted in errors |
 | `DEFAULT_SETTINGS` | const | Frozen initial presentation settings; installation values never default here |
 | `SETTINGS_SCHEMA_VERSION` | const | `1`; a settings document from another version is discarded |
-| `SETTINGS_STORAGE_KEY` | const | `helios.settings.v1`; the storage key phase 09 will use |
+| `SETTINGS_STORAGE_KEY` | const | `dar-chams.settings.v1`; the storage key phase 09 will use |
 | `MotionPreference` | type | `'system'` or `'reduced'` |
 | `UserSettings` | type | Settings schema version and the presentation block |
 | `SettingsLoad` | type | The usable settings, the issues found and whether the parser recovered |

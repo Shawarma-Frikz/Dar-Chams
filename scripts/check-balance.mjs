@@ -30,7 +30,7 @@ import {
   watts,
   wattsFromKilowatts,
   wattHours,
-} from '@helios/engine';
+} from '@dar-chams/engine';
 
 const ROOT = path.resolve('.');
 const SCENARIOS = path.join(ROOT, 'scenarios');

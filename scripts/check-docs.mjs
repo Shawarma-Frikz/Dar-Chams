@@ -399,8 +399,8 @@ function validateExperiment(record, label) {
   if (fields.Seed && !/^\d+$/.test(fields.Seed)) {
     issues.push(`experiment ${label}: Seed is not an integer`);
   }
-  if (fields.Engine && !/^helios-engine \d+\.\d+\.\d+$/.test(fields.Engine)) {
-    issues.push(`experiment ${label}: Engine must be "helios-engine <version>"`);
+  if (fields.Engine && !/^dar-chams-engine \d+\.\d+\.\d+$/.test(fields.Engine)) {
+    issues.push(`experiment ${label}: Engine must be "dar-chams-engine <version>"`);
   }
   if (fields.Metrics) {
     for (const raw of fields.Metrics.split(',')) {
@@ -566,6 +566,132 @@ function checkScriptsTable(scriptsReadme) {
   return { issues, count: files.size };
 }
 
+function checkIdentity(identity, css, header, mark, icon, layout, appSources) {
+  const issues = [];
+  const engineManifest = JSON.parse(read('packages/engine/package.json'));
+  const packageLock = read('package-lock.json');
+  const engineSource = read('packages/engine/src/index.ts');
+  const settingsSource = read('src/lib/config/settings.ts');
+  const schema = JSON.parse(read('scenarios/scenario.schema.json'));
+  const api = read('docs/api.md');
+  const repositoryUrl = 'https://github.com/Shawarma-Frikz/Dar-Chams';
+  const tokens = [
+    ...identity.matchAll(
+      /^\| `(--[a-z0-9-]+)` \| `?(#[0-9A-Fa-f]{6})`? \| `?(#[0-9A-Fa-f]{6})`? \|/gm,
+    ),
+  ];
+  const dayStart = css.indexOf('/* identity-day:start */');
+  const dayEnd = css.indexOf('/* identity-day:end */');
+  const nightStart = css.indexOf('/* identity-night:start */');
+  const nightEnd = css.indexOf('/* identity-night:end */');
+  if ([dayStart, dayEnd, nightStart, nightEnd].some((i) => i < 0)) {
+    issues.push('identity: CSS token block markers are missing');
+    return issues;
+  }
+  const declarations = (block) =>
+    new Map(
+      [...block.matchAll(/(--[a-z0-9-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [
+        m[1],
+        m[2].toLowerCase(),
+      ]),
+    );
+  const day = declarations(css.slice(dayStart, dayEnd));
+  const night = declarations(css.slice(nightStart, nightEnd));
+  const documented = new Set(tokens.map(([, name]) => name));
+  if (tokens.length !== 24)
+    issues.push(`identity: expected 24 documented tokens, found ${tokens.length}`);
+  if (documented.size !== 24 || [...day.keys()].some((name) => !documented.has(name)))
+    issues.push('identity: documented token names do not match the day block');
+  if (day.size !== 24) issues.push(`identity: expected 24 day tokens, found ${day.size}`);
+  for (const name of night.keys())
+    if (!day.has(name)) issues.push(`identity: night token ${name} has no day definition`);
+  for (const [, name, dayValue, nightValue] of tokens) {
+    if (day.get(name) !== dayValue.toLowerCase())
+      issues.push(`identity: ${name} day token does not match globals.css`);
+    if ((night.get(name) ?? day.get(name)) !== nightValue.toLowerCase())
+      issues.push(`identity: ${name} night token does not match globals.css`);
+  }
+  if (
+    !identity.includes('Dar Chams') ||
+    !identity.includes('دار شمس') ||
+    !header.includes('Dar Chams') ||
+    !header.includes('دار شمس')
+  )
+    issues.push('identity: Latin and Arabic names must appear in the charter and header');
+  if (
+    manifest.name !== 'dar-chams' ||
+    engineManifest.name !== '@dar-chams/engine' ||
+    !packageLock.includes('node_modules/@dar-chams/engine') ||
+    !engineSource.includes("ENGINE_NAME = 'dar-chams-engine'") ||
+    !settingsSource.includes("SETTINGS_STORAGE_KEY = 'dar-chams.settings.v1'") ||
+    !schema.$id?.startsWith(`${repositoryUrl}/`) ||
+    manifest.repository?.url !== `${repositoryUrl}.git` ||
+    !api.includes('`@dar-chams/engine`') ||
+    !identity.includes('`Dar-Chams` GitHub repository')
+  )
+    issues.push(
+      'identity: repository, package, engine, storage or schema identifiers are not aligned to Dar Chams',
+    );
+  const arch = 'M4 22V10A8 8 0 0 1 20 10V22';
+  if (
+    !mark.includes(arch) ||
+    !mark.includes('cx="12" cy="10" r="3.6"') ||
+    !icon.includes(arch) ||
+    !icon.includes('cx="12" cy="10" r="3.6"') ||
+    !icon.includes('Dar Chams')
+  )
+    issues.push('identity: brand mark or favicon does not match the charter');
+  for (const legacy of [
+    'basalt',
+    'limestone',
+    'oxide',
+    'sage',
+    'lichen',
+    'chalk',
+    'clay',
+    'slate',
+  ]) {
+    if (
+      new RegExp(`--(?:color-)?${legacy}\\b|(?:text|bg|border|decoration)-${legacy}\\b`, 'i').test(
+        appSources,
+      )
+    )
+      issues.push(`identity: legacy ${legacy} token remains in the application`);
+  }
+  for (const family of [
+    'Bricolage_Grotesque',
+    'Instrument_Sans',
+    'Martian_Mono',
+    'Noto_Kufi_Arabic',
+  ]) {
+    if (!layout.includes(family)) issues.push(`identity: ${family} font loader is missing`);
+  }
+  for (const variable of [
+    '--font-bricolage',
+    '--font-instrument',
+    '--font-martian',
+    '--font-kufi',
+  ]) {
+    if (!layout.includes(variable) || !css.includes(variable))
+      issues.push(`identity: ${variable} is not wired through layout.tsx and globals.css`);
+  }
+  if (!header.includes('font-arabic'))
+    issues.push('identity: header does not use the Arabic font utility');
+  return issues;
+}
+
+function readAppSources(directory = path.join(root, 'src')) {
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .map((entry) => {
+      const full = path.join(directory, entry.name);
+      if (entry.isDirectory()) return readAppSources(full);
+      return /\.(?:css|svg|ts|tsx)$/.test(entry.name) ? fs.readFileSync(full, 'utf8') : '';
+    })
+    .flat(Infinity)
+    .join('\n');
+}
+
 function audit() {
   const issues = [];
   const cited = new Set();
@@ -582,6 +708,18 @@ function audit() {
 
   const api = checkApi(read('docs/api.md'));
   issues.push(...api.issues);
+
+  issues.push(
+    ...checkIdentity(
+      read('docs/identity.md'),
+      read('src/app/globals.css'),
+      read('src/components/site-header.tsx'),
+      read('src/components/brand-mark.tsx'),
+      read('src/app/icon.svg'),
+      read('src/app/layout.tsx'),
+      readAppSources(),
+    ),
+  );
 
   const dictionaryIssues = checkDictionary(read('docs/data-dictionary.md'), dictionaryTable);
   issues.push(...dictionaryIssues);
@@ -627,6 +765,8 @@ function runNegatives() {
   const changelogText = read('CHANGELOG.md');
   const experimentText = read('docs/experiment-log.md');
   const mapText = read('docs/documentation.md');
+  const identityText = read('docs/identity.md');
+  const cssText = read('src/app/globals.css');
 
   return [
     {
@@ -661,6 +801,18 @@ function runNegatives() {
       issues: checkDocMap(
         mapText.replace(/^\| \[`docs\/quality-gates\.md`\].*\n/m, ''),
         requiredDocs,
+      ),
+    },
+    {
+      name: 'identity token removed',
+      issues: checkIdentity(
+        identityText.replace('| `--wash` |', '| `--gone` |'),
+        cssText,
+        read('src/components/site-header.tsx'),
+        read('src/components/brand-mark.tsx'),
+        read('src/app/icon.svg'),
+        read('src/app/layout.tsx'),
+        readAppSources(),
       ),
     },
   ];
@@ -723,4 +875,5 @@ console.log(
 );
 console.log(`  map: ${stats.documents} documents named; every document has a row`);
 console.log(`  scripts: ${stats.scripts} scripts, each named in scripts/README.md`);
+console.log('  identity: name, mark, 24 colour tokens and font loaders match the charter');
 console.log(`  negative: ${negatives.length} broken variants detected, each reported`);

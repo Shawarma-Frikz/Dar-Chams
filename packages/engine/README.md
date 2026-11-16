@@ -1,4 +1,4 @@
-# `@helios/engine` — the simulation boundary
+# `@dar-chams/engine` — the simulation boundary
 
 | Field | Value |
 | --- | --- |
@@ -144,4 +144,4 @@ the ledger are tested; the simulation they will carry is not.
 | `src/units/quantity.test.ts` | Five tests over temperature and state of charge |
 | `src/balance/balance.ts` | The nine-term step ledger, its tolerance and the conversion-loss helper |
 | `src/balance/balance.test.ts` | Twelve ledger and property tests |
-| `package.json` | `@helios/engine`, TypeScript-source exports for the workspace |
+| `package.json` | `@dar-chams/engine`, TypeScript-source exports for the workspace |

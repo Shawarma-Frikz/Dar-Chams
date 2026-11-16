@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HELIOS — Project Roadmap & Graphic Charter</title>
-<meta name="description" content="A detailed engineering roadmap and visual identity system for Helios, a simulation-first residential solar microgrid digital twin.">
+<title>DAR CHAMS — Project Roadmap & Graphic Charter</title>
+<meta name="description" content="A detailed engineering roadmap and visual identity system for Dar Chams, a simulation-first residential solar microgrid digital twin.">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap');
 :root{--basalt:#202B2A;--limestone:#E9E3D5;--oxide:#B86B45;--sage:#8A9B83;--lichen:#D3D86A;--slate:#526C70;--chalk:#F3EFE6;--clay:#A64F3D;--ink:#26302E;--muted:#68736D;--line:#D1CCBF;--serif:'Literata',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--mono:'DM Mono',Consolas,monospace}
@@ -24,10 +24,10 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
 </style>
 </head>
 <body>
-<header class="top"><div class="topin"><div class="wordmark">HELIOS <span>ENGINEERING ROADMAP</span></div><nav><a href="#brief">Brief</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#charter">Graphic charter</a><a href="#validation">Validation</a></nav></div></header>
+<header class="top"><div class="topin"><div class="wordmark">DAR CHAMS <span>ENGINEERING ROADMAP</span></div><nav><a href="#brief">Brief</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#charter">Graphic charter</a><a href="#validation">Validation</a></nav></div></header>
 <main>
 <section class="hero">
- <div class="hero-inner"><p class="eyebrow">RESIDENTIAL ENERGY SYSTEMS · SIMULATION · DIGITAL TWIN</p><h1>Helios</h1>
+ <div class="hero-inner"><p class="eyebrow">RESIDENTIAL ENERGY SYSTEMS · SIMULATION · DIGITAL TWIN</p><h1>Dar Chams</h1>
  <p class="lede">A simulation-first residential solar microgrid that predicts energy conditions, coordinates household loads and storage, and exposes every decision through an interactive 3D digital twin.</p></div>
  <div class="hero-meta">
   <div><span>Project class</span><b>Engineering prototype / digital twin</b></div>
@@ -37,8 +37,8 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
  </div>
 </section>
 <section class="intro-grid" id="brief">
- <div><p class="eyebrow">01 · PROJECT DEFINITION</p><h2>What Helios is meant to prove</h2>
- <p>Helios is not a decorative smart-home dashboard. It is a configurable virtual energy installation. Its simulation engine models photovoltaic generation, household demand, battery storage, conversion limits and grid exchange at a defined timestep. A management layer first runs a transparent baseline, then a forecast-aware policy. The interface makes the resulting state and decisions inspectable.</p>
+ <div><p class="eyebrow">01 · PROJECT DEFINITION</p><h2>What Dar Chams is meant to prove</h2>
+ <p>Dar Chams is not a decorative smart-home dashboard. It is a configurable virtual energy installation. Its simulation engine models photovoltaic generation, household demand, battery storage, conversion limits and grid exchange at a defined timestep. A management layer first runs a transparent baseline, then a forecast-aware policy. The interface makes the resulting state and decisions inspectable.</p>
  <p>The first release is software-only. It must be useful without an ESP32, physical solar panel, battery, or live sensor. Future hardware can replace selected simulated inputs, but it must not require rewriting the energy-management rules.</p>
  </div>
  <div class="principles">
@@ -74,13 +74,13 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
     <section class="phase-section" id="phase-00">
       <div class="phase-head">
         <div class="phase-no">00</div>
-        <div><p class="eyebrow">PHASE 00 · Week 1</p><h2>Project definition &amp; engineering decisions</h2><p class="phase-desc">Lock what Helios is, what it is not, and what counts as a successful simulation.</p></div>
+        <div><p class="eyebrow">PHASE 00 · Week 1</p><h2>Project definition &amp; engineering decisions</h2><p class="phase-desc">Lock what Dar Chams is, what it is not, and what counts as a successful simulation.</p></div>
       </div>
       <div class="deliverable"><span>PHASE OUTPUT</span><strong>Scope brief, requirements register, decision log</strong></div>
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
         <tr>
           <td class="task-id">00.1</td>
-          <td><strong>Write the product statement</strong><p>Describe Helios as a simulation-first residential solar microgrid and energy-management digital twin. State that the first release models a virtual installation; physical ESP32/sensor integration is a later extension.</p></td>
+          <td><strong>Write the product statement</strong><p>Describe Dar Chams as a simulation-first residential solar microgrid and energy-management digital twin. State that the first release models a virtual installation; physical ESP32/sensor integration is a later extension.</p></td>
           <td><span class="done-label">DONE WHEN</span><p>One paragraph appears in README and report; it does not claim a real installation is being controlled.</p></td>
         </tr>
 
@@ -166,7 +166,7 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
     <section class="phase-section" id="phase-02">
       <div class="phase-head">
         <div class="phase-no">02</div>
-        <div><p class="eyebrow">PHASE 02 · Weeks 2–3</p><h2>System model &amp; energy mathematics</h2><p class="phase-desc">Build the numerical heart of Helios before the 3D house. The simulator is the source of truth.</p></div>
+        <div><p class="eyebrow">PHASE 02 · Weeks 2–3</p><h2>System model &amp; energy mathematics</h2><p class="phase-desc">Build the numerical heart of Dar Chams before the 3D house. The simulator is the source of truth.</p></div>
       </div>
       <div class="deliverable"><span>PHASE OUTPUT</span><strong>Deterministic energy engine with unit tests</strong></div>
       <div class="table-wrap"><table class="tasks"><thead><tr><th>ID</th><th>Task & implementation actions</th><th>Acceptance condition</th></tr></thead><tbody>
@@ -738,13 +738,13 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
         </tr></tbody></table></div>
     </section>
 <div class="section-head" id="charter"><div class="section-index">05</div><div><h2>Graphic charter · visual identity system</h2><p>The visual direction is an architectural field atlas: part energy instrumentation, part material study, part domestic cutaway drawing. It should feel designed by a small product studio—not like a generic AI dashboard or a stock green-energy template.</p></div></div>
-<div class="charter-hero"><p class="eyebrow">HELIOS · VISUAL IDENTITY 01</p><h3>“Energy, made legible.”</h3><p>Quiet mineral surfaces, dark structural ink, oxidized copper for captured solar energy, sage for storage, and a restrained lichen accent for active flows. The visual language borrows from architectural section drawings, field instruments, and printed technical atlases.</p></div>
+<div class="charter-hero"><p class="eyebrow">DAR CHAMS · VISUAL IDENTITY 01</p><h3>“Energy, made legible.”</h3><p>Quiet mineral surfaces, dark structural ink, oxidized copper for captured solar energy, sage for storage, and a restrained lichen accent for active flows. The visual language borrows from architectural section drawings, field instruments, and printed technical atlases.</p></div>
 <h3 style="font:500 22px var(--serif);color:var(--basalt)">01 · Core palette</h3>
 <div class="palette"><div class="swatch"><i style="--sw:#202B2A"></i><b>Basalt</b><code>#202B2A</code><small>Primary dark / structure</small></div><div class="swatch"><i style="--sw:#E9E3D5"></i><b>Limestone</b><code>#E9E3D5</code><small>Main canvas / light surfaces</small></div><div class="swatch"><i style="--sw:#B86B45"></i><b>Oxide</b><code>#B86B45</code><small>Primary accent / solar energy</small></div><div class="swatch"><i style="--sw:#8A9B83"></i><b>Sage</b><code>#8A9B83</code><small>Storage / healthy state</small></div><div class="swatch"><i style="--sw:#D3D86A"></i><b>Lichen</b><code>#D3D86A</code><small>Highlights / active energy</small></div><div class="swatch"><i style="--sw:#526C70"></i><b>Slate Blue</b><code>#526C70</code><small>Grid / secondary information</small></div><div class="swatch"><i style="--sw:#F3EFE6"></i><b>Chalk</b><code>#F3EFE6</code><small>Panels / elevated surfaces</small></div><div class="swatch"><i style="--sw:#A64F3D"></i><b>Signal Clay</b><code>#A64F3D</code><small>Warnings / faults only</small></div></div>
 <div class="charter-grid">
  <div class="charter-panel"><h3>02 · Typography</h3><p class="type-sample">A house in balance.</p><p>Literata — editorial headlines, chapter titles, large metrics when emphasis is needed. Use a restrained weight and avoid oversized display text in everyday UI.</p><p class="type-ui">Generation · 2.4 kW</p><p>DM Sans — navigation, controls, body copy, labels and explanatory text. Prioritize legibility and compact rhythm.</p><p class="type-mono">PV-02 / 14:35 / 0840 WH</p><p>DM Mono — timestamps, IDs, units, sensor values, model versions and small technical annotations only.</p></div>
  <div class="charter-panel"><h3>03 · Graphic motif</h3><p>The signature motif is the <b>sun path / circuit trace</b>: a measured arc crossing a rectilinear house plan, punctuated by small node marks. It can appear as a section divider, loading mark, chart annotation, or cover graphic.</p>
- <div class="motif-box"><svg viewBox="0 0 620 190" role="img" aria-label="Helios sun-path graphic motif"><path d="M25 150 H595 M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#526C70" stroke-width="2" stroke-dasharray="5 7"/><path d="M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#B86B45" stroke-width="3"/><circle cx="310" cy="18" r="13" fill="#D3D86A" stroke="#202B2A" stroke-width="2"/><path d="M310 32 V80 H400 V116 H500" fill="none" stroke="#202B2A" stroke-width="2"/><rect x="392" y="108" width="16" height="16" fill="#8A9B83" stroke="#202B2A"/><circle cx="500" cy="116" r="6" fill="#B86B45"/><path d="M115 150 V132 H205 V150 M415 150 V132 H505 V150" fill="none" stroke="#202B2A" stroke-width="2"/><g fill="#526C70"><circle cx="80" cy="150" r="4"/><circle cx="540" cy="150" r="4"/></g></svg></div></div>
+ <div class="motif-box"><svg viewBox="0 0 620 190" role="img" aria-label="Dar Chams sun-path graphic motif"><path d="M25 150 H595 M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#526C70" stroke-width="2" stroke-dasharray="5 7"/><path d="M80 150 A230 230 0 0 1 540 150" fill="none" stroke="#B86B45" stroke-width="3"/><circle cx="310" cy="18" r="13" fill="#D3D86A" stroke="#202B2A" stroke-width="2"/><path d="M310 32 V80 H400 V116 H500" fill="none" stroke="#202B2A" stroke-width="2"/><rect x="392" y="108" width="16" height="16" fill="#8A9B83" stroke="#202B2A"/><circle cx="500" cy="116" r="6" fill="#B86B45"/><path d="M115 150 V132 H205 V150 M415 150 V132 H505 V150" fill="none" stroke="#202B2A" stroke-width="2"/><g fill="#526C70"><circle cx="80" cy="150" r="4"/><circle cx="540" cy="150" r="4"/></g></svg></div></div>
  <div class="charter-panel"><h3>04 · Icon and illustration style</h3><ul><li>Use thin, consistent 1.5–2 px strokes and simple geometric silhouettes.</li><li>Prefer custom line icons for PV, battery, grid, inverter, appliance and weather.</li><li>3D assets use a coherent low-poly architectural style, matte materials and restrained edge detail.</li><li>Use diagram labels and leader lines rather than decorative floating labels.</li><li>Avoid gradients, glowing neon outlines, glassmorphism, generic AI sparkles and random green leaves.</li></ul></div>
  <div class="charter-panel"><h3>05 · Layout and composition</h3><ul><li>Use a 12-column desktop grid, generous outer margins, and consistent 8 px spacing increments.</li><li>Favor editorial sections, aligned data tables, thin rules and one strong visual per screen.</li><li>Use cards only when they group a real object or action; not every metric needs a card.</li><li>Keep chart axes, units and time ranges explicit. Do not remove context to make charts look cleaner.</li><li>On mobile, prioritize current system state and appliance controls; collapse the 3D scene to a compact view or 2D map.</li></ul></div>
  <div class="charter-panel"><h3>06 · Data color semantics</h3><ul><li>Oxide: solar generation and PV-derived energy.</li><li>Sage: battery storage, reserve and healthy component state.</li><li>Slate blue: grid exchange and environmental context.</li><li>Lichen: active energy route or selected/interactive state; use sparingly.</li><li>Signal clay: warning, anomaly or fault. Pair every color with text/icon/pattern; never rely on color alone.</li></ul></div>
@@ -776,8 +776,8 @@ footer{background:var(--basalt);color:var(--chalk);padding:30px;margin-top:60px;
  <div class="gate"><b>OPTIMIZER GATE</b><p>Do not claim improvement unless the baseline and optimizer use identical scenarios, forecasts, initial states and random seeds.</p></div>
  <div class="gate"><b>3D GATE</b><p>Do not add detailed models before the semantic object map and state binding work. The scene is a client of the simulation.</p></div>
  <div class="gate"><b>HARDWARE GATE</b><p>Physical ESP32/sensor integration is a later milestone. Add it through an adapter and validate units, timestamps and missing-data behavior first.</p></div>
- <div class="gate"><b>CLAIM GATE</b><p>Describe Helios as a simulation-based digital twin until it is connected to a real installation with validated telemetry.</p></div>
+ <div class="gate"><b>CLAIM GATE</b><p>Describe Dar Chams as a simulation-based digital twin until it is connected to a real installation with validated telemetry.</p></div>
 </div>
-<footer><h2>The Helios standard</h2><p>Build a coherent energy model first. Make every decision inspectable. Let the 3D house show the same state the equations calculate. Compare strategies fairly, publish the limitations, and leave a clean path from virtual sensors to physical hardware.</p><div class="footline"><span>HELIOS · ENGINEERING ROADMAP & GRAPHIC CHARTER</span><span>12-PHASE PLAN · SIMULATION-FIRST EDITION</span></div></footer>
+<footer><h2>The Dar Chams standard</h2><p>Build a coherent energy model first. Make every decision inspectable. Let the 3D house show the same state the equations calculate. Compare strategies fairly, publish the limitations, and leave a clean path from virtual sensors to physical hardware.</p><div class="footline"><span>DAR CHAMS · ENGINEERING ROADMAP & GRAPHIC CHARTER</span><span>12-PHASE PLAN · SIMULATION-FIRST EDITION</span></div></footer>
 </main>
 </body></html>

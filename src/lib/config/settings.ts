@@ -13,7 +13,7 @@
  * strict — see resolve.ts — so a bad default is still a build failure.
  */
 
-import type { ConfigIssue } from '@helios/engine';
+import type { ConfigIssue } from '@dar-chams/engine';
 
 export const SETTINGS_SCHEMA_VERSION = 1 as const;
 
@@ -32,7 +32,7 @@ export interface SettingsLoad {
   readonly recovered: boolean;
 }
 
-export const SETTINGS_STORAGE_KEY = 'helios.settings.v1';
+export const SETTINGS_STORAGE_KEY = 'dar-chams.settings.v1';
 
 const TOP_LEVEL_KEYS = ['schemaVersion', 'display'] as const;
 const DISPLAY_KEYS = ['motion'] as const;

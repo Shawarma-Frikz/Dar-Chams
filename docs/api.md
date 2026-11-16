@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.6.0 |
+| Version | 1.7.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041, DEC-042, DEC-043 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041–DEC-044 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -157,6 +157,10 @@ with the engine and not only with the application.
 | `WeatherSource` | type | `read(query): Promise<WeatherFrame[]>`; external I/O boundary |
 | `createSimulationClock` | function | Builds an idle fixed-step clock from a validated scenario; playback speed never changes the step grid |
 | `SimulationClockOptions` | type | Optional maximum playback speed, default 1000× |
+| `createEventJournal` | function | Creates an append-only, timestamp-ordered event journal with IDs derived from scenario ID, seed and sequence |
+| `EventJournal` | type | Append validated events, read immutable snapshots and inspect event count |
+| `SimulationEvent` | type | A typed event plus stable event ID and deterministic sequence number |
+| `SimulationEventInput` | type | Discriminated event inputs for appliance, SOC, grid, forecast, inverter and optimization transitions |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
@@ -181,6 +185,13 @@ instead of the full scenario or UI state. Task 02.5 implements `createSimulation
 only on explicit step calls and provides a SplitMix64 random stream, versioned by DEC-043; resetting
 to a seed rewinds it. Start/pause/resume/reset and playback-rate changes do not read wall time. These
 interfaces do not claim that any physical model exists yet.
+
+Task 02.6 adds `createEventJournal`. Its discriminated event types cover appliance start/stop, SOC
+threshold crossings, grid outage/return, forecast updates, inverter limits and optimization actions.
+Each event carries an absolute timestamp, monotonic step index, source, stable entity ID, previous and
+next state, typed payload, deterministic sequence and ID. IDs derive from scenario ID, seed and append
+order; the journal rejects invalid transitions and out-of-order timestamps or steps and returns frozen
+snapshots. It records domain events without adding a browser store or claiming physical models.
 
 The ledger is the conservation law every simulated step is settled against (DEC-039). `pv`,
 `gridImport` and `batteryDischarge` are supply; `load`, `batteryCharge`, `gridExport`,

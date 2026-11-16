@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044 |
 
 ## Purpose
 
@@ -25,7 +25,8 @@ these specify the dependency boundary without claiming a physical model exists. 
 only an explicit observation, never a UI store or the full scenario. Task 02.5 implements the
 fixed-step clock lifecycle and a versioned SplitMix64 stream seeded by the scenario; speed changes
 playback pacing only and replay resets both the step cursor and random stream. It is not a UI or
-persistence layer.
+persistence layer. Task 02.6 adds typed events for the roadmap transition families and an append-only
+journal whose stable IDs derive from scenario, seed and deterministic append order.
 
 ## Inputs
 
@@ -74,6 +75,9 @@ persistence layer.
 - The **simulation clock**: `createSimulationClock` creates the fixed step grid from a validated
   scenario, implements explicit lifecycle transitions, advances one step at a time, validates the
   configured playback rate and maximum, and provides a resettable deterministic random stream.
+- The **event journal**: `createEventJournal` records typed appliance, SOC, grid, forecast, inverter
+  and optimization events with timestamp, step order, source, entity, previous/next state, payload,
+  deterministic sequence and stable replay ID. Records and snapshots are immutable.
 
 The complete list, with signatures, is the first table in [`docs/api.md`](../../docs/api.md).
 
@@ -88,7 +92,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 63 engine tests and the application's ten, 73 in total:
+`npm run test` runs 72 engine tests and the application's ten, 82 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 15 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
@@ -118,6 +122,9 @@ node scripts/validate-scenarios.mjs
 - [`src/simulation/clock.test.ts`](src/simulation/clock.test.ts), 6 tests — lifecycle transitions,
   invalid commands and seeds, fixed-step completion, playback-rate bounds, a frozen SplitMix64
   sequence, seed reset, and identical ordered replay at 1×, 60× and maximum speed.
+- [`src/simulation/events.test.ts`](src/simulation/events.test.ts), 8 tests — all roadmap event types,
+  event fields and stable IDs, identical replay, immutable payloads, transition semantics, monotonic
+  timestamp/step ordering, and event-specific payload validation.
 - [`src/lib/config/layers.test.ts`](../../src/lib/config/layers.test.ts), 10 application tests — the
   four layers stay separate and resolution fails closed.
 
@@ -149,6 +156,7 @@ the ledger are tested; the simulation they will carry is not.
 | `src/config/scenario.ts` | The typed view of the contract |
 | `src/simulation/interfaces.ts` | UI-free component inputs, outputs and ports for phase 02.4 |
 | `src/simulation/clock.ts` | Fixed-step clock lifecycle, playback speed and seeded PRNG for phase 02.5 |
+| `src/simulation/events.ts` | Typed state-transition events and deterministic append-only journal for phase 02.6 |
 | `src/config/schema.ts` | Ajv 8.20.0, error-to-issue translation and unknown-key suggestions |
 | `src/config/invariants.ts` | The relational rules JSON Schema cannot express |
 | `src/config/units.ts` | Unit suffixes, unitless quantities and the schema audit |

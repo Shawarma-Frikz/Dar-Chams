@@ -127,6 +127,8 @@ export type {
 } from './simulation/interfaces.ts';
 export { createSimulationClock } from './simulation/clock.ts';
 export type { SimulationClockOptions } from './simulation/clock.ts';
+export { createEventJournal } from './simulation/events.ts';
+export type { EventJournal, SimulationEvent, SimulationEventInput } from './simulation/events.ts';
 
 export type {
   Appliance,

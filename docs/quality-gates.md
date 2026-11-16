@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.6.0 |
+| Version | 1.7.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.5, 01.6), 02.1–02.5; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests; v1.5.0 records component ports and 67 tests; v1.6.0 records the clock and 74 tests |
+| Phase | 01 (tasks 01.5, 01.6), 02.1–02.6; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests; v1.5.0 records component ports and 67 tests; v1.6.0 records the clock and 74 tests; v1.7.0 records the event journal and 82 tests |
 | Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038; the energy ledger by DEC-039 |
 | Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all twelve checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
@@ -44,7 +44,7 @@ The register gate is itself twelve checks. The seventh, `scripts/check-time.mjs`
 
 ## 2 · What the tests cover
 
-All 74 tests run against the modules the application imports — the configuration contract from 01.4 and the time, unit, balance, component-port and clock base from 02.1–02.5:
+All 82 tests run against the modules the application imports — the configuration contract from 01.4 and the time, unit, balance, component-port, clock and event journal from 02.1–02.6:
 
 | File | Tests | Subject |
 | --- | --- | --- |
@@ -55,6 +55,7 @@ All 74 tests run against the modules the application imports — the configurati
 | [`packages/engine/src/balance/balance.test.ts`](../packages/engine/src/balance/balance.test.ts) | 12 | Nine non-negative magnitudes close a 1750 Wh step on both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss follows the inverter efficiency; properties show the residual is supply − demand, a derived eighth term closes the step, and interval energy feeds the ledger |
 | [`packages/engine/src/simulation/interfaces.test.ts`](../packages/engine/src/simulation/interfaces.test.ts) | 2 | The public engine entry loads and advances in Node without browser globals; typed contracts compile for all eight simulation component groups |
 | [`packages/engine/src/simulation/clock.test.ts`](../packages/engine/src/simulation/clock.test.ts) | 6 | Clock lifecycle and invalid transitions; fixed-step completion; speed limits; seeded SplitMix64 replay at 1×, 60× and maximum; deterministic reset and distinct seed streams |
+| [`packages/engine/src/simulation/events.test.ts`](../packages/engine/src/simulation/events.test.ts) | 8 | All roadmap event families carry required fields; IDs and ordered records replay deterministically; payloads are immutable; malformed transitions, timestamps, steps and event-specific values are rejected |
 | [`src/lib/config/layers.test.ts`](../src/lib/config/layers.test.ts) | 10 | Settings recover without throwing, refuse scenario fields and never change the scenario; runtime state derives from a frozen configuration; resolution fails closed |
 
 Eleven of them are properties rather than examples, run 50–300 times each:

@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock and Dar Chams identity.
+Phase 02 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal and Dar Chams identity.
 
 ### Added
 
@@ -49,10 +49,16 @@ Phase 02 — the simulation time base, canonical units, energy ledger, component
   scenario. Playback rate does not affect the step sequence or random draws.
 - Six clock tests cover lifecycle rules, completion, speed validation, a frozen PRNG vector, reset and
   byte-for-byte identical replay at 1×, 60× and maximum speed.
+- Task 02.6 deterministic event journal (DEC-044): typed appliance, SOC, grid, forecast, inverter and
+  optimization transitions carry absolute timestamps, source, stable entity IDs, previous/next state
+  and validated payloads. Event IDs derive from scenario, seed and append sequence; journal ordering
+  and immutable records make event replay reproducible.
+- Eight event-journal tests cover every roadmap event family, deterministic replay, immutable records,
+  transition validation, chronological ordering, SOC crossings, forecast horizons and inverter limits.
 
 ### Changed
 
-- `npm run check` retains its twelve register checks, and the suite runs 74 tests.
+- `npm run check` retains its twelve register checks, and the suite runs 82 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

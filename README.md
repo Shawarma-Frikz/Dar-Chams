@@ -11,6 +11,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 - **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
 - **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
 - **Phases 01–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
+- **Phase 01 — toolchain and scaffold: in progress.** Task 01.1 records the MIT licence (DEC-029), the ignore and editor rules, and the branch and commit conventions (DEC-030). Its done-when — a clean clone installed from documented commands — is satisfied by 01.2 and 01.3.
 - No application code yet. CI and the project scaffold arrive in phase 01.
 
 ## What this is
@@ -56,6 +57,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 ├── docs/                       Phase 00 deliverables and the report seed
 │   ├── 00-scope-brief.md
 │   ├── acceptance-checklist.md
+│   ├── conventions.md          Licence, branches, commits, what enters Git
 │   ├── data-provenance.md      Simulation truth, labelling rules, generated register
 │   ├── decision-log.md
 │   ├── metric-register.json    Every displayable value: class, unit, source, gate
@@ -75,6 +77,11 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   └── validate-scenarios.mjs  Scenario invariant checks
+├── .gitattributes              LF normalisation, binary declarations
+├── .gitignore                  Regenerable output out, evidence in
+├── .editorconfig               UTF-8, LF, indentation
+├── .vscode/                    Recommended extensions and settings
+├── LICENSE                     MIT
 ├── Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html
 ├── Helios_Roadmap_and_Graphic_Charter.html   Superseded 12-phase chart
 └── README.md
@@ -93,6 +100,7 @@ Scenarios validate with `node scripts/validate-scenarios.mjs`. The metric regist
 | [Acceptance checklist](docs/acceptance-checklist.md) | Success criteria with numeric thresholds, decision gates, sign-off |
 | [Report · product statement](docs/report/01-product-statement.md) | Canonical paragraph for the final report |
 | [Scenario conventions](scenarios/README.md) | Schema contract, field groups, units, seeds, variants, tariff policy |
+| [Repository conventions](docs/conventions.md) | MIT licence, branch and commit rules, what enters Git, pre-commit checks |
 
 ## Design
 
@@ -100,4 +108,4 @@ The visual identity (palette, typography, motif, interface rules) is defined in 
 
 ## License
 
-Not yet chosen; decided in phase 01.1 together with the repository conventions.
+MIT — see [`LICENSE`](LICENSE). It covers the code, documentation and the machine-checked artefacts; third-party data and libraries keep their own terms (DEC-029). Repository rules are in [`docs/conventions.md`](docs/conventions.md): Conventional Commits, short-lived branches, and an ignore policy that keeps regenerable output out of Git while evidence stays in (DEC-030).

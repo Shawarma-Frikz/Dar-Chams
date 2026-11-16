@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 (signed) |
+| Version | 1.2.0 (signed) |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.6); B.5 added by the embedded-track decision DEC-026 |
+| Phase | 00 (task 00.6); B.5 added by the embedded-track decision DEC-026; v1.2.0 renews the digest after the phase-01.1 open item closed (DEC-029, DEC-030) |
 | Owner | Author (sole developer) |
-| Content digest (sha256) | b0049722998ee867cf0da398a9bb16c3629c59635f776db1965f3971fa010176 |
+| Content digest (sha256) | ff77d8ba6ede78cb8778af684c3d9cab2fce5747da893f784cb853d760b61781 |
 
 A phase is complete when its acceptance evidence exists, not when its screen exists. This checklist is the agreed definition of success; evidence is recorded next to each row as phases finish. `scripts/check-acceptance.mjs` verifies its structure, the six task-00.6 headline targets, every cross-document AC reference and the content digest below; an edit after signing invalidates the digest until the sign-off is renewed.
 
@@ -121,7 +121,7 @@ These gates from the roadmap are binding. A gate that fails stops the dependent 
 | Author | Shawarma-Frikz | 2026-11-16 | digital sign-off, bound to the content digest in the header |
 | Supervisor (if required by the module) |  |  |  |
 
-By signing, the author confirms that the Must items, thresholds and gates above — exactly as covered by the content digest in the header — are the definition of done for v1, including the embedded criteria AC-29 – AC-37, and that any later change requires a decision-log entry and a renewed digest and signature.
+By signing, the author confirms that the Must items, thresholds and gates above — exactly as covered by the content digest in the header — are the definition of done for v1, including the embedded criteria AC-29 – AC-37, and that any later change requires a decision-log entry and a renewed digest and signature. The digest was renewed on 2026-11-16 to close the phase-01.1 open item in §E; no criterion, threshold or gate was changed.
 
 ---
 
@@ -136,4 +136,4 @@ By signing, the author confirms that the Must items, thresholds and gates above 
 | Create the free Wokwi account and decide whether a physical DevKit is bought | Author | Phase 13 |
 | Verify STEG tariff values with a dated citation (enables AC-10 cost column) | Author | Phase 04 |
 | Select and cite a grid emission factor (enables CO₂ metric) | Author | Phase 04 |
-| Decide licence and branch/commit conventions | Author | Phase 01.1 |
+| Decide licence and branch/commit conventions | Author | Phase 01.1 — **closed 2026-11-16**: MIT (DEC-029); Conventional Commits, short-lived branches and evidence-aware ignore rules (DEC-030) |

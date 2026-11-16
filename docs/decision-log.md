@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.3.0 |
+| Version | 0.4.0 |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0 records the phase-01.1 repository decisions |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
-**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule.
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -41,6 +41,8 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-026 | Embedded sensing track admitted as phases 12–16 | Accepted | 2026-11-16 |
 | DEC-027 | Telemetry contract, source modes and class-M activation | Accepted | 2026-11-16 |
 | DEC-028 | Free-path transport for the embedded lab | Accepted | 2026-11-16 |
+| DEC-029 | MIT licence | Accepted | 2026-11-16 |
+| DEC-030 | Repository conventions: Conventional Commits, short-lived branches, evidence-aware ignores | Accepted | 2026-11-16 |
 
 ---
 
@@ -284,3 +286,23 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** The private gateway as the primary Wokwi path — it is a paid capability and would violate CON-03. Public broker for anything sensitive — excluded by construction: only synthetic telemetry is published, under a unique topic prefix. A serial-only bridge — platform-specific fragility with no standard Wokwi path.
 
 **Consequences.** Task 14.9 is rewritten around the free default; EX-09/EX-10 declare replay and local-broker fallbacks; replay fixtures become mandatory evidence (AC-33) rather than optional polish.
+
+## DEC-029 · MIT licence
+
+**Context.** Task 01.1 requires a licence decision before the repository is published, and the README recorded none. Helios is a graded coursework deliverable in a public repository, with no patentable invention and no commercial distribution.
+
+**Decision.** MIT, declared in [`LICENSE`](../LICENSE) with SPDX identifier `MIT`. No CLA and no DCO requirement. The grant covers code, documentation and the machine-checked artefacts; third-party data and libraries keep their own terms.
+
+**Alternatives rejected.** Apache-2.0 — an explicit patent grant and `NOTICE` choreography for a project with no patent to protect, and extra paperwork for a single author. GPL-3.0 — copyleft discourages reuse of a sample project and would complicate any later embedding of the engine in closed tooling. No licence — default all-rights-reserved contradicts a public repository and blocks exactly the reuse a portfolio project is meant to demonstrate.
+
+**Consequences.** Dependencies must stay permissive; a copyleft dependency needs a new entry before it is added. Open-Meteo data, PVGIS reference values and the Wokwi simulator keep their own attribution terms, so the MIT grant is not a blanket relicensing of the whole tree. The README states the licence and the report cites it.
+
+## DEC-030 · Repository conventions: Conventional Commits, short-lived branches, evidence-aware ignores
+
+**Context.** Task 01.1 asks for `.gitignore`, editor settings and branch/commit conventions, and task 01.5 makes CI the gate. The tree already mixes code-to-come with evidence that is checked now: a signed checklist whose digest covers exact bytes, scripts that parse tables, and registers where a formatter's reflow counts as a content change.
+
+**Decision.** Conventional Commits from phase 01 onward, with a fixed type and scope vocabulary, `Refs:` footers citing `FR`/`NFR`/`CON`/`EX`, `AC` and `DEC` identifiers, and one logical change per commit. Branches are short-lived and named `<type>/<phase>-<slug>`; `main` is never force-pushed and published history is never rewritten; annotated tags mark phase gates. `.gitattributes` fixes LF, and `.gitignore` separates regenerable output from evidence, so runs, datasets and `.pio/` stay out while scenarios, weather fixtures and replay sessions stay in. Format-on-save is enabled for code and disabled for Markdown and JSON, because those files are evidence.
+
+**Alternatives rejected.** Keeping the existing sentence style — readable, but no machine-parseable type, so filtering by kind or generating a changelog is impossible. GitFlow with release branches — ceremony one developer cannot use, and long-lived branches that drift away from the checks. Rewriting the six phase-00 commits into Conventional Commits — destroys the record of how phase 00 actually closed for no gain. Committing generated runs — repository bloat, when AC-02 already makes a run reproducible from scenario, seed and engine version. Running Prettier over `docs/` — a reflow breaks the checklist digest and buries a real change in formatting noise.
+
+**Consequences.** History before 2026-11-16 keeps its sentence-style subjects and is not retro-fitted. A `CHANGELOG.md` can be generated from the types and tags in 01.6. Signed artefacts are edited by hand and re-signed; the check fails if that is forgotten, which is the intended failure mode.

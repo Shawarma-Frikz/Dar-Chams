@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.15.0 |
+| Version | 0.16.0 |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3; v0.7.0 records phase 01.4; v0.8.0 records phase 01.5; v0.9.0 records phase 01.6; v0.10.0 corrects the runtime pin after the first CI run (DEC-036); v0.11.0 records the phase-02.1 time base (DEC-037); v0.12.0 records the phase-02.2 canonical units (DEC-038); v0.13.0 records the phase-02.3 energy ledger (DEC-039); v0.14.0 adopts the Dar Chams identity (DEC-040); v0.15.0 renames the repository, npm packages and current project identifiers (DEC-041) |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3; v0.7.0 records phase 01.4; v0.8.0 records phase 01.5; v0.9.0 records phase 01.6; v0.10.0 corrects the runtime pin after the first CI run (DEC-036); v0.11.0 records the phase-02.1 time base (DEC-037); v0.12.0 records the phase-02.2 canonical units (DEC-038); v0.13.0 records the phase-02.3 energy ledger (DEC-039); v0.14.0 adopts the Dar Chams identity (DEC-040); v0.15.0 renames the repository, npm packages and current project identifiers (DEC-041); v0.16.0 records phase-02.4 component ports (DEC-042) |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
@@ -54,6 +54,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-039 | Energy ledger: nine magnitudes, direction in the name, absolute tolerance | Accepted | 2026-11-16 |
 | DEC-040 | Dar Chams product name and adopted visual identity | Superseded | 2026-11-16 |
 | DEC-041 | Rename the repository and all current project identifiers to Dar Chams | Accepted | 2026-11-16 |
+| DEC-042 | Typed UI-free ports between the engine and simulation components | Accepted | 2026-11-16 |
 
 ---
 
@@ -476,4 +477,16 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** A fresh `npm ci` links the renamed workspace and uses the renamed root package. New engine manifests, settings records and telemetry examples use Dar Chams identifiers; the signed checklist and earlier decisions retain their original text. The public repository links point to `https://github.com/Shawarma-Frikz/Dar-Chams`. Historical experiments are identified by the recorded engine version, while the current engine reports `dar-chams-engine`. Existing stored preferences under the old key are not used by the current application; if persisted settings ship before this rename, a one-time migration should be added before releasing the new key.
 
 **Revisit if** the GitHub owner or repository slug changes, if a persisted user-settings release introduces data under the old key, or if an external telemetry consumer has already depended on the former topic prefix.
+
+## DEC-042 · Typed UI-free ports between the engine and simulation components
+
+**Context.** Task 02.4 requires typed inputs and outputs for PV, inverter, battery, appliance, grid, weather, scheduler and simulation clock, and its completion condition is a headless engine test. The engine is shared by Node tests, browser execution and batch experiments (DEC-002). Giving components the whole application store would couple model code to presentation state and let a controller inspect world state it should only observe through a declared boundary (FR-SIM-08).
+
+**Decision.** Define separate input/output ports for the seven simulation models and an explicit lifecycle interface for the clock. Physical and policy models are synchronous typed transformations over one step and canonical quantities; weather I/O is isolated behind an asynchronous `WeatherSource`. The scheduler receives a limited `SchedulerObservation`, not `Scenario` or UI state. The clock contract is declared in 02.4; its lifecycle, speed control and deterministic replay behavior are implemented in 02.5. Port definitions do not imply that physical models exist.
+
+**Alternatives rejected.** Pass the full `Scenario` and application state to every component — this exposes unrelated and hidden state and makes UI coupling easy. Use generic records of `number` — this discards the W, Wh, Celsius and SOC distinctions established in 02.2. Implement clock behavior as part of 02.4 — it folds the next roadmap task into this boundary task before the contracts are reviewed. Import React or Three.js types for future visualization needs — the engine must remain executable in plain Node.
+
+**Consequences.** `packages/engine/src/simulation/interfaces.ts` and the public barrel define the ports; `docs/api.md` records their contract. ESLint blocks React, Next.js, Three.js and application imports from the engine. A Node test imports and advances the public entry without browser globals and compiles inert implementations of all eight component groups. The canonical ledger remains the conservation gate for future model outputs. No new physics, clock implementation, metric claim or acceptance threshold is introduced.
+
+**Revisit if** a physical model demonstrates that a required input or diagnostic is missing, or a component contract needs to cross a persistence or worker boundary.
 

@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; physics from 02.4 |
-| Boundary | No React, Next.js, DOM or browser API may be imported (DEC-002) |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements clock behavior |
+| Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042 |
 
 ## Purpose
 
@@ -19,8 +19,11 @@ relational invariants, the unit audit and the issue model. Phase 02.1 adds the a
 instants, the site timezone's calendar-day boundaries and a uniform step grid. Phase 02.2 adds the
 canonical units: branded watts, watt-hours, degrees Celsius and state of charge, with every scale
 change behind a named conversion. Phase 02.3 adds the energy ledger: the nine magnitudes every step
-must satisfy, with the direction in the term name and an absolute tolerance on the residual. It is
-not a UI, a controller or a persistence layer.
+must satisfy, with the direction in the term name and an absolute tolerance on the residual. Phase
+02.4 adds pure, typed ports for weather, PV, inverter, battery, appliance, grid, scheduler and clock;
+these specify the dependency boundary without claiming a physical model exists. The scheduler sees
+only an explicit observation, never a UI store or the full scenario. It is not a UI or persistence
+layer.
 
 ## Inputs
 
@@ -62,6 +65,10 @@ not a UI, a controller or a persistence layer.
   the terms and the ±1e-6 Wh bound; `inverterConversionLoss` derives one loss from a declared
   efficiency; and `StepTerms`, `StepBalance`, `BalanceTerm` and `BalanceError` carry the shape, the
   result and the failure.
+- The **component ports**: each model interface has one typed input and output, uses canonical unit
+  types, receives only the configuration it needs and contains no UI or framework type. The weather
+  source is an explicit async data boundary; the scheduler receives a limited observation; the clock
+  lifecycle contract is declared now and implemented in 02.5.
 
 The complete list, with signatures, is the first table in [`docs/api.md`](../../docs/api.md).
 
@@ -76,7 +83,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 55 engine tests and the application's ten, 65 in total:
+`npm run test` runs 57 engine tests and the application's ten, 67 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 14 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
@@ -100,6 +107,9 @@ node scripts/validate-scenarios.mjs
   or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss
   follows the inverter efficiency; and three properties show the residual is supply − demand, a
   derived eighth term closes the step, and interval energy feeds the ledger.
+- [`src/simulation/interfaces.test.ts`](src/simulation/interfaces.test.ts), 2 tests — the public
+  engine entry runs in plain Node with no browser globals, and typed ports exist for all eight
+  component groups.
 - [`src/lib/config/layers.test.ts`](../../src/lib/config/layers.test.ts), 10 application tests — the
   four layers stay separate and resolution fails closed.
 
@@ -118,7 +128,7 @@ committed scenario. None of the commands needs a build: Node strips the TypeScri
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
 **Not covered yet.** There is no physics and no running simulation clock; 02.3 states and proves the
-energy ledger, and 02.4–03 fill it with component models. Solar elevation and sunrise/sunset — the
+energy ledger, 02.4 defines the component contracts, and later phases implement the models. Solar elevation and sunrise/sunset — the
 weather model's daylight flag (MET-11) — belong to 03.2, not to this day boundary. The time base and
 the ledger are tested; the simulation they will carry is not.
 
@@ -128,6 +138,7 @@ the ledger are tested; the simulation they will carry is not.
 | --- | --- |
 | `src/index.ts` | The public surface; every export is documented in the API notes |
 | `src/config/scenario.ts` | The typed view of the contract |
+| `src/simulation/interfaces.ts` | UI-free component inputs, outputs and ports for phase 02.4 |
 | `src/config/schema.ts` | Ajv 8.20.0, error-to-issue translation and unknown-key suggestions |
 | `src/config/invariants.ts` | The relational rules JSON Schema cannot express |
 | `src/config/units.ts` | Unit suffixes, unitless quantities and the schema audit |

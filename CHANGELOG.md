@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base, canonical units, energy ledger and Dar Chams identity.
+Phase 02 — the simulation time base, canonical units, energy ledger, component ports and Dar Chams identity.
 
 ### Added
 
@@ -40,10 +40,15 @@ Phase 02 — the simulation time base, canonical units, energy ledger and Dar Ch
 - `scripts/check-balance.mjs`, the twelfth register check, settling 1224 steps across the three
   shipped scenarios, one Tunis day at all four timesteps and both Paris daylight-saving days, and
   refusing ten broken ledgers; the largest residual observed is 2.27e-13 Wh.
+- Task 02.4 component ports (DEC-042): typed inputs and outputs for weather, PV, inverter, battery, appliance,
+  grid, scheduler and simulation clock. The scheduler sees an explicit domain observation, and the
+  clock interface is defined without implementing the 02.5 lifecycle or claiming physical models.
+- A headless engine contract test that imports the public engine entry in Node without browser globals
+  and compiles inert implementations for all eight component ports.
 
 ### Changed
 
-- `npm run check` now runs twelve register checks, and the suite runs 65 tests.
+- `npm run check` retains its twelve register checks, and the suite runs 67 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

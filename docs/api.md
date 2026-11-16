@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041) |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041, DEC-042 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -16,7 +16,7 @@ promise that its name and meaning stay stable until a decision-log entry changes
 
 The engine is a workspace package that exports TypeScript source; Next.js transpiles it and Node 26
 strips its types, so there is no build step between the source and either consumer. It may not import
-React, Next.js, the DOM or the application (DEC-002).
+React, Next.js, Three.js, the DOM or the application (DEC-002).
 
 ```ts
 import { createScenarioValidator, formatIssues } from '@dar-chams/engine';
@@ -129,6 +129,32 @@ with the engine and not only with the application.
 | `BalanceTerm` | type | One of the nine ledger term names |
 | `StepBalance` | type | Supply, demand, signed residual, tolerance and `balanced` |
 | `StepTerms` | type | One non-negative watt-hour magnitude per ledger term |
+| `ApplianceDispatch` | type | Scheduler decision for one appliance ID |
+| `ApplianceInput` | type | Appliance configuration, step and explicit enabled decision |
+| `ApplianceModel` | type | `demand(input): ApplianceOutput`; contains no UI dependency |
+| `ApplianceOutput` | type | Load power in W and interval energy in Wh |
+| `BatteryInput` | type | Battery configuration, step, SOC and separate requested charge/discharge power |
+| `BatteryModel` | type | `advance(input): BatteryOutput` |
+| `BatteryOutput` | type | Next SOC, charge energy, discharge energy and battery loss in Wh |
+| `ClockStatus` | type | `'idle'`, `'running'`, `'paused'` or `'complete'` |
+| `GridInput` | type | Grid configuration, step and separate requested import/export power |
+| `GridModel` | type | `settle(input): GridOutput` |
+| `GridOutput` | type | Grid import and export energy in Wh |
+| `InverterInput` | type | Inverter configuration, step and PV DC power |
+| `InverterModel` | type | `convert(input): InverterOutput` |
+| `InverterOutput` | type | AC power and separately owned conversion and standby losses |
+| `PvInput` | type | PV configuration, step and one weather frame |
+| `PvModel` | type | `evaluate(input): PvOutput` |
+| `PvOutput` | type | DC power at the array terminals in W |
+| `Scheduler` | type | `decide(input): SchedulerOutput`; consumes only an explicit observation |
+| `SchedulerInput` | type | Scheduler policy, observed state and appliance configurations |
+| `SchedulerObservation` | type | Step, SOC, available PV, forecast load, grid availability and import price; no Scenario or UI store |
+| `SchedulerOutput` | type | Appliance dispatch and separate requested battery charge/discharge power |
+| `SimulationClock` | type | Clock read and lifecycle command contract; behavior is implemented in 02.5 |
+| `SimulationClockState` | type | Status, step index, current step, speed multiplier and replay seed |
+| `WeatherFrame` | type | Time, ambient temperature, irradiance, wind speed and provenance |
+| `WeatherQuery` | type | Site and requested step grid |
+| `WeatherSource` | type | `read(query): Promise<WeatherFrame[]>`; external I/O boundary |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
@@ -145,6 +171,13 @@ only, so a power-plus-energy expression has to be resolved deliberately rather t
 number. A branded number is still a number, so the guard covers arithmetic and assignment, not a
 call to a constructor for another quantity; `scripts/check-units.mjs` compiles a fixture where every
 mixed calculation must be refused.
+
+Phase 02.4 adds framework-free component ports. Each model receives only its required configuration,
+the current step and typed domain inputs, and returns W, Wh, temperature or SOC using canonical
+types. Weather I/O is isolated behind `WeatherSource`; the scheduler sees `SchedulerObservation`
+instead of the full scenario or UI state. The clock surface is declared here, while its lifecycle and
+deterministic replay implementation belong to 02.5. These interfaces do not claim that any physical
+model exists yet.
 
 The ledger is the conservation law every simulated step is settled against (DEC-039). `pv`,
 `gridImport` and `batteryDischarge` are supply; `load`, `batteryCharge`, `gridExport`,

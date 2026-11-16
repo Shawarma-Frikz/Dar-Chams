@@ -98,6 +98,35 @@ export {
 export type { BalanceTerm, StepBalance, StepTerms } from './balance/balance.ts';
 
 export type {
+  ApplianceDispatch,
+  ApplianceInput,
+  ApplianceModel,
+  ApplianceOutput,
+  BatteryInput,
+  BatteryModel,
+  BatteryOutput,
+  ClockStatus,
+  GridInput,
+  GridModel,
+  GridOutput,
+  InverterInput,
+  InverterModel,
+  InverterOutput,
+  PvInput,
+  PvModel,
+  PvOutput,
+  Scheduler,
+  SchedulerInput,
+  SchedulerObservation,
+  SchedulerOutput,
+  SimulationClock,
+  SimulationClockState,
+  WeatherFrame,
+  WeatherQuery,
+  WeatherSource,
+} from './simulation/interfaces.ts';
+
+export type {
   Appliance,
   ApplianceProfile,
   BaselinePolicy,

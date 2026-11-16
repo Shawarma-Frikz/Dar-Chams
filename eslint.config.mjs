@@ -21,10 +21,16 @@ const config = [
             { name: 'react', message: 'The engine must stay framework-free (DEC-002).' },
             { name: 'react-dom', message: 'The engine must stay framework-free (DEC-002).' },
             { name: 'next', message: 'The engine must run in plain Node (DEC-002).' },
+            { name: 'three', message: 'The engine must stay renderer-free (DEC-002).' },
+            {
+              name: '@react-three/fiber',
+              message: 'The engine must stay renderer-free (DEC-002).',
+            },
+            { name: '@react-three/drei', message: 'The engine must stay renderer-free (DEC-002).' },
           ],
           patterns: [
             {
-              group: ['react/*', 'react-dom/*', 'next/*', '@/*'],
+              group: ['react/*', 'react-dom/*', 'next/*', '@react-three/*', '@/*'],
               message: 'The engine may not import the application or the framework (DEC-002).',
             },
           ],

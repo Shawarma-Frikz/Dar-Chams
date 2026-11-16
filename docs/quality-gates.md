@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.5, 01.6), 02.1, 02.2, 02.3; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests |
+| Phase | 01 (tasks 01.5, 01.6), 02.1, 02.2, 02.3, 02.4; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests; v1.5.0 records component ports and 67 tests |
 | Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038; the energy ledger by DEC-039 |
 | Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all twelve checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
@@ -19,7 +19,7 @@ Task 01.5 asks for formatting, lint, type-check, unit-test and production-build 
 | --- | --- | --- |
 | Registers | `npm run check` | The twelve document, configuration, time, unit, balance and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
 | Type-check | `npm run typecheck` | `tsc --noEmit` under the strict base config, including the test files and `vitest.config.ts` |
-| Lint | `npm run lint` | ESLint 9 on the flat config, including the engine boundary that forbids React, Next and `@/` imports (DEC-002) |
+| Lint | `npm run lint` | ESLint 9 on the flat config, including the engine boundary that forbids React, Next, Three.js and `@/` imports (DEC-002) |
 | Format | `npm run format:check` | Prettier 3 over code, config and scripts; Markdown and JSON evidence are excluded by [`.prettierignore`](../.prettierignore) |
 | Unit tests | `npm run test` | Vitest 5.1.0 runs every `*.test.ts` in `packages/` and `src/` against the TypeScript sources; fast-check 4.10.2 adds property tests |
 | Production build | `npm run build` | Next.js 16 compiles the six routes and writes the static export to `out/` |
@@ -44,7 +44,7 @@ The register gate is itself twelve checks. The seventh, `scripts/check-time.mjs`
 
 ## 2 · What the tests cover
 
-All 65 tests run against the modules the application imports — the configuration contract from 01.4 and the time, unit and balance base from 02.1–02.3:
+All 67 tests run against the modules the application imports — the configuration contract from 01.4 and the time, unit, balance and component-port base from 02.1–02.4:
 
 | File | Tests | Subject |
 | --- | --- | --- |
@@ -53,6 +53,7 @@ All 65 tests run against the modules the application imports — the configurati
 | [`packages/engine/src/units/energy.test.ts`](../packages/engine/src/units/energy.test.ts) | 6 | Interval energy is power × minutes ÷ 60 in Wh; kW and kWh are display conversions only; powers and interval energies add in their own unit; non-finite input, an overflow and a negative interval are refused |
 | [`packages/engine/src/units/quantity.test.ts`](../packages/engine/src/units/quantity.test.ts) | 5 | Celsius holds down to absolute zero and refuses a colder or non-finite value; SOC stays a 0–1 fraction, crosses to percent and back, and refuses 55 where 0.55 belongs |
 | [`packages/engine/src/balance/balance.test.ts`](../packages/engine/src/balance/balance.test.ts) | 12 | Nine non-negative magnitudes close a 1750 Wh step on both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss follows the inverter efficiency; properties show the residual is supply − demand, a derived eighth term closes the step, and interval energy feeds the ledger |
+| [`packages/engine/src/simulation/interfaces.test.ts`](../packages/engine/src/simulation/interfaces.test.ts) | 2 | The public engine entry loads and advances in Node without browser globals; typed contracts compile for all eight simulation component groups |
 | [`src/lib/config/layers.test.ts`](../src/lib/config/layers.test.ts) | 10 | Settings recover without throwing, refuse scenario fields and never change the scenario; runtime state derives from a frozen configuration; resolution fails closed |
 
 Eleven of them are properties rather than examples, run 50–300 times each:

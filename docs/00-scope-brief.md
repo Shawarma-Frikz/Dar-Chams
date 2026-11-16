@@ -4,7 +4,7 @@
 | --- | --- |
 | Phase | 00 — project definition and engineering decisions |
 | Status | Complete (2026-11-15); boundary extended 2026-11-16 with the embedded sensing track (DEC-026) |
-| Owner | Author (sole developer) |
+| Owner | Foudhaili Idris (sole developer) |
 | Related | [Requirements](requirements.md) · [Decision log](decision-log.md) · [Provenance](data-provenance.md) · [Acceptance checklist](acceptance-checklist.md) |
 
 ---

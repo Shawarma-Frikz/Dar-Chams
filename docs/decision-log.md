@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.9.0 |
+| Version | 0.10.0 |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3; v0.7.0 records phase 01.4; v0.8.0 records phase 01.5; v0.9.0 records phase 01.6 |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3; v0.7.0 records phase 01.4; v0.8.0 records phase 01.5; v0.9.0 records phase 01.6; v0.10.0 corrects the runtime pin after the first CI run (DEC-036) |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
-**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin. 0.6.0 adds DEC-032: the application shell, its exact stack, the engine workspace and the static-export workarounds. 0.7.0 adds DEC-033: the four configuration layers, Ajv-validated scenarios shared by app and CI, and the erasable-TypeScript policy that lets Node run the engine source directly. 0.8.0 adds DEC-034: the six quality gates, the 22 tests that exercise the configuration layers, and a CI workflow that is itself machine-checked. 0.9.0 adds DEC-035: the documentation system — decision-record conventions, six module READMEs, API notes, a generated data dictionary, an experiment log, a changelog and the ninth check that holds them together.
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin. 0.6.0 adds DEC-032: the application shell, its exact stack, the engine workspace and the static-export workarounds. 0.7.0 adds DEC-033: the four configuration layers, Ajv-validated scenarios shared by app and CI, and the erasable-TypeScript policy that lets Node run the engine source directly. 0.8.0 adds DEC-034: the six quality gates, the 22 tests that exercise the configuration layers, and a CI workflow that is itself machine-checked. 0.9.0 adds DEC-035: the documentation system — decision-record conventions, six module READMEs, API notes, a generated data dictionary, an experiment log, a changelog and the ninth check that holds them together. 0.10.0 adds DEC-036: the runtime pin moves to Node 26.13.1 and npm 11.20.0, because Node 26.2.0 bundles npm 11.13.0 and the first CI run refused the install before any gate.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -43,11 +43,12 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-028 | Free-path transport for the embedded lab | Accepted | 2026-11-16 |
 | DEC-029 | MIT licence | Accepted | 2026-11-16 |
 | DEC-030 | Repository conventions: Conventional Commits, short-lived branches, evidence-aware ignores | Accepted | 2026-11-16 |
-| DEC-031 | Pinned Node 26 LTS, exact versions, recorded support baseline | Accepted | 2026-11-16 |
+| DEC-031 | Pinned Node 26 LTS, exact versions, recorded support baseline | Superseded | 2026-11-16 |
 | DEC-032 | Application shell: Next.js 16 static export, React 19, TypeScript 5.9, ESLint 9 | Accepted | 2026-11-16 |
 | DEC-033 | Configuration layers: four layers, one validator, failures that name a fix | Accepted | 2026-11-16 |
 | DEC-034 | Quality gates: Vitest, one gate list, and a CI workflow that is checked | Accepted | 2026-11-16 |
 | DEC-035 | Documentation system: module contracts, generated dictionary, checked changelog | Accepted | 2026-11-16 |
+| DEC-036 | Runtime pin to Node 26.13.1 / npm 11.20.0 after the first CI run | Accepted | 2026-11-16 |
 
 ---
 
@@ -363,4 +364,16 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Consequences.** `npm run check` is now nine commands and `verify` runs them before the four code gates and the build; CI needs no change because its first step is `npm run check`. Adding a module means a README, an entry in `MODULES`, and a row in the document map; adding an export means an API row; changing the schema means `--write` and a reviewed dictionary diff. A document without a map row fails, so an orphaned file is visible rather than forgotten. The checker does not decide whether a sentence is true, and external links are not tested; both remain review responsibilities. No dependency was added: the checker uses only `node:fs`, `node:path` and `node:url`. The changelog's `0.1.0` includes phase 01.6, because the phase-01 tag is the phase gate, not a per-task tag.
 
 **Revisit if** the document set outgrows a single map — roughly forty documents — or a publication requirement appears; then split the map into an index while keeping the same checker and the same module contract.
+
+## DEC-036 · Runtime pin to Node 26.13.1 / npm 11.20.0 after the first CI run
+
+**Context.** The first pushed phase-01 commit made both CI jobs fail at `npm ci`, before any gate ran. The workflow itself was correct: setup-node installed the Node line from `.nvmrc`, 26.2.0, and that release bundles npm 11.13.0, while DEC-031 declared npm 11.15.0 exactly in `packageManager` and `engines.npm` and `.npmrc` sets `engine-strict=true`. The local machine has 11.15.0 installed, so every local check passed and the mismatch only existed on the runners. Node's release index also lists v26.2.0 as `lts: false`; the 26 line became Active LTS under the name Lithium, and 26.13.1 (2026-11-10) is the current patch on it. A pin the pipeline cannot install is not a pin.
+
+**Decision.** Pin Node 26.13.1 in `.nvmrc`, the current Lithium LTS patch, and raise the npm pin to the version that release bundles: `>=11.20.0 <12` in `engines.npm` and `npm@11.20.0` in `packageManager`. `engines.node` stays `>=26.0.0 <27`. The lockfile's root `engines` entry is regenerated with npm 11.20.0 rather than hand-edited. Everything else in DEC-031 remains in force unchanged: exact dependency versions, the committed lockfile at version 3 as the only install path, `engine-strict`, the workspace pin, the override policy and the recorded browser and hardware baseline.
+
+**Alternatives rejected.** Keep 26.2.0 and add `npm install -g npm@11.15.0` to the workflow — pins a pre-LTS patch and adds an install step whose failure mode the contract check would have to learn, to run a tool the runner was not built with. Lower `packageManager` to 11.13.0 — describes the runner's bundled default instead of a chosen version, and validates a tool nobody installs deliberately. Relax `engine-strict` or drop the npm pin — turns a hard drift into a warning, which is the failure DEC-031 was written to prevent. Use `nvm use` or a second version manager in the job — setup-node already reads `.nvmrc`, and two mechanisms that can disagree are worse than one. Install npm from the workflow with `npm install -g npm@…` at the new version — redundant, because 26.13.1 already ships it.
+
+**Consequences.** CI now installs exactly the npm the manifest declares, so the install gate and the local command agree; `scripts/check-runtime.mjs` still enforces equality between the running npm and `packageManager`, so a developer on an older npm gets a named failure rather than a silent difference. The lockfile gains no dependency changes, only the root `engines` field, and a clean `npm ci` with 11.20.0 is the evidence the pin is installable, not merely declared. The browser and hardware baseline is untouched. The phase-01 tag follows a green run on both runners; until that run exists, the phase is complete locally but not proven in CI.
+
+**Revisit if** Node 26 leaves Active LTS (October 2027), the 26.13.x line ships a different npm, or a dependency begins to require a newer npm than the pinned one.
 

@@ -20,8 +20,8 @@ Phase 01 — toolchain and scaffold.
 
 - MIT licence, editor settings, a committed ignore policy and the branch and commit conventions
   (DEC-029, DEC-030).
-- Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact dependency versions and a committed
-  lockfile (DEC-031).
+- Node 26.13.1 and npm 11.20.0 pinned with `engine-strict`, exact dependency versions, a committed
+  lockfile and a recorded browser and hardware baseline (DEC-031, DEC-036).
 - Next.js 16 shell: six routes, a static export, strict TypeScript, ESLint, Prettier and the
   `@helios/engine` workspace boundary (DEC-032).
 - Four configuration layers with an Ajv-validated scenario contract, relational invariants and a unit
@@ -35,6 +35,12 @@ Phase 01 — toolchain and scaffold.
 
 - `npm run check` now runs nine register checks; `npm run verify` runs them before the four code
   gates and the production build.
+
+### Fixed
+
+- CI failed at `npm ci` on both runners because Node 26.2.0 bundles npm 11.13.0 and `engine-strict`
+  refuses it; the pin moved to the Lithium LTS patch 26.13.1 with npm 11.20.0 before the phase tag
+  (DEC-036).
 
 ## [0.0.0] — 2026-11-15
 

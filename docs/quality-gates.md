@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.1.1 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.5, 01.6); v1.1.0 records the ninth check |
+| Phase | 01 (tasks 01.5, 01.6); v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line |
 | Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all nine checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
@@ -66,7 +66,7 @@ The tests import the same modules the application imports — the engine entry p
 | Setting | Value | Why |
 | --- | --- | --- |
 | Runners | `ubuntu-latest` and `windows-latest`, `fail-fast: false` | Linux is the case-sensitive path check; Windows is the OS the project is graded on, and where CRLF and file locking appear |
-| Node | `node-version-file: .nvmrc` | The workflow cannot drift from the pinned 26.2.0 line (DEC-031) |
+| Node | `node-version-file: .nvmrc` | The workflow cannot drift from the pinned Node line (26.13.1), whose bundled npm is the one `packageManager` declares (DEC-031, DEC-036) |
 | Install | `npm ci` with `cache: npm` | The only supported install path; a stale lockfile fails here |
 | Actions | `actions/checkout` and `actions/setup-node` pinned to commit SHAs | A tag can be moved; a commit cannot |
 | Permissions | `contents: read` | The job needs to read the repository and nothing else |

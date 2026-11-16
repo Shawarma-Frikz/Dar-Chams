@@ -10,8 +10,8 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 
 - **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
 - **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
-- **Phases 01–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
-- **Phase 01 — toolchain and scaffold: complete.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033). Task 01.5 is complete: six quality gates, 22 unit and property tests, an aggregate `verify` that ends in the production build, and a CI workflow on Linux and Windows that `check-ci` holds to the same gate list (DEC-034). Task 01.6 is complete: a documentation convention that turns six module READMEs, API notes, a generated data dictionary, an experiment log and a changelog into checked artefacts, with `check-docs` bringing the register checks to nine (DEC-035).
+- **Phases 02–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
+- **Phase 01 — toolchain and scaffold: complete.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.13.1 and npm 11.20.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031; the version line corrected by DEC-036 after Node 26.2.0 was found to bundle npm 11.13.0). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033). Task 01.5 is complete: six quality gates, 22 unit and property tests, an aggregate `verify` that ends in the production build, and a CI workflow on Linux and Windows that `check-ci` holds to the same gate list (DEC-034). Task 01.6 is complete: a documentation convention that turns six module READMEs, API notes, a generated data dictionary, an experiment log and a changelog into checked artefacts, with `check-docs` bringing the register checks to nine (DEC-035).
 - No simulation code yet, and therefore no metric: the shell names what each route will contain and displays no value until its source exists (NFR-07). The engine's first model arrives in phase 02.
 
 ## What this is
@@ -56,8 +56,8 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 
 | Requirement | Value |
 | --- | --- |
-| Node | 26.2.0 (Active LTS), `engines` `>=26.0.0 <27`, pinned in [`.nvmrc`](.nvmrc) |
-| npm | 11.15.0 exactly, declared in `packageManager`; `.npmrc` enforces `engine-strict` and exact versions |
+| Node | 26.13.1 (Active LTS "Lithium"), `engines` `>=26.0.0 <27`, pinned in [`.nvmrc`](.nvmrc) |
+| npm | 11.20.0 exactly, the npm bundled with Node 26.13.1, declared in `packageManager`; `.npmrc` enforces `engine-strict` and exact versions |
 | Install | `npm ci` from the committed lockfile; a wrong Node line is refused with `EBADENGINE` |
 | Checks | `npm run check` runs nine register checks; `npm run verify` adds type-check, lint, format check, tests and the production build |
 | Commands | `npm run dev` (port 3000), `npm run build` (static export in `out/`), `npm run preview` (server for that export, port 4173), `npm run test` (Vitest), `npm run verify` (every gate) |
@@ -144,7 +144,7 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 ├── .gitignore                  Regenerable output out, evidence in
 ├── .editorconfig               UTF-8, LF, indentation
 ├── .npmrc                      engine-strict, exact versions, lockfile
-├── .nvmrc                      Node 26.2.0
+├── .nvmrc                      Node 26.13.1
 ├── .prettierrc.json            Shared formatting, Tailwind class order
 ├── .vscode/                    Recommended extensions and settings
 ├── eslint.config.mjs           Flat config, incl. the engine boundary rule

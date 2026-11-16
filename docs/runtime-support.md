@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.6) |
-| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
+| Phase | 01 (tasks 01.2–01.6); v1.5.0 corrects the pin after the first CI run (DEC-036) |
+| Decided by | DEC-031 (supersedes the Node version pin in DEC-018), version numbers superseded by DEC-036; the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
 
@@ -17,10 +17,10 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 | Item | Value | Where | Enforced by |
 | --- | --- | --- | --- |
-| Node | 26.2.0, the Active LTS line (even-numbered, LTS since October) | [`.nvmrc`](../.nvmrc) | `.nvmrc` must equal the declared line and satisfy `engines` |
+| Node | 26.13.1, the Active LTS "Lithium" patch (released 2026-11-10) | [`.nvmrc`](../.nvmrc) | `.nvmrc` must equal the declared line and satisfy `engines` |
 | Node range | `>=26.0.0 <27` | [`package.json`](../package.json) `engines.node` | `engine-strict=true` refuses any other major line |
-| npm | 11.15.0 exactly | `package.json` `packageManager` | check fails on any other installed version |
-| npm range | `>=11.15.0 <12` | `engines.npm` | `engine-strict=true` |
+| npm | 11.20.0 exactly, the npm bundled with that Node release | `package.json` `packageManager` | check fails on any other installed version |
+| npm range | `>=11.20.0 <12` | `engines.npm` | `engine-strict=true` |
 | Dependency policy | exact versions only, no `^`, `~`, `*`, `latest`, `workspace:` or URL specs | `.npmrc` `save-exact=true` | the checker rejects a floating spec in any dependency block |
 | Install path | `npm ci` from the committed lockfile | [`package-lock.json`](../package-lock.json), lockfile v3 | `npm ci` refuses a lockfile that disagrees with the manifest |
 | Lockfile hygiene | committed, reviewed like code | `.gitignore` keeps the rest of `node_modules/` out | check fails if the lockfile is missing, old, or out of sync |
@@ -36,7 +36,7 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 **Verified on 2026-11-16, Windows 11.** A directory containing only `package.json`, `package-lock.json`, `.npmrc` and `.nvmrc` installed with `npm ci` and exit code 0. The same directory with `engines.node` raised to `>=99.0.0 <100` was refused with `EBADENGINE` and exit code 1 — the pin fails closed, as intended.
 
-Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0. Re-run after 01.6 with the documentation check: `npm run verify` runs nine checks, four code gates, 22 tests and the production build, and exits 0.
+Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0. Re-run after 01.6 with the documentation check: `npm run verify` runs nine checks, four code gates, 22 tests and the production build, and exits 0. Re-verified at the corrected pin on 2026-11-16: `npm ci` with npm 11.20.0 installs 398 packages and audits 406 with 0 vulnerabilities, the lockfile diff being the root `engines` entry alone, and `npm run verify` again runs nine checks, four code gates, 22 tests and the build, exiting 0 with `runtime: OK` reporting npm 11.20.0 against `packageManager "npm@11.20.0"`. The first CI run had failed at `npm ci` because Node 26.2.0 bundles npm 11.13.0 and `engine-strict` refused it before any gate; DEC-036 moves the pin to the LTS patch that ships the declared npm.
 
 **Where the gates run.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs the same six steps on `ubuntu-latest` and `windows-latest`, with Node taken from `.nvmrc` and dependencies installed with `npm ci`. The workflow is part of the repository and is itself checked: `scripts/check-ci.mjs` parses it and fails if a gate disappears, an action is referenced by tag instead of commit, or a command swallows its failure. The design and its limits are recorded in [quality gates](quality-gates.md) and DEC-034.
 
@@ -107,7 +107,8 @@ The pins above govern the Node adapter and the web application. The embedded pat
 | Situation | What happens | Message |
 | --- | --- | --- |
 | Wrong Node line installed | Install is refused | `EBADENGINE … Required: {"node":">=26.0.0 <27"}` |
-| Wrong npm version | `npm run check` fails before any other check | `npm: packageManager declares 11.15.0 but x.y.z is installed` |
+| Wrong npm version | `npm run check` fails before any other check | `npm: packageManager declares 11.20.0 but x.y.z is installed` |
+| CI's Node bundles an older npm than `packageManager` | `npm ci` fails before any gate, on every runner at once | `EBADENGINE … Required: {"npm":">=11.20.0 <12"}` — move the pin to a Node release that ships the declared npm (DEC-036) |
 | `.nvmrc` drifts from `engines` | Check fails | `.nvmrc: … does not satisfy engines.node` |
 | Lockfile missing or stale | Check fails, and `npm ci` refuses to resolve | `lockfile: … regenerate the lockfile` |
 | A floating version appears | Check fails | `must be an exact version, found "^1.2.3"` |

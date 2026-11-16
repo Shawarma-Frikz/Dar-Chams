@@ -2,12 +2,12 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.1.1 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.1, 01.6); v1.1.0 adds the documentation check |
+| Phase | 01 (tasks 01.1, 01.6); v1.1.0 adds the documentation check; v1.1.1 tracks the corrected runtime pin |
 | Licence | MIT — [`LICENSE`](../LICENSE) (DEC-029) |
 | Commit style | Conventional Commits (DEC-030) |
-| Runtime | Node 26.2.0, npm 11.15.0, exact versions and a committed lockfile — [`runtime-support.md`](runtime-support.md) (DEC-031) |
+| Runtime | Node 26.13.1, npm 11.20.0, exact versions and a committed lockfile — [`runtime-support.md`](runtime-support.md) (DEC-031, DEC-036) |
 | Checked by | `npm run check` — the nine checkers — before every commit; CI from 01.5 |
 
 This document records how the repository is kept reproducible: the licence, what enters Git, how branches and commits are named, and which files are treated as evidence rather than output. Task 01.1 also asks for a clean clone that installs with documented commands; that half is satisfied by 01.2 and 01.3, when `package.json` and the README quick start exist.

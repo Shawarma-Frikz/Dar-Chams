@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 follows the time check inserted ahead of this one in 02.1 |
+| Phase | 01 (task 01.6); v1.1.0 follows the time check inserted ahead of this one in 02.1; v1.2.0 follows the unit check inserted in 02.2 |
 | Decided by | DEC-035; commit vocabulary from DEC-030 |
-| Checked by | `node scripts/check-docs.mjs`, or `npm run check` for all ten checks |
+| Checked by | `node scripts/check-docs.mjs`, or `npm run check` for all eleven checks |
 | Related | [Conventions](conventions.md) §3, §7 · [API notes](api.md) · [Data dictionary](data-dictionary.md) · [Experiment log](experiment-log.md) · [Changelog](../CHANGELOG.md) |
 
 Task 01.6 asks for architecture decision records, module READMEs, API notes, a data dictionary,
@@ -212,7 +212,7 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 npm run check:docs
 ```
 
-`scripts/check-docs.mjs` is the eighth register check. On every run it verifies:
+`scripts/check-docs.mjs` is the ninth register check. On every run it verifies:
 
 | Area | What must hold |
 | --- | --- |

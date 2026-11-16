@@ -7,6 +7,7 @@
  * enter the schema unnoticed.
  */
 
+import { ABSOLUTE_ZERO_CELSIUS } from '../units/temperature.ts';
 import type { ConfigIssue } from './issues.ts';
 
 /** Longest first, so `_tnd_per_kwh` wins over `_per_kwh`. */
@@ -82,7 +83,11 @@ interface SchemaNode {
   readonly then?: SchemaNode;
   readonly else?: SchemaNode;
   readonly type?: unknown;
+  readonly minimum?: number;
+  readonly maximum?: number;
 }
+
+const isSocKey = (key: string): boolean => key === 'soc' || key.endsWith('_soc');
 
 function walk(node: SchemaNode | undefined, trail: string, issues: ConfigIssue[]): void {
   if (!node || typeof node !== 'object') return;
@@ -100,6 +105,48 @@ function walk(node: SchemaNode | undefined, trail: string, issues: ConfigIssue[]
         message: 'is a number whose name carries no unit',
         expected: `a name ending in one of ${UNIT_SUFFIXES.map((s) => s.slice(1)).join(', ')}`,
         hint: `rename it to carry its unit (for example ${key}_kwh or ${key}_kw), or add "${key}" to UNITLESS_QUANTITIES if it is a fraction or a count`,
+      });
+    }
+    if (isSocKey(key)) {
+      const isFraction =
+        typeof property?.minimum === 'number' &&
+        property.minimum >= 0 &&
+        typeof property.maximum === 'number' &&
+        property.maximum <= 1;
+      if (!isFraction) {
+        issues.push({
+          layer: 'scenario',
+          path,
+          code: 'contract.soc-scale',
+          message: 'stores a state of charge outside the 0–1 fraction',
+          expected: 'a number bounded by 0 and 1, with 55 % written as 0.55',
+          hint: 'keep the fraction in the scenario and convert with percentFromStateOfCharge at a display boundary',
+        });
+      }
+    }
+    if (key === 'percent' || key.endsWith('_percent')) {
+      issues.push({
+        layer: 'scenario',
+        path,
+        code: 'contract.percent-stored',
+        message: 'stores a percentage',
+        expected: 'a 0–1 fraction whose name ends in _soc',
+        hint: 'store 0.55 and convert with percentFromStateOfCharge for display, or with stateOfChargeFromPercent on the way in',
+      });
+    }
+    if (
+      key.endsWith('_degc') &&
+      !key.endsWith('_per_degc') &&
+      typeof property?.minimum === 'number' &&
+      property.minimum < ABSOLUTE_ZERO_CELSIUS
+    ) {
+      issues.push({
+        layer: 'scenario',
+        path,
+        code: 'contract.temperature-range',
+        message: 'allows a temperature below absolute zero',
+        expected: `a minimum of at least ${ABSOLUTE_ZERO_CELSIUS} °C`,
+        hint: 'raise the minimum; celsius() refuses a value below absolute zero anyway',
       });
     }
     walk(property, path, issues);

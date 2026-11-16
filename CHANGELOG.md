@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02.1 — the simulation time base.
+Phase 02 — the simulation time base and the canonical units.
 
 ### Added
 
@@ -20,10 +20,17 @@ Phase 02.1 — the simulation time base.
   kW and kWh as display conversions.
 - `scripts/check-time.mjs`, the tenth register check, proving the step count for Tunis, both Paris
   transitions and both Lord Howe half-hour transitions, and rejecting five broken cases.
+- Canonical units (DEC-038): branded W, Wh, kW, kWh, °C and SOC quantities, with `addWatts` and
+  `addWattHours` accepting one unit only, so a power-plus-energy expression cannot compile.
+- `scripts/check-units.mjs`, the eleventh register check, crossing every shipped kW and kWh boundary,
+  holding all eighteen SOC fields to `[0, 1]`, refusing nine wrong-scale values, and compiling a
+  fixture whose eight mixed-unit calculations must each fail with a named diagnostic.
+- The schema audit refuses a `_percent` field, a SOC bound outside 0–1 and a temperature bound below
+  absolute zero.
 
 ### Changed
 
-- `npm run check` now runs ten register checks, and the suite runs 47 tests.
+- `npm run check` now runs eleven register checks, and the suite runs 53 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

@@ -4,10 +4,11 @@
  * Phase 01 built the boundary the simulation runs behind: engine identity, the
  * scenario contract and the validator any configuration must pass. Phase 02
  * adds the time base — absolute instants, site-zone day boundaries and a
- * uniform step grid — and the internal power and energy units. Physics,
- * controllers and the running clock are still to come. No React, no Next.js and
- * no browser API may appear here; the engine stays runnable in plain Node for
- * tests and batch experiments (DEC-002).
+ * uniform step grid — and the canonical units: branded watts, watt-hours,
+ * degrees Celsius and state of charge, with every scale change behind a named
+ * conversion (DEC-038). Physics, controllers and the running clock are still to
+ * come. No React, no Next.js and no browser API may appear here; the engine
+ * stays runnable in plain Node for tests and batch experiments (DEC-002).
  */
 
 export const ENGINE_NAME = 'helios-engine';
@@ -59,13 +60,29 @@ export {
 export type { SiteDaySegment, Step, StepGrid } from './time/timeline.ts';
 
 export {
+  addWattHours,
+  addWatts,
   intervalWattHours,
+  kilowattHours,
   kilowattHoursFromWattHours,
+  kilowatts,
   kilowattsFromWatts,
+  wattHours,
   wattHoursFromKilowattHours,
+  watts,
   wattsFromKilowatts,
 } from './units/energy.ts';
-export type { WattHours, Watts } from './units/energy.ts';
+export type { KilowattHours, Kilowatts, WattHours, Watts } from './units/energy.ts';
+
+export {
+  percentFromStateOfCharge,
+  stateOfCharge,
+  stateOfChargeFromPercent,
+} from './units/state-of-charge.ts';
+export type { StateOfCharge } from './units/state-of-charge.ts';
+
+export { ABSOLUTE_ZERO_CELSIUS, celsius } from './units/temperature.ts';
+export type { Celsius } from './units/temperature.ts';
 
 export type {
   Appliance,

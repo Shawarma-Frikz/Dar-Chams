@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; physics from 02.2 |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; physics from 02.3 |
 | Boundary | No React, Next.js, DOM or browser API may be imported (DEC-002) |
-| Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs` |
+| Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-021, DEC-033, DEC-037, DEC-038 |
 
 ## Purpose
 
@@ -16,8 +16,9 @@ tests and batch experiments and in the browser for the live view, and it owns th
 so that the application, the CI validator and the test suite cannot disagree about what a valid
 scenario is. Phase 01 built the boundary the physics runs behind — the types, the Ajv validator, the
 relational invariants, the unit audit and the issue model. Phase 02.1 adds the axis: absolute
-instants, the site timezone's calendar-day boundaries, a uniform step grid, and the internal watt and
-watt-hour units. It is not a UI, a controller or a persistence layer.
+instants, the site timezone's calendar-day boundaries and a uniform step grid. Phase 02.2 adds the
+canonical units: branded watts, watt-hours, degrees Celsius and state of charge, with every scale
+change behind a named conversion. It is not a UI, a controller or a persistence layer.
 
 ## Inputs
 
@@ -48,8 +49,12 @@ watt-hour units. It is not a UI, a controller or a persistence layer.
   `siteDayBounds` and `siteDate` (the local calendar), and `createStepGrid`, `stepAt`,
   `stepsInSiteDay`, `siteDayGrid` and `groupStepsBySiteDay` (the uniform step grid and its day split).
   A DST day is 23 or 25 hours, or 23.5 or 24.5 in a half-hour zone, so its step count follows the calendar rather than 96.
-- `intervalWattHours` and the four scale conversions: the internal W/Wh representation and the named
-  kW/kWh boundary.
+- The **canonical units**: `watts`, `wattHours`, `kilowatts` and `kilowattHours` tag a value on the
+  scale it was written in; `wattsFromKilowatts`, `kilowattsFromWatts`, `wattHoursFromKilowattHours`
+  and `kilowattHoursFromWattHours` are the named scale changes; `intervalWattHours` is the per-step
+  conversion; and `addWatts`/`addWattHours` sum one unit only. `celsius` holds °C above absolute
+  zero, and `stateOfCharge` holds the 0–1 fraction with `percentFromStateOfCharge` and
+  `stateOfChargeFromPercent` as the two display crossings.
 
 The complete list, with signatures, is the first table in [`docs/api.md`](../../docs/api.md).
 
@@ -59,10 +64,11 @@ The complete list, with signatures, is the first table in [`docs/api.md`](../../
 npm run test
 node scripts/check-config.mjs
 node scripts/check-time.mjs
+node scripts/check-units.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 37 engine tests and the application's ten, 47 in total:
+`npm run test` runs 43 engine tests and the application's ten, 53 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 14 tests — the shipped scenarios
   validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
@@ -75,8 +81,12 @@ node scripts/validate-scenarios.mjs
   25-hour days; Lord Howe gives 94 and 98 on its half-hour days, and an hourly grid on a 23.5-hour day
   is refused; gap and overlap times resolve in the documented direction; the shipped 48-hour run is
   192 steps over two 96-step days; and two properties tile the grid and assign every step to one day.
-- [`src/units/energy.test.ts`](src/units/energy.test.ts), 5 tests — power over an interval becomes
-  watt-hours, the kW/kWh conversions round-trip, and non-finite or negative intervals are refused.
+- [`src/units/energy.test.ts`](src/units/energy.test.ts), 6 tests — power over an interval becomes
+  watt-hours, the kW/kWh conversions round-trip, powers and interval energies add in their own unit,
+  and non-finite, overflowing or negatively timed values are refused.
+- [`src/units/quantity.test.ts`](src/units/quantity.test.ts), 5 tests — Celsius holds down to
+  absolute zero and refuses a colder or non-finite value; SOC stays a 0–1 fraction, crosses to
+  percent and back, and refuses a percentage written as a fraction.
 - [`src/lib/config/layers.test.ts`](../../src/lib/config/layers.test.ts), 10 application tests — the
   four layers stay separate and resolution fails closed.
 
@@ -84,7 +94,10 @@ node scripts/validate-scenarios.mjs
 property in the contract, and asserts that no layer is silently merged. `node scripts/check-time.mjs`
 is the acceptance proof for 02.1: it checks the shipped runs, a full day at each timestep, four DST
 days, the two transition directions, instant storage and the unit scales, then feeds five broken
-cases back through the public API. `node scripts/validate-scenarios.mjs` runs the validator over every
+cases back through the public API. `node scripts/check-units.mjs` is the acceptance proof for 02.2:
+it crosses every shipped kW and kWh boundary, holds all eighteen SOC fields to the fraction, compiles
+eight deliberately mixed calculations that must each be refused, and feeds nine wrong-scale values
+back through the constructors and the schema audit. `node scripts/validate-scenarios.mjs` runs the validator over every
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
@@ -108,6 +121,9 @@ simulation it will carry is not.
 | `src/time/zone.ts` | IANA offsets, wall-clock resolution, site-date and site-day bounds |
 | `src/time/timeline.ts` | The uniform step grid and its split at local midnight |
 | `src/time/time.test.ts` | Eighteen instance, day-boundary, DST and grid tests |
-| `src/units/energy.ts` | Internal watts and watt-hours, with named kW and kWh conversions |
-| `src/units/energy.test.ts` | Five unit and property tests over the conversions |
+| `src/units/energy.ts` | Branded W, Wh, kW and kWh, the named conversions and same-unit addition |
+| `src/units/temperature.ts` | Degrees Celsius, with absolute zero as the lower bound |
+| `src/units/state-of-charge.ts` | The 0–1 SOC fraction and its two percent crossings |
+| `src/units/energy.test.ts` | Six unit and property tests over power and energy |
+| `src/units/quantity.test.ts` | Five tests over temperature and state of charge |
 | `package.json` | `@helios/engine`, TypeScript-source exports for the workspace |

@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.4), 02.1; v1.1.0 adds the two site-time invariants |
-| Decided by | DEC-033; the site time contract by DEC-037 |
+| Phase | 01 (task 01.4), 02.1, 02.2; v1.1.0 adds the two site-time invariants; v1.2.0 adds the SOC, percent and temperature scale rules |
+| Decided by | DEC-033; the site time contract by DEC-037; the canonical units by DEC-038 |
 | Checked by | `node scripts/check-config.mjs`, or `npm run check` for all checks |
 | Related | FR-SIM-10 · FR-SIM-07 · [Scenario conventions](../scenarios/README.md) · [Requirements](requirements.md) · [Decision log](decision-log.md) |
 
@@ -94,14 +94,20 @@ Each class is injected by `scripts/check-config.mjs` on every run, and the scrip
 | **Unknown timezone** | `site.timezone: Mars/Olympus` | Site-time invariant (DEC-037) | That the zone must be an IANA name the runtime knows, with `Africa/Tunis` as the example |
 | **Contradictory offset** | a start at `+02:00` where the site zone was at `+01:00` | Site-time invariant (DEC-037) | The offset the zone actually had at that instant, and the corrected start |
 
-## 6 · Units
+## 6 · Units and scales
 
-Field names carry their unit where ambiguity is possible (`_kwh`, `_kw`, `_w`, `_deg`, `_minutes`, `_tnd_per_kwh`, …). Two mechanisms keep that true:
+Field names carry their unit where ambiguity is possible (`_kwh`, `_kw`, `_w`, `_deg`, `_minutes`, `_tnd_per_kwh`, …). At load time, an unknown key is rejected with a suggestion drawn from the schema's own vocabulary, so `tilt` is answered with `tilt_deg` rather than "additional property not allowed".
 
-- **At load time**, an unknown key is rejected with a suggestion drawn from the schema's own vocabulary, so `tilt` is answered with `tilt_deg` rather than "additional property not allowed".
-- **At check time**, `auditSchemaUnits` walks the schema and fails if a numeric property's name ends in no recognised suffix and is not on the explicit unitless list (fractions, counts, seed). The audit is self-tested against a synthetic `capacity` field, so it cannot pass by being vacuous.
+At check time, `auditSchemaUnits` walks the schema and enforces four rules:
 
-Adding a numeric field therefore requires a decision: give it a unit, or add it to `UNITLESS_QUANTITIES` because it is a fraction or a count.
+- a numeric property's name ends in a recognised suffix, or the key is on the explicit unitless list (fractions, counts, seed);
+- every `_soc` field is bounded by 0 and 1, because SOC is a fraction and 55 % is written `0.55`;
+- a `_percent` field is refused outright: a percentage is a display form, converted with `percentFromStateOfCharge` or `stateOfChargeFromPercent`, never stored;
+- a `_degc` bound does not start below absolute zero, although `celsius()` would refuse the value anyway.
+
+The audit is self-tested against a synthetic `capacity` field, so it cannot pass by being vacuous, and `scripts/check-units.mjs` injects a widened SOC bound, a percent field and a sub-absolute-zero minimum to prove the three scale rules fire (DEC-038). The engine types themselves are branded, so a calculation that adds power to energy, or watt-hours to kilowatt-hours, does not compile; the same check compiles a fixture where eight such calculations must each produce the expected diagnostic.
+
+Adding a numeric field therefore requires a decision: give it a unit, or add it to `UNITLESS_QUANTITIES` because it is a fraction or a count. A scale decision — percent, kWh, °C — is a boundary conversion in the engine, not a second representation in the contract.
 
 ## 7 · Why the policies differ
 
@@ -123,7 +129,7 @@ config: OK
   layers: defaults valid, settings refuse scenario fields, scenario frozen, runtime derived
 ```
 
-Beyond the ten injections it asserts that: the shipped defaults validate; a settings document carrying `battery` is reported as a layer violation; a settings document from another schema version is discarded with a reason; a presentation preference leaves the scenario byte-identical; the resolved scenario is frozen at every depth; and the runtime state starts from the scenario's own instant and speed. The harness itself was verified by corrupting one expected path and observing exit code 1 — a check that cannot fail proves nothing.
+`scripts/check-units.mjs` is the companion proof: it crosses every shipped kW and kWh boundary, holds all eighteen SOC fields to the fraction, compiles the mixed-unit fixture, and feeds nine wrong-scale values through the constructors and the audit. Beyond the ten injections in `check-config` it asserts that: the shipped defaults validate; a settings document carrying `battery` is reported as a layer violation; a settings document from another schema version is discarded with a reason; a presentation preference leaves the scenario byte-identical; the resolved scenario is frozen at every depth; and the runtime state starts from the scenario's own instant and speed. The harness itself was verified by corrupting one expected path and observing exit code 1 — a check that cannot fail proves nothing.
 
 ## 9 · What this does not cover yet
 

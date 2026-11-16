@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -100,20 +100,42 @@ with the engine and not only with the application.
 | `SiteDaySegment` | type | A site day's bounds plus its first and last step index |
 | `Watts` | type | Instantaneous power in watts, the internal unit |
 | `WattHours` | type | Interval energy in watt-hours, the internal unit |
+| `Kilowatts` | type | Instantaneous power in kilowatts, an input and display scale |
+| `KilowattHours` | type | Energy in kilowatt-hours, an input and display scale |
+| `watts` | function | Tags a value already counted in W; refuses a non-finite number |
+| `wattHours` | function | Tags a value already counted in Wh; refuses a non-finite number |
+| `kilowatts` | function | Tags a value already counted in kW; the `_kw` scenario boundary |
+| `kilowattHours` | function | Tags a value already counted in kWh; the `_kwh` scenario boundary |
 | `intervalWattHours` | function | Power × minutes ÷ 60 → watt-hours, the per-step conversion |
 | `wattsFromKilowatts` | function | kW → W at an input boundary |
 | `kilowattsFromWatts` | function | W → kW at a display boundary |
 | `wattHoursFromKilowattHours` | function | kWh → Wh at an input boundary |
 | `kilowattHoursFromWattHours` | function | Wh → kWh at a display boundary |
+| `addWatts` | function | Sums watts only; an energy argument is a compile error |
+| `addWattHours` | function | Sums watt-hours only; a power argument is a compile error |
+| `Celsius` | type | A temperature in degrees Celsius, the canonical unit |
+| `ABSOLUTE_ZERO_CELSIUS` | const | `-273.15`; the lower bound `celsius` enforces |
+| `celsius` | function | Tags a value already counted in °C; refuses one below absolute zero |
+| `StateOfCharge` | type | A state of charge in the 0–1 fraction |
+| `stateOfCharge` | function | Tags a 0–1 fraction; refuses 55 where 0.55 belongs |
+| `percentFromStateOfCharge` | function | Fraction → percent at a display boundary |
+| `stateOfChargeFromPercent` | function | Percent → fraction at an input boundary |
 <!-- engine-exports:end -->
 
 The schema is the authority; the interfaces give the engine a typed view after validation. A change
 to one is reviewed with the other in the same commit (DEC-021, DEC-033).
 
 The time functions are the axis every later phase uses (DEC-037): an instant is stored once, in UTC,
-and a site day is read from the scenario's IANA zone rather than assumed to be 24 hours. The unit
-functions are the two internal scales; task 02.2 extends the dimensional guard to temperature, state
-of charge and every other boundary conversion.
+and a site day is read from the scenario's IANA zone rather than assumed to be 24 hours.
+
+The unit functions are branded quantities (DEC-038). Power is W, interval energy is Wh, temperature
+is °C and state of charge is the 0–1 fraction; kW, kWh and percent exist only behind the named
+conversions above. A raw scenario number becomes a quantity only in a constructor — `watts()` for a
+`_w` field, `wattsFromKilowatts()` for a `_kw` one — and `addWatts`/`addWattHours` accept one unit
+only, so a power-plus-energy expression has to be resolved deliberately rather than compile as a
+number. A branded number is still a number, so the guard covers arithmetic and assignment, not a
+call to a constructor for another quantity; `scripts/check-units.mjs` compiles a fixture where every
+mixed calculation must be refused.
 
 ## 2 · Application configuration surface
 

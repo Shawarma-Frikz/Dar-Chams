@@ -7,7 +7,8 @@
 | Phase | 01 (task 01.1) |
 | Licence | MIT — [`LICENSE`](../LICENSE) (DEC-029) |
 | Commit style | Conventional Commits (DEC-030) |
-| Checked by | the five `scripts/check-*.mjs` scripts before every commit; CI from 01.5 |
+| Runtime | Node 26.2.0, npm 11.15.0, exact versions and a committed lockfile — [`runtime-support.md`](runtime-support.md) (DEC-031) |
+| Checked by | `npm run check` — the six checkers — before every commit; CI from 01.5 |
 
 This document records how the repository is kept reproducible: the licence, what enters Git, how branches and commits are named, and which files are treated as evidence rather than output. Task 01.1 also asks for a clean clone that installs with documented commands; that half is satisfied by 01.2 and 01.3, when `package.json` and the README quick start exist.
 
@@ -100,6 +101,13 @@ A commit that changes a signed document without renewing its digest fails `check
 ## 7 · Checks before every commit
 
 ```text
+npm run check
+```
+
+That script runs, in order:
+
+```text
+node scripts/check-runtime.mjs
 node scripts/check-acceptance.mjs
 node scripts/check-decisions.mjs
 node scripts/check-requirements.mjs
@@ -107,7 +115,7 @@ node scripts/check-provenance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-All five must pass. From 01.5, CI runs them together with formatting, lint, type-check, unit and property tests, and the production build; a failing check blocks a green build.
+All six must pass. The first fails on a Node line that does not satisfy `engines`, an npm version that differs from `packageManager`, a missing npm setting, a stale lockfile or a floating dependency spec (DEC-031). From 01.5, CI runs the same script together with formatting, lint, type-check, unit and property tests, and the production build; a failing check blocks a green build.
 
 ## 8 · Editor setup
 

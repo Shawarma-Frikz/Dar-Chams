@@ -179,8 +179,8 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.2</td>
-          <td><strong>Pin the runtime</strong><p>Use a supported Node.js LTS version and package manager; pin dependencies with a lockfile. Record browser support and minimum hardware expectations.</p></td>
-          <td><span class="done-label">DONE WHEN</span><p>The same lockfile installs successfully on a clean Windows machine.</p></td>
+          <td><strong>Pin the runtime</strong><p>Use a supported Node.js LTS version and package manager; pin dependencies with a lockfile. Record browser support and minimum hardware expectations. Node 26.2.0 and npm 11.15.0 are pinned in <code>.nvmrc</code> and <code>packageManager</code>, with <code>engine-strict</code> and exact versions in <code>.npmrc</code>; the browser tiers, hardware expectations and performance budgets live in <code>docs/runtime-support.md</code>, and <code>scripts/check-runtime.mjs</code> enforces the pin (NFR-09, NFR-01, DEC-031).</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>The same lockfile installs successfully on a clean Windows machine: <code>npm ci</code> succeeds from a copied manifest and lockfile, and a wrong Node line is refused with <code>EBADENGINE</code> (NFR-09).</p></td>
         </tr>
 
         <tr>

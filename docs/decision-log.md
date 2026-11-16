@@ -2,14 +2,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.4.0 |
+| Version | 0.5.0 |
 | Date | 2026-11-16 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0 records the phase-01.1 repository decisions |
+| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0 records the phase-01.1 repository decisions; v0.5.0 records the phase-01.2 runtime pin |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
-**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1.
+**Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -30,7 +30,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-015 | Low-poly code-built 3D scene with a 2D fallback | Accepted | 2026-11-15 |
 | DEC-016 | Engine in a Web Worker, throttled snapshots | Accepted | 2026-11-15 |
 | DEC-017 | Vitest + fast-check + Playwright | Accepted | 2026-11-15 |
-| DEC-018 | Node 24 LTS + npm | Accepted | 2026-11-15 |
+| DEC-018 | Node 24 LTS + npm | Superseded | 2026-11-15 |
 | DEC-019 | Provenance labels and the claim gate | Accepted | 2026-11-15 |
 | DEC-020 | English code and docs; report language pending | Accepted | 2026-11-15 |
 | DEC-021 | Scenario format: JSON + JSON Schema, validated in CI | Accepted | 2026-11-15 |
@@ -43,6 +43,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-028 | Free-path transport for the embedded lab | Accepted | 2026-11-16 |
 | DEC-029 | MIT licence | Accepted | 2026-11-16 |
 | DEC-030 | Repository conventions: Conventional Commits, short-lived branches, evidence-aware ignores | Accepted | 2026-11-16 |
+| DEC-031 | Pinned Node 26 LTS, exact versions, recorded support baseline | Accepted | 2026-11-16 |
 
 ---
 
@@ -306,3 +307,13 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 **Alternatives rejected.** Keeping the existing sentence style — readable, but no machine-parseable type, so filtering by kind or generating a changelog is impossible. GitFlow with release branches — ceremony one developer cannot use, and long-lived branches that drift away from the checks. Rewriting the six phase-00 commits into Conventional Commits — destroys the record of how phase 00 actually closed for no gain. Committing generated runs — repository bloat, when AC-02 already makes a run reproducible from scenario, seed and engine version. Running Prettier over `docs/` — a reflow breaks the checklist digest and buries a real change in formatting noise.
 
 **Consequences.** History before 2026-11-16 keeps its sentence-style subjects and is not retro-fitted. A `CHANGELOG.md` can be generated from the types and tags in 01.6. Signed artefacts are edited by hand and re-signed; the check fails if that is forgotten, which is the intended failure mode.
+
+## DEC-031 · Pinned Node 26 LTS, exact versions, recorded support baseline
+
+**Context.** Task 01.2 requires a supported Node LTS pinned with a lockfile, plus a recorded browser and hardware baseline. DEC-018 chose Node 24 LTS when 24.18.0 was the installed line; the development machine now runs 26.2.0, the current Active LTS, so the recorded pin and the machine have drifted apart before a single line of application code exists. Correcting the pin now costs minutes; correcting it after phase 03 costs a re-verified toolchain.
+
+**Decision.** Pin the Active LTS line: Node 26 (`>=26.0.0 <27` in `engines`, `26.2.0` in `.nvmrc`), npm 11.15.0 declared in `packageManager`, `.npmrc` setting `engine-strict=true`, `save-exact=true` and `package-lock=true`, and a committed `package-lock.json` at lockfile version 3 as the only supported install path (`npm ci`). No dependency block may declare a floating spec. The browser and hardware baselines are recorded in `docs/runtime-support.md`, and `scripts/check-runtime.mjs` verifies that the running toolchain, the two pins, the npm settings, the licence and the lockfile agree — including a negative test showing that a wrong Node line is refused with `EBADENGINE`.
+
+**Alternatives rejected.** Staying on Node 24 — it has moved to maintenance, and pinning `engines` to a line the grading machine cannot satisfy would make `engine-strict` block every install exactly where the project is evaluated. A range policy with a lockfile — the lockfile pins the tree, but a range still lets a regeneration move versions silently, which is what the pin exists to prevent. Corepack with pnpm or yarn — a second toolchain for no benefit, already rejected in DEC-018. A prose version note with no `.nvmrc` — the pin would not survive a fresh clone. Docker — excluded by CON-04.
+
+**Consequences.** DEC-018's version pin is superseded; its npm choice and its Windows `npm.cmd` note remain in force and are restated in `docs/runtime-support.md` §2. Node 26 is the Active LTS line until October 2027, so an upgrade needs a new entry and a re-tested clean install. The lockfile is empty of dependencies at this phase because 01.2 pins the mechanism; 01.3–01.5 add the stack with exact versions. A floating spec or an uncommitted lockfile now fails `npm run check`, which becomes the CI entry point in 01.5.

@@ -11,7 +11,7 @@ This paragraph is canonical. It is repeated verbatim in [`docs/00-scope-brief.md
 - **Phase 00 — project definition: complete.** Scope brief, requirements register (85 FR, 11 NFR, 14 constraints, 10 external dependencies), decision log, simulation-truth contract with a 97-metric register, signed acceptance checklist (37 criteria) and three validated scenarios are in `docs/` and `scenarios/`.
 - **Embedded track admitted 2026-11-16** (DEC-026): a simulated ESP32 with reading sensors, Wokwi circuit and MQTT telemetry into the same application, scheduled as phases 12–16.
 - **Phases 01–16: planned.** See [`Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html`](Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html); the original 12-phase chart is kept for history.
-- **Phase 01 — toolchain and scaffold: complete.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033). Task 01.5 is complete: six quality gates, 22 unit and property tests, an aggregate `verify` that ends in the production build, and a CI workflow on Linux and Windows that `check-ci` holds to the same gate list (DEC-034).
+- **Phase 01 — toolchain and scaffold: complete.** Task 01.1 is complete: MIT licence (DEC-029), ignore and editor rules, and branch and commit conventions (DEC-030). Task 01.2 is complete: Node 26.2.0 and npm 11.15.0 pinned with `engine-strict`, exact versions, a committed lockfile and a recorded browser/hardware baseline (DEC-031). Task 01.3 is complete: a six-route Next.js 16 shell with a static export, strict TypeScript, ESLint and Prettier, and the `@helios/engine` workspace package that keeps simulation out of the interface (DEC-032). Task 01.4 is complete: four configuration layers with distinct failure policies, an Ajv-validated scenario contract with relational invariants and unit auditing, and a startup that refuses an invalid scenario with a field, a value and a fix (DEC-033). Task 01.5 is complete: six quality gates, 22 unit and property tests, an aggregate `verify` that ends in the production build, and a CI workflow on Linux and Windows that `check-ci` holds to the same gate list (DEC-034). Task 01.6 is complete: a documentation convention that turns six module READMEs, API notes, a generated data dictionary, an experiment log and a changelog into checked artefacts, with `check-docs` bringing the register checks to nine (DEC-035).
 - No simulation code yet, and therefore no metric: the shell names what each route will contain and displays no value until its source exists (NFR-07). The engine's first model arrives in phase 02.
 
 ## What this is
@@ -59,7 +59,7 @@ Rationale and rejected alternatives: [`docs/decision-log.md`](docs/decision-log.
 | Node | 26.2.0 (Active LTS), `engines` `>=26.0.0 <27`, pinned in [`.nvmrc`](.nvmrc) |
 | npm | 11.15.0 exactly, declared in `packageManager`; `.npmrc` enforces `engine-strict` and exact versions |
 | Install | `npm ci` from the committed lockfile; a wrong Node line is refused with `EBADENGINE` |
-| Checks | `npm run check` runs eight register checks; `npm run verify` adds type-check, lint, format check, tests and the production build |
+| Checks | `npm run check` runs nine register checks; `npm run verify` adds type-check, lint, format check, tests and the production build |
 | Commands | `npm run dev` (port 3000), `npm run build` (static export in `out/`), `npm run preview` (server for that export, port 4173), `npm run test` (Vitest), `npm run verify` (every gate) |
 | Browsers | Chrome/Edge latest two (gated); Firefox, Safari 17.4+ (supported); no WebGL2 falls back to the 2D map |
 | Hardware | 4 cores, 8 GB RAM, 1920×1080, WebGL2; minimum 2 cores, 4 GB |
@@ -72,7 +72,7 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 
 | Gate | Exact command |
 | --- | --- |
-| Registers, configuration and the CI contract | `npm run check` |
+| Registers, configuration, documentation and the CI contract | `npm run check` |
 | Type-check | `npm run typecheck` |
 | Lint | `npm run lint` |
 | Format | `npm run format:check` |
@@ -88,10 +88,14 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 ├── docs/                       Phase 00 deliverables and the report seed
 │   ├── 00-scope-brief.md
 │   ├── acceptance-checklist.md
+│   ├── api.md                  Engine and application exports, with their contracts
 │   ├── configuration.md        The four layers, startup validation, what the check proves
 │   ├── conventions.md          Licence, branches, commits, what enters Git
+│   ├── data-dictionary.md      Scenario fields, generated from the schema
 │   ├── data-provenance.md      Simulation truth, labelling rules, generated register
 │   ├── decision-log.md
+│   ├── documentation.md        The documentation contracts and what the checker proves
+│   ├── experiment-log.md       Ten-field records, one per question
 │   ├── metric-register.json    Every displayable value: class, unit, source, gate
 │   ├── quality-gates.md        The six gates, CI, the demonstrated failure path
 │   ├── requirements.md
@@ -105,6 +109,7 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 ├── packages/
 │   └── engine/                 @helios/engine — the simulation boundary, no React or DOM
 │       ├── package.json
+│       ├── README.md           Purpose, inputs, outputs and tests for the engine module
 │       └── src/
 │           ├── config/         Validator, invariants, units audit, issue model, tests
 │           └── index.ts
@@ -119,16 +124,21 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 │   ├── check-ci.mjs            Workflow structure and the gate list it must match
 │   ├── check-config.mjs        The four failure classes, units, layer boundaries
 │   ├── check-decisions.mjs     Decision log: index/body sync, topics, references
+│   ├── check-docs.mjs          Module contracts, API tables, dictionary, log, changelog
 │   ├── check-provenance.mjs    Metric register, class rules, generated tables
 │   ├── check-requirements.mjs  Register structure, dependencies, wording
 │   ├── check-runtime.mjs       Node/npm pins, workspaces, overrides, lockfile
+│   ├── README.md               What each script proves and what it may write
 │   ├── serve-static.mjs        Serves the static export for `npm run preview`
 │   └── validate-scenarios.mjs  Runs the engine validator over every scenario
 ├── src/
 │   ├── app/                    Layout, six routes, palette tokens, icon, 404
+│   │   └── README.md           Purpose, inputs, outputs and tests for the route shell
 │   ├── components/             Header, navigation, page intro, planned items, references
+│   │   └── README.md           Purpose, inputs, outputs and tests for the shared blocks
 │   └── lib/
 │       ├── config/             Defaults, settings, resolution, runtime state, startup, tests
+│       │   └── README.md       Purpose, inputs, outputs and tests for the four layers
 │       └── routes.ts           One source for the navigation and the overview index
 ├── .gitattributes              LF normalisation, binary declarations
 ├── .gitignore                  Regenerable output out, evidence in
@@ -145,13 +155,14 @@ Every command runs from the repository root. A clean clone runs the first; CI ru
 ├── vitest.config.ts            Test discovery, the @ alias, Node environment
 ├── package.json                Pinned engines, packageManager, scripts
 ├── package-lock.json           Lockfile v3, the only supported install path
+├── CHANGELOG.md                Releases, one entry per phase gate
 ├── LICENSE                     MIT
 ├── Helios_Roadmap_and_Graphic_Charter_v2_Embedded.html
 ├── Helios_Roadmap_and_Graphic_Charter.html   Superseded 12-phase chart
 └── README.md
 ```
 
-Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the same engine validator the application uses at startup. `node scripts/check-config.mjs` proves the four failure classes, the unit audit and the layer boundaries. `node scripts/check-ci.mjs` parses the workflow and proves it runs the same gates as `npm run verify`. Both are part of `npm run check`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. `npm run verify` runs all eight checks, type-check, lint, format check, the unit and property tests, and the production build; CI runs the same six gates on Linux and Windows. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
+Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the same engine validator the application uses at startup. `node scripts/check-config.mjs` proves the four failure classes, the unit audit and the layer boundaries. `node scripts/check-ci.mjs` parses the workflow and proves it runs the same gates as `npm run verify`. Both are part of `npm run check`. The metric register and its generated tables are checked with `node scripts/check-provenance.mjs`; `--write` regenerates the tables after a register edit. The signed acceptance checklist — its six task-00.6 targets, cross-document AC references and content digest — is checked with `node scripts/check-acceptance.mjs`. The decision log — index/body sync, rejected alternatives on every entry, the eight task-00.7 topics and DEC/AS/FR reference resolution — is checked with `node scripts/check-decisions.mjs`. The documentation system — six module READMEs with purpose, inputs, outputs and a runnable test command, API tables that match the exports in both directions, the generated data dictionary, the experiment format, the changelog and the document map — is checked with `node scripts/check-docs.mjs`; `--write` regenerates the dictionary after a schema edit. `npm run verify` runs all nine checks, type-check, lint, format check, the unit and property tests, and the production build; CI runs the same six gates on Linux and Windows. The application builds to a self-contained static export in `out/`, fonts included, so the demo opens with the network disabled (NFR-02).
 
 ## Documentation
 
@@ -168,6 +179,11 @@ Scenarios validate with `node scripts/validate-scenarios.mjs`, which runs the sa
 | [Repository conventions](docs/conventions.md) | MIT licence, branch and commit rules, what enters Git, pre-commit checks |
 | [Runtime and support](docs/runtime-support.md) | Pinned Node/npm, exact-version and lockfile policy, browser tiers, hardware expectations |
 | [Quality gates](docs/quality-gates.md) | The six gates, test coverage, the CI matrix, the demonstrated failure path, what is not covered |
+| [Documentation conventions](docs/documentation.md) | The document map, module README contract, API and dictionary rules, experiment log, changelog, what the checker proves |
+| [API notes](docs/api.md) | Every export of the engine and of the application configuration surface, with its contract |
+| [Data dictionary](docs/data-dictionary.md) | Every scenario field with type, constraints, requirement and unit, generated from the schema |
+| [Experiment log](docs/experiment-log.md) | Ten-field records, pre-registered hypotheses, frozen thresholds |
+| [Changelog](CHANGELOG.md) | Releases per phase in Keep a Changelog form |
 
 ## Design
 

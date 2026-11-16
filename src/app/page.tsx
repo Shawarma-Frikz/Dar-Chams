@@ -29,7 +29,7 @@ const STATUS = [
   {
     label: 'Quality gates',
     detail:
-      'npm run verify runs eight checks — the runtime pin, five document registers, the configuration proof and the CI contract — then type-check, lint, format, 22 unit and property tests, and the production build. CI runs the same six gates on Linux and Windows.',
+      'npm run verify runs nine checks — the runtime pin, six document registers, the configuration proof and the CI contract — then type-check, lint, format, 22 unit and property tests, and the production build. CI runs the same six gates on Linux and Windows.',
     refs: 'NFR-06 · DEC-034',
   },
 ];

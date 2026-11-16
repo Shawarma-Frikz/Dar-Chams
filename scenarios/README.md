@@ -2,6 +2,45 @@
 
 A scenario is the complete, self-contained description of one virtual installation. If a value can change a simulation result, it belongs in a scenario file — never in engine code. This is the rule that makes task 00.2's acceptance condition checkable: the engine receives a scenario, and there is no second place where a capacity, a limit or a priority is written down.
 
+## Purpose
+
+The folder is the installation input to every run: the demo boots `tunis-typical-v1.json`, the
+experiments pair scenarios, and the tests read the shipped files rather than copies. One file
+describes one installation; a meaningful change creates a new versioned file, so a result can always
+be traced back to the exact document that produced it. The folder is not a place for defaults,
+overrides or generated output. The whole-file contract is DEC-021; the validator that enforces it is
+DEC-033.
+
+## Inputs
+
+- [`scenario.schema.json`](scenario.schema.json) — the contract every file must satisfy, including
+  the conditional rules for tracker axes, off-grid limits, verified tariffs and appliance profiles.
+- The author's design decisions for site, array, inverter, battery, grid, tariff, weather, household
+  and policies, recorded in the file itself with a provenance class and notes.
+- The conventions below: units in names, fractions in `[0, 1]`, UTC instants, one seed, stable ids.
+
+## Outputs
+
+- A validated scenario document whose file name equals its `id`.
+- The scenario hash that enters a run manifest (NFR-03), and the fixtures the engine and application
+  tests read.
+- Controlled pairs — `tunis-offgrid-v1` and `tunis-dust-v1` against the default or against a
+  same-date copy — in which one variable changes and the rest is held constant.
+
+## Tests
+
+```text
+node scripts/validate-scenarios.mjs
+npm run check:config
+npm run test
+```
+
+`validate-scenarios.mjs` runs the engine validator over every file and exits non-zero on the first
+failure. `check:config` proves the four required failure classes and the unit audit, and `npm run test`
+reads these files as fixtures, so a scenario that stops validating fails the test suite and the check
+together. The two validation passes and the invariants they enforce are described under
+[Validation](#validation) below.
+
 ## Files
 
 | File | Role | What it is for |

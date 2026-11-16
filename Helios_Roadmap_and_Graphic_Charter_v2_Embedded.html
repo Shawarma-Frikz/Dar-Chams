@@ -203,8 +203,8 @@ Wokwi simulator                             Helios data-source adapter
 
         <tr>
           <td class="task-id">01.6</td>
-          <td><strong>Create documentation conventions</strong><p>Add architecture decision records, module READMEs, API notes, data dictionary, experiment log, and changelog.</p></td>
-          <td><span class="done-label">DONE WHEN</span><p>Every major module has purpose, inputs, outputs, and test instructions.</p></td>
+          <td><strong>Create documentation conventions</strong><p>Add architecture decision records, module READMEs, API notes, data dictionary, experiment log, and changelog. <code>docs/documentation.md</code> fixes the contracts: the decision log stays append-only with rejected alternatives; six module READMEs (<code>packages/engine</code>, <code>src/app</code>, <code>src/components</code>, <code>src/lib/config</code>, <code>scripts</code>, <code>scenarios</code>) carry purpose, inputs, outputs and tests; <code>docs/api.md</code> lists all 44 engine and 20 application exports; <code>docs/data-dictionary.md</code> is generated from <code>scenario.schema.json</code> (115 paths); <code>docs/experiment-log.md</code> fixes a ten-field record; <code>CHANGELOG.md</code> follows Keep a Changelog with one release per phase gate. <code>scripts/check-docs.mjs</code> is the ninth register check and proves the module contract, both directions of the API tables, the dictionary, the experiment format, the changelog, the document map and every script row (DEC-035).</p></td>
+          <td><span class="done-label">DONE WHEN</span><p>Every major module has purpose, inputs, outputs, and test instructions. <code>scripts/check-docs.mjs</code> fails when a required section, an API row, a dictionary path, a changelog release or a document map row is removed, and it demonstrates seven such breaks on copies of the real files.</p></td>
         </tr></tbody></table></div>
     </section>
     <section class="phase-section" id="phase-02">

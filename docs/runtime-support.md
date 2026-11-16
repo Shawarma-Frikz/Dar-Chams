@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.3.0 |
+| Version | 1.4.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.5) |
-| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034 |
+| Phase | 01 (tasks 01.2–01.6) |
+| Decided by | DEC-031 (supersedes the Node version pin in DEC-018); the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
 
@@ -36,7 +36,7 @@ Task 01.2 asks for three things: a supported Node LTS with a pinned package mana
 
 **Verified on 2026-11-16, Windows 11.** A directory containing only `package.json`, `package-lock.json`, `.npmrc` and `.nvmrc` installed with `npm ci` and exit code 0. The same directory with `engines.node` raised to `>=99.0.0 <100` was refused with `EBADENGINE` and exit code 1 — the pin fails closed, as intended.
 
-Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0.
+Repeated once the full 01.3 stack was in place: `npm ci` installed 366 packages with 0 vulnerabilities, then `npm run verify` (six checks, type-check, lint, format) and a from-scratch `npm run build` both exited 0. The built export served all six routes with 200, a missing path with 404, and carried its eight self-hosted font files. Re-run after 01.4 with the validator installed and the seventh check added: `npm run verify` and `npm run build` again exit 0, and the export still serves every route. Re-run after 01.5 with tests and the eighth check: `npm ci` installs 398 packages and audits 406 with 0 vulnerabilities, `npm run verify` runs eight checks, four code gates, 22 tests and the production build, and exits 0. Re-run after 01.6 with the documentation check: `npm run verify` runs nine checks, four code gates, 22 tests and the production build, and exits 0.
 
 **Where the gates run.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs the same six steps on `ubuntu-latest` and `windows-latest`, with Node taken from `.nvmrc` and dependencies installed with `npm ci`. The workflow is part of the repository and is itself checked: `scripts/check-ci.mjs` parses it and fails if a gate disappears, an action is referenced by tag instead of commit, or a command swallows its failure. The design and its limits are recorded in [quality gates](quality-gates.md) and DEC-034.
 
@@ -60,8 +60,8 @@ npm run check
 ```
 
 - On Windows, `npm` may be blocked by PowerShell execution policy (DEC-018); use `npm.cmd`, or run the same commands in Git Bash.
-- `npm run check` runs the runtime check and the seven document, configuration and CI checks. It is the single command a fresh clone needs before any work, and it is the first step CI runs.
-- `npm run verify` runs the eight checks, then type-check, lint, format check, the unit and property tests, and the production build. It is the one command to run before a commit; CI runs the same six steps separately.
+- `npm run check` runs the runtime check and the eight document, configuration and documentation checks. It is the single command a fresh clone needs before any work, and it is the first step CI runs.
+- `npm run verify` runs the nine checks, then type-check, lint, format check, the unit and property tests, and the production build. It is the one command to run before a commit; CI runs the same six steps separately.
 - `npm run test` runs Vitest once; `npm run test:watch` keeps it open. Both run against the TypeScript sources, not a build output.
 - `npm run dev` serves the application with hot reload on `http://localhost:3000`. `npm run build` writes the static export to `out/`, and `npm run preview` serves that exact directory on `http://localhost:4173` through `scripts/serve-static.mjs`, which resolves paths inside `out/` only and refuses traversal attempts.
 - `.nvmrc` is read by `nvm-windows`, `fnm` and `nvm`; none of them is required, because `engines` plus `engine-strict` already refuse the wrong line.

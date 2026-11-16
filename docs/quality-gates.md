@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Date | 2026-11-16 |
-| Phase | 01 (task 01.5) |
-| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031 |
-| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all eight checks |
+| Phase | 01 (tasks 01.5, 01.6); v1.1.0 records the ninth check |
+| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035 |
+| Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all nine checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
 
 Task 01.5 asks for formatting, lint, type-check, unit-test and production-build commands, and for CI to run them on pushes and pull requests. Its acceptance condition is not "the commands exist" but "a failing check blocks a green build", so this document records the gate list, the order, the CI job and the two ways the failure path is demonstrated.
@@ -17,7 +17,7 @@ Task 01.5 asks for formatting, lint, type-check, unit-test and production-build 
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Registers | `npm run check` | The eight document and configuration checks in [conventions](conventions.md) §7 pass against the tree as committed |
+| Registers | `npm run check` | The nine document, configuration and documentation checks in [conventions](conventions.md) §7 pass against the tree as committed |
 | Type-check | `npm run typecheck` | `tsc --noEmit` under the strict base config, including the test files and `vitest.config.ts` |
 | Lint | `npm run lint` | ESLint 9 on the flat config, including the engine boundary that forbids React, Next and `@/` imports (DEC-002) |
 | Format | `npm run format:check` | Prettier 3 over code, config and scripts; Markdown and JSON evidence are excluded by [`.prettierignore`](../.prettierignore) |
@@ -30,7 +30,7 @@ The order is deliberate. The cheap, broad checks come first — a formatting err
 
 ```text
 npm run verify
-  → npm run check        eight checks
+  → npm run check        nine checks
   → npm run typecheck
   → npm run lint
   → npm run format:check
@@ -39,6 +39,8 @@ npm run verify
 ```
 
 `verify` is the single command a contributor runs before a commit, and the same list the workflow runs. CI does not call `verify`, because one combined step would report six gates as one red cross; it runs the same six commands as separate steps so a failing gate is named on the pull request.
+
+The register gate is itself nine checks. The seventh, `scripts/check-docs.mjs`, holds six module READMEs (purpose, inputs, outputs, runnable tests), the API tables in both directions, the generated data dictionary, the experiment record format, the changelog and the document map to their contracts (DEC-035).
 
 ## 2 · What the tests cover
 

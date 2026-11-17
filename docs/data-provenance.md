@@ -320,8 +320,8 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-06 | Cloud cover | % | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | % · 0 dp |
 | MET-07 | Plane-of-array irradiance | W/m² | S | Simplified transposition from GHI, DNI and DHI plus panel tilt and azimuth; an approximation labelled in code and report (FR-PV-03). | MET-01, MET-02, MET-03 | Always | W/m² · 0 dp |
 | MET-08 | Cell temperature | °C | S | NOCT-type thermal model from ambient temperature, plane-of-array irradiance and wind speed. | MET-04, MET-07, MET-05 | Always | °C · 1 dp |
-| MET-09 | Sun elevation | ° | S | Solar-position algorithm (SunCalc or a validated equivalent) evaluated at the simulation instant for the site coordinates. | — | Always | ° · 2 dp |
-| MET-10 | Sun azimuth | ° | S | Solar-position algorithm evaluated at the simulation instant for the site coordinates. | — | Always | ° · 1 dp |
+| MET-09 | Sun elevation | ° | S | SunCalc 2.1.4 apparent solar-position algorithm evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 2 dp |
+| MET-10 | Sun azimuth | ° | S | SunCalc 2.1.4 true-north clockwise azimuth evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 1 dp |
 | MET-11 | Daylight state | state | S | Derived from sun-elevation thresholds; drives day/night rendering and forces zero PV at night (FR-PV-06). | MET-09 | Always | state |
 
 #### Photovoltaic array
@@ -475,10 +475,10 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | Open-Meteo forecast API | Forward irradiance, cloud cover, temperature, wind | X | Key-free; adapter with cache and synthetic fallback (NFR-11) |
 | Open-Meteo ERA5 archive | Historical weather for repeatable experiments | X | Key-free; reanalysis, **not** a sensor record |
 | PVGIS (SARAH2) | Independent check of simulated daily yield (FR-PV-07) | X | Model-to-model consistency check, not validation |
-| NOAA calculator or an ephemeris | Independent check of solar position (FR-PV-02) | — (test fixture) | Reference values recorded in fixtures |
+| Timeanddate published Sun tables; NOAA/USNO calculator or an ephemeris for additional dates | Independent check of solar position (FR-PV-02) | — (test fixture) | Three fixed, date-stamped fixtures and DST/polar cases in [`solar-validation.md`](solar-validation.md) |
 | STEG residential tariff | Import cost, export compensation | X (when cited) | **Unverified** — prices are `null`, economics disabled |
 | National grid emission factor | Avoided CO₂ | X (when cited) | Not selected; the metric stays disabled |
-| Solar-position algorithm | Sun elevation, azimuth, daylight state | S | Checked against an independent reference within 0.5° |
+| SunCalc 2.1.4 | Sun elevation, azimuth, daylight state | S | Event times within ±2 minutes and noon elevation/azimuth within ±0.5° on the fixture set |
 | Wokwi ESP32 simulator | Bench-node channel values in the Wokwi source mode | S | Electronics simulated from the committed circuit; parity with the physical bench is measured (AC-34), not assumed |
 
 ---

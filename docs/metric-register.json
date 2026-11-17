@@ -118,9 +118,9 @@
       "decimals": 2,
       "classes": ["S"],
       "inputs": [],
-      "source": "Solar-position algorithm (SunCalc or a validated equivalent) evaluated at the simulation instant for the site coordinates.",
+      "source": "SunCalc 2.1.4 apparent solar-position algorithm evaluated at the simulation instant for the configured site coordinates.",
       "availability": "always",
-      "notes": "Checked against an independent ephemeris in FR-PV-02."
+      "notes": "Apparent elevation includes SunCalc's refraction correction; validated by the fixed fixtures in solar-validation.md."
     },
     {
       "id": "MET-10",
@@ -131,7 +131,7 @@
       "decimals": 1,
       "classes": ["S"],
       "inputs": [],
-      "source": "Solar-position algorithm evaluated at the simulation instant for the site coordinates.",
+      "source": "SunCalc 2.1.4 true-north clockwise azimuth evaluated at the simulation instant for the configured site coordinates.",
       "availability": "always",
       "notes": "Drives the twin's sun direction; decorative lighting is labelled separately."
     },

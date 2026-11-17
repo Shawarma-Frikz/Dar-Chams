@@ -135,3 +135,10 @@ Re-run after task 02.5: scripts/check-config.mjs rejects an unsafe scenario seed
 After task 02.6, all eight roadmap event kinds emit records with timestamp, source, entity ID, previous and next state, payload, deterministic sequence and stable ID. The journal rejects backward timestamps and step indices, malformed state transitions, invalid SOC crossings, reversed forecast horizons and impossible inverter payloads. Replaying the same event inputs for the same scenario and seed produces identical records and IDs. The full verification chain passes on Node 26.13.1 and npm 11.20.0 with 82 tests.
 
 After task 02.7, energy constructors and sums reject negative or non-finite Wh/kWh, interval conversion rejects negative power and overflow, and the calculated-SOC clamp validates the configured window before constraining the result. Property-based tests cover 500 wide-range energy cases and 500 SOC windows/candidates, including extrema; external SOC still fails closed. Full verification passes on Node 26.13.1 and npm 11.20.0 with 85 tests.
+
+After task 03.2, a clean `npm ci` installs SunCalc 2.1.4 from the workspace lockfile. The twelve
+register checks, type-check, lint, format check and all 90 tests pass on Node 26.13.1/npm 11.20.0.
+In this Windows execution environment, the default `npm run verify` production build panicked when
+Turbopack tried to start its PostCSS worker; `npm run build -- --webpack` then compiled and
+prerendered all eight app routes. Solar reference fixtures, DST transitions and polar cases are
+recorded in [`solar-validation.md`](solar-validation.md).

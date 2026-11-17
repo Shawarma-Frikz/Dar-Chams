@@ -35,6 +35,7 @@ authority; the other one links to it rather than restating it.
 | [`docs/energy-balance.md`](energy-balance.md) | The step ledger: identity, sign convention, tolerance and proof | What a balanced step is | `check-balance`; existence by `check-docs` |
 | [`docs/identity.md`](identity.md) | Dar Chams name, mark, colours, type and interface rules | Product visual identity | `check-docs` identity audit |
 | [`docs/roadmap-adoption.md`](roadmap-adoption.md) | Crosswalk from the Dar Chams roadmap into the accepted engineering gates | Where roadmap additions enter | `check-docs` |
+| [`docs/solar-validation.md`](solar-validation.md) | Independent reference fixtures and edge-case evidence for solar geometry | Solar task 03.2 validation evidence | `check-docs`; Vitest |
 | [`docs/conventions.md`](conventions.md) | Licence, branches, commits, evidence policy, checks | How the repository is kept | `check-docs` |
 | [`docs/quality-gates.md`](quality-gates.md) | Gates, CI job, demonstrated failure path | How a build turns red | `check-ci`; existence by `check-docs` |
 | [`docs/runtime-support.md`](runtime-support.md) | Pinned runtime, browsers, hardware, budgets | What the toolchain is | `check-runtime` |

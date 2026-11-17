@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phase 03.1 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.2 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry and Dar Chams identity.
 
 ### Added
 
@@ -65,9 +65,14 @@ Phase 02 complete; phase 03.1 — the simulation time base, canonical units, ene
   periods. Tracking is a discriminated opt-in;
   disabled trackers must have zero axes, and enabled trackers must declare one or two.
 
+- Task 03.2 solar geometry (DEC-047): SunCalc 2.1.4 provides apparent elevation/azimuth and
+  site-local sunrise, solar noon and sunset. DST days use exact IANA-zone boundaries, and polar
+  day/night have explicit states. Three independent reference fixtures and edge-case evidence are
+  recorded in [`docs/solar-validation.md`](docs/solar-validation.md).
+
 ### Changed
 
-- `npm run check` retains its twelve register checks, and the suite runs 86 tests.
+- `npm run check` retains its twelve register checks, and the suite runs 90 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

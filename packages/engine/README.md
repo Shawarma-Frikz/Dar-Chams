@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards; 03.1 defines PV installation geometry |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards; 03.1 defines PV installation geometry; 03.2 calculates solar position |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047 |
 
 ## Purpose
 
@@ -32,6 +32,11 @@ overflow, and provides an explicitly named SOC clamp for calculated battery stat
 minimum and maximum SOC bounds. Raw external SOC continues to fail closed.
 Task 03.1 makes site and array geometry scenario-owned and unambiguous, makes shading profiles
 optional, and enforces fixed-by-default tracking in both the schema and TypeScript union.
+
+Task 03.2 adds SunCalc-backed apparent solar elevation and true-north azimuth at an instant, plus
+sunrise, solar noon and sunset for an IANA-zone site date. Event instants follow the real site-day
+boundaries across DST; polar day and night are explicit. This is astronomy geometry, not an
+irradiance or PV production model.
 
 ## Inputs
 
@@ -62,6 +67,11 @@ optional, and enforces fixed-by-default tracking in both the schema and TypeScri
   `siteDayBounds` and `siteDate` (the local calendar), and `createStepGrid`, `stepAt`,
   `stepsInSiteDay`, `siteDayGrid` and `groupStepsBySiteDay` (the uniform step grid and its day split).
   A DST day is 23 or 25 hours, or 23.5 or 24.5 in a half-hour zone, so its step count follows the calendar rather than 96.
+- The **solar geometry**: `solarPositionAt` calculates apparent elevation and azimuth from an
+  absolute instant and coordinates; `solarDayForSiteDate` returns site-local sunrise, solar noon,
+  sunset, real day length and explicit polar status. Dates are supported from 1900 through 2150.
+  Reference fixtures and scope limits are recorded in
+  [`docs/solar-validation.md`](../../docs/solar-validation.md).
 - The **canonical units**: `watts`, `wattHours`, `kilowatts` and `kilowattHours` tag a value on the
   scale it was written in; `wattsFromKilowatts`, `kilowattsFromWatts`, `wattHoursFromKilowattHours`
   and `kilowattHoursFromWattHours` are the named scale changes; `intervalWattHours` is the per-step
@@ -97,7 +107,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 76 engine tests and the application's ten, 86 in total:
+`npm run test` runs 80 engine tests and the application's ten, 90 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
   validate and describe their geometry; optional shading profiles and tracking combinations are
@@ -111,6 +121,9 @@ node scripts/validate-scenarios.mjs
   25-hour days; Lord Howe gives 94 and 98 on its half-hour days, and an hourly grid on a 23.5-hour day
   is refused; gap and overlap times resolve in the documented direction; the shipped 48-hour run is
   192 steps over two 96-step days; and two properties tile the grid and assign every step to one day.
+- [`src/solar/solar.test.ts`](src/solar/solar.test.ts), 4 tests — three independent city/date fixtures
+  check sunrise, solar noon, sunset and noon position; DST start/end, polar day/night and invalid
+  numerical/date inputs are covered.
 - [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
   non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
   non-finite and overflow values are refused, and properties cover wide power and interval ranges.
@@ -148,11 +161,10 @@ feeds ten broken ledgers back through the public API. `node scripts/validate-sce
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
-**Not covered yet.** There is no physics yet; 02.3 states and proves the energy ledger, 02.4 defines
-the component contracts and 02.5 implements the deterministic clock. Later phases implement the
-models. Solar elevation and sunrise/sunset — the
-weather model's daylight flag (MET-11) — belong to 03.2, not to this day boundary. The time base and
-the ledger are tested; the simulation they will carry is not.
+**Not covered yet.** Solar elevation, azimuth and sun events are implemented in 03.2, but the
+weather model's daylight flag (MET-11), irradiance, PV output and battery/controller models are
+still future work. The time base and energy ledger are tested; the simulation they will carry is
+not yet producing physical metrics.
 
 ## Layout
 
@@ -172,6 +184,8 @@ the ledger are tested; the simulation they will carry is not.
 | `src/config/scenario.test.ts` | Fifteen configuration tests over the shipped scenarios |
 | `src/time/instant.ts` | `Instant`, strict ISO parsing, formatting and whole-minute arithmetic |
 | `src/time/zone.ts` | IANA offsets, wall-clock resolution, site-date and site-day bounds |
+| `src/solar/solar.ts` | SunCalc-backed position and site-local sun events for phase 03.2 |
+| `src/solar/solar.test.ts` | Reference, DST, polar and input-boundary checks |
 | `src/time/timeline.ts` | The uniform step grid and its split at local midnight |
 | `src/time/time.test.ts` | Eighteen instance, day-boundary, DST and grid tests |
 | `src/units/energy.ts` | Branded W, Wh, kW and kWh, the named conversions and same-unit addition |

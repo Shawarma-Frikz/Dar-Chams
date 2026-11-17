@@ -62,6 +62,15 @@ export {
 } from './time/timeline.ts';
 export type { SiteDaySegment, Step, StepGrid } from './time/timeline.ts';
 
+export { solarDayForSiteDate, solarPositionAt } from './solar/solar.ts';
+export type {
+  SolarCoordinates,
+  SolarDay,
+  SolarDayStatus,
+  SolarPosition,
+  SolarSite,
+} from './solar/solar.ts';
+
 export {
   addWattHours,
   addWatts,

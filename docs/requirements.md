@@ -232,7 +232,7 @@ These are outside the project's control. Each has a declared fallback, and the r
 | EX-01 | Open-Meteo forecast API (free, no key) | FR-FCT-02, NFR-11 | Cached series, then seeded synthetic series with class `S` | Forecasts become unavailable; the scheduler falls back to the baseline (FR-EMS-10) and the demo still runs |
 | EX-02 | Open-Meteo ERA5 archive | Historical experiments | Cached dataset; narrower date range | Historical comparison is reduced and the reduction is reported |
 | EX-03 | PVGIS API | FR-PV-07 | Manual export to CSV and replay | AC-06 is reported as not performed, not estimated |
-| EX-04 | SunCalc (MIT) | FR-PV-02 | Local implementation of solar position | Solar geometry is re-verified against the same fixtures |
+| EX-04 | SunCalc 2.1.4 (MIT) | FR-PV-02 | Pinned library for solar position and local horizon times | Solar geometry is re-verified against the fixtures in `solar-validation.md` |
 | EX-05 | Google Colab free tier | FR-FCT-04 (training only) | Smaller model trained locally, or drop the learned model | Forecast stays on weather-driven baselines; SH-01 is not claimed |
 | EX-06 | GitHub Actions free tier | NFR-06 | Local pre-push script with manually recorded evidence | CI evidence is produced locally and labelled as such |
 | EX-07 | Static hosting (Vercel Hobby or equivalent) | Deployment | Static export served locally for the demo | The live URL is unavailable; the offline demo is unaffected |

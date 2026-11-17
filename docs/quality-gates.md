@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.9.0 |
+| Version | 2.0.0 |
 | Date | 2026-11-17 |
-| Phase | 01 (tasks 01.5, 01.6), 02.1–02.7, 03.1; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests; v1.5.0 records component ports and 67 tests; v1.6.0 records the clock and 74 tests; v1.7.0 records the event journal and 82 tests; v1.8.0 records numerical guards and 85 tests; v1.9.0 records PV geometry and 86 tests |
-| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038; the energy ledger by DEC-039; PV geometry by DEC-046 |
+| Phase | 01 (tasks 01.5, 01.6), 02.1–02.7, 03.1–03.2; v1.1.0 records the ninth check; v1.1.1 tracks the corrected Node line; v1.2.0 records the time check and 47 tests; v1.3.0 records the unit check and 53 tests; v1.4.0 records the balance check and 65 tests; v1.5.0 records component ports and 67 tests; v1.6.0 records the clock and 74 tests; v1.7.0 records the event journal and 82 tests; v1.8.0 records numerical guards and 85 tests; v1.9.0 records PV geometry and 86 tests; v2.0.0 records solar geometry and 90 tests |
+| Decided by | DEC-034; tests chosen by DEC-017; the toolchain pin by DEC-031; the documentation check by DEC-035; the time base by DEC-037; the canonical units by DEC-038; the energy ledger by DEC-039; PV geometry by DEC-046; solar geometry by DEC-047 |
 | Checked by | `node scripts/check-ci.mjs`, or `npm run check` for all twelve checks |
 | Related | [Conventions](conventions.md) §7 · [Runtime support](runtime-support.md) · NFR-06, NFR-09, EX-06 |
 
@@ -44,12 +44,13 @@ The register gate is itself twelve checks. The seventh, `scripts/check-time.mjs`
 
 ## 2 · What the tests cover
 
-All 86 tests run against the modules the application imports — the configuration contract from 01.4, the time, unit, balance, component-port, clock, event journal and numerical guards from 02.1–02.7, and the PV configuration contract from 03.1:
+All 90 tests run against the modules the application imports — the configuration contract from 01.4, the time, unit, balance, component-port, clock, event journal and numerical guards from 02.1–02.7, and the PV geometry and solar calculations from 03.1–03.2:
 
 | File | Tests | Subject |
 | --- | --- | --- |
 | [`packages/engine/src/config/scenario.test.ts`](../packages/engine/src/config/scenario.test.ts) | 16 | The shipped scenarios validate and fully describe site/array geometry; profile absence/presence and fixed-versus-tracking axis combinations validate correctly; the configuration failure classes, unit audit and SOC invariants hold |
 | [`packages/engine/src/time/time.test.ts`](../packages/engine/src/time/time.test.ts) | 18 | Instants store as one absolute value and format with an explicit offset; a naive, impossible or sub-millisecond stamp is refused; Tunis yields 1440 minutes and 288/96/48/24 steps; Paris and Lord Howe keep their 23-, 25-, 23.5- and 24.5-hour days; a gap shifts forward and an overlap takes the earlier instant; a run tiles its horizon and splits at site midnight |
+| [`packages/engine/src/solar/solar.test.ts`](../packages/engine/src/solar/solar.test.ts) | 4 | Three independent city/date fixtures check sunrise, solar noon, sunset, elevation and azimuth; Paris DST transitions, Tromsø polar day/night and invalid inputs are covered |
 | [`packages/engine/src/units/energy.test.ts`](../packages/engine/src/units/energy.test.ts) | 7 | Interval energy is power × minutes ÷ 60 in Wh; kW and kWh are display conversions only; energy magnitudes reject negatives; non-finite input and overflow are refused; properties cover wide non-negative power and interval boundaries |
 | [`packages/engine/src/units/quantity.test.ts`](../packages/engine/src/units/quantity.test.ts) | 7 | Celsius holds down to absolute zero; SOC stays a 0–1 fraction; calculated SOC clamps to and remains inside each battery's usable window, with property coverage of boundaries and extreme finite states |
 | [`packages/engine/src/balance/balance.test.ts`](../packages/engine/src/balance/balance.test.ts) | 12 | Nine non-negative magnitudes close a 1750 Wh step on both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss follows the inverter efficiency; properties show the residual is supply − demand, a derived eighth term closes the step, and interval energy feeds the ledger |

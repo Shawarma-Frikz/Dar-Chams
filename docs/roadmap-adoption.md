@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Date | 2026-11-17 |
-| Phase | 02 complete; phase 03.1 complete; adoption crosswalk for the Dar Chams roadmap |
+| Phase | 02 complete; phases 03.1–03.2 complete; adoption crosswalk for the Dar Chams roadmap |
 | Authority | [Dar Chams Roadmap](../Dar_Chams_Roadmap.html), [accepted engineering roadmap](../Dar_Chams_Roadmap_and_Graphic_Charter_v2_Embedded.html), [requirements](requirements.md), [acceptance checklist](acceptance-checklist.md) |
-| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046 |
+| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047 |
 
 The Dar Chams roadmap adds useful specificity to the existing project: physical PV geometry and plane-of-array irradiance, weather inputs and uncertainty, battery voltage and aging, tracker energy cost, explicit load priority thresholds, and a clearer evidence package. This crosswalk admits those ideas at the existing phase gates. It does not mark planned features as implemented or silently change the signed acceptance targets. The checklist and its author-bound digest remain untouched; its earlier use of Helios in the claim-gate wording refers to this same project and prohibition.
 
@@ -14,17 +14,24 @@ The Dar Chams roadmap adds useful specificity to the existing project: physical 
 
 - The deterministic, offline-capable TypeScript engine remains the source of truth. The root package and repository, `@dar-chams/engine`, static export, IndexedDB direction, scenario schema, provenance register, append-only decision log, signed acceptance checklist and machine checks remain in place.
 - The app remains simulation-first. No real plant is monitored or controlled, weather services remain optional, and sensor or Wokwi observations never become measurements of PV or battery state by implication.
-- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01, 02.1–02.7 or 03.1. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events; task 02.7 guards finite/non-negative energy and keeps calculated battery SOC inside its usable window; task 03.1 makes PV geometry explicit in validated scenarios. These tasks do not implement physical models or the event timeline UI.
+- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01, 02.1–02.7 or 03.1–03.2. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events; task 02.7 guards finite/non-negative energy and keeps calculated battery SOC inside its usable window; task 03.1 makes PV geometry explicit in validated scenarios; task 03.2 calculates site-local solar position and events. These tasks do not implement the later irradiance and production models or the event timeline UI.
 
 ## Adopt into the existing gates
 
-Task 03.1 is complete. It uses scenario geometry as the authority: site latitude/longitude/altitude, total array
+Tasks 03.1 and 03.2 are complete. Task 03.1 uses scenario geometry as the authority: site latitude/longitude/altitude, total array
 nameplate DC capacity at STC, module count, panel tilt from horizontal and compass azimuth clockwise
 from true north. An absent shading profile means no scheduled shading; when present its daily
 recurring, non-overlapping windows use the site timezone and declare their own loss fraction.
 Tracking is a discriminated opt-in: fixed arrays require
 `enabled: false, axes: 0`; enabled tracking requires one or two axes. No geometry is hardcoded in
-the physics engine, and these inputs do not claim the later sun, irradiance or production models exist.
+the physics engine, and these inputs do not claim the later irradiance or production models exist.
+
+Task 03.2 adds SunCalc 2.1.4 to the engine and exposes apparent sun elevation/azimuth plus
+site-local sunrise, solar noon and sunset as absolute instants. Real IANA-zone day bounds and the
+offsets on each side of a DST transition determine event membership. Polar day/night return an
+explicit status and null rise/set times. Three independent published city/date fixtures, both Paris
+DST transitions and Tromsø solstices pass in [`solar-validation.md`](solar-validation.md). This
+implements sun geometry only; irradiance conversion and PV yield remain later tasks.
 
 | Dar Chams addition | Existing home | Admission rule |
 | --- | --- | --- |

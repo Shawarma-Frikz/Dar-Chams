@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.9.0 |
+| Version | 1.10.0 |
 | Date | 2026-11-17 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards; v1.9.0 defines phase-03.1 PV geometry |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards; v1.9.0 defines phase-03.1 PV geometry; v1.10.0 adds phase-03.2 solar calculations |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-039, DEC-041–DEC-046 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-039, DEC-041–DEC-047 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -89,8 +89,15 @@ with the engine and not only with the application.
 | `formatZonedInstant` | function | ISO 8601 in the site zone with its numeric offset, e.g. `2026-06-21T00:00:00.000+01:00` |
 | `siteDate` | function | The `YYYY-MM-DD` site day containing an instant |
 | `siteDayBounds` | function | Local midnight to the next local midnight, with the day's real length in minutes |
+| `solarPositionAt` | function | SunCalc apparent elevation and true-north clockwise azimuth at an absolute instant and typed scenario coordinates; validates coordinates and the 1900–2150 algorithm range |
+| `solarDayForSiteDate` | function | Sunrise, solar noon and sunset as absolute instants for a typed site and IANA-zone calendar day; preserves DST day length and returns explicit polar-day/night states with null sunrise/sunset |
 | `ZonedParts` | type | Year, month, day, hour, minute and second in a zone |
 | `SiteDayBounds` | type | Date, start, end and minutes of one site day |
+| `SolarPosition` | type | Apparent elevation and north-based clockwise azimuth in degrees |
+| `SolarCoordinates` | type | Scenario-owned latitude and longitude fields, preventing positional coordinate swaps |
+| `SolarSite` | type | Scenario-owned coordinates, altitude and IANA timezone used for day events |
+| `SolarDay` | type | Site date, timezone, real local day length, normal/polar state and absolute solar event instants |
+| `SolarDayStatus` | type | `'normal'`, `'polar-day'` or `'polar-night'` |
 | `TIMESTEP_MINUTES` | const | `[5, 15, 30, 60]`; the timesteps the step grid accepts |
 | `createStepGrid` | function | A uniform grid from a start, a timestep and a whole-minute duration; refuses a partial final step |
 | `stepAt` | function | The step at an index, with absolute start and end instants |

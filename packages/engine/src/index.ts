@@ -151,6 +151,8 @@ export type {
   Room,
   Scenario,
   SchedulerPolicy,
+  ShadingProfile,
+  ShadingWindow,
   Simulation,
   Site,
   Tariff,

@@ -26,7 +26,7 @@
     "policies"
   ],
   "properties": {
-    "schema_version": { "const": "0.1.0" },
+    "schema_version": { "const": "0.2.0" },
     "id": { "$ref": "#/$defs/scenarioId" },
     "name": { "type": "string", "minLength": 1 },
     "description": { "type": "string", "minLength": 1 },
@@ -46,10 +46,29 @@
       "required": ["label", "latitude_deg", "longitude_deg", "altitude_m", "timezone"],
       "properties": {
         "label": { "type": "string", "minLength": 1 },
-        "latitude_deg": { "type": "number", "minimum": -90, "maximum": 90 },
-        "longitude_deg": { "type": "number", "minimum": -180, "maximum": 180 },
-        "altitude_m": { "type": "number", "minimum": -100, "maximum": 5000 },
-        "timezone": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$" }
+        "latitude_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Site geodetic latitude in decimal degrees, north positive."
+        },
+        "longitude_deg": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Site geodetic longitude in decimal degrees, east positive."
+        },
+        "altitude_m": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 5000,
+          "description": "Site altitude above mean sea level in metres."
+        },
+        "timezone": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_+/-]*$",
+          "description": "Site IANA timezone used for displayed time and recurring shading-profile windows."
+        }
       }
     },
     "mode": { "enum": ["grid_connected", "off_grid"] },
@@ -78,30 +97,53 @@
         "soiling_loss",
         "mismatch_loss",
         "availability",
-        "shading_windows",
         "tracker"
       ],
       "properties": {
-        "installed_dc_kwp": { "type": "number", "exclusiveMinimum": 0 },
-        "panel_count": { "type": "integer", "minimum": 1 },
-        "tilt_deg": { "type": "number", "minimum": 0, "maximum": 90 },
-        "azimuth_deg": { "type": "number", "minimum": 0, "exclusiveMaximum": 360 },
+        "installed_dc_kwp": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Total PV array nameplate DC capacity at standard test conditions, in kWp."
+        },
+        "panel_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of modules contributing to installed_dc_kwp."
+        },
+        "tilt_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90,
+          "description": "Panel plane tilt from horizontal: 0 is flat and 90 is vertical."
+        },
+        "azimuth_deg": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360,
+          "description": "Compass bearing clockwise from true north: 0 north, 90 east, 180 south, 270 west."
+        },
         "temperature_coefficient_per_degc": { "type": "number", "maximum": 0 },
         "noct_degc": { "type": "number", "minimum": 30, "maximum": 60 },
         "soiling_loss": { "type": "number", "minimum": 0, "maximum": 0.9 },
         "mismatch_loss": { "type": "number", "minimum": 0, "maximum": 0.5 },
         "availability": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
-        "shading_windows": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/timeWindow" }
+        "shading_profile": {
+          "$ref": "#/$defs/shadingProfile",
+          "description": "Optional daily recurring shading schedule in site-local time; absent means no scheduled shading profile."
         },
         "tracker": {
           "type": "object",
           "additionalProperties": false,
           "required": ["enabled", "axes"],
           "properties": {
-            "enabled": { "type": "boolean" },
-            "axes": { "enum": [0, 1, 2] }
+            "enabled": {
+              "type": "boolean",
+              "description": "Tracking is opt-in; false means a fixed array."
+            },
+            "axes": {
+              "enum": [0, 1, 2],
+              "description": "Zero for a fixed array; one or two only when tracking is enabled."
+            }
           }
         }
       },
@@ -111,7 +153,18 @@
             "properties": { "tracker": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } },
             "required": ["tracker"]
           },
-          "then": { "properties": { "tracker": { "properties": { "axes": { "minimum": 1 } } } } }
+          "then": {
+            "properties": { "tracker": { "properties": { "axes": { "minimum": 1 } } } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "tracker": { "properties": { "enabled": { "const": false } }, "required": ["enabled"] } },
+            "required": ["tracker"]
+          },
+          "then": {
+            "properties": { "tracker": { "properties": { "axes": { "const": 0 } } } }
+          }
         }
       ]
     },
@@ -343,6 +396,33 @@
       "properties": {
         "start": { "$ref": "#/$defs/clockTime" },
         "end": { "$ref": "#/$defs/clockTime" }
+      }
+    },
+    "shadingProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["windows"],
+      "properties": {
+        "windows": {
+          "type": "array",
+          "description": "Daily recurring site-local periods and fractional production losses.",
+          "items": { "$ref": "#/$defs/shadingWindow" }
+        }
+      }
+    },
+    "shadingWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "shading_loss"],
+      "properties": {
+        "start": { "$ref": "#/$defs/clockTime" },
+        "end": { "$ref": "#/$defs/clockTime" },
+        "shading_loss": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fractional reduction in available PV production during the window, from 0 to 1."
+        }
       }
     },
     "room": {

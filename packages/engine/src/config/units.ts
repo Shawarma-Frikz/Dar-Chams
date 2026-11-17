@@ -41,6 +41,7 @@ export const UNITLESS_QUANTITIES: readonly string[] = [
   'duty_cycle',
   'soiling_loss',
   'mismatch_loss',
+  'shading_loss',
   'availability',
   'efficiency',
   'round_trip_efficiency',

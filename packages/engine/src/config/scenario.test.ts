@@ -20,6 +20,13 @@ const schema = readJson('scenario.schema.json');
 const validator = createScenarioValidator(schema);
 
 interface TestDocument {
+  site: {
+    latitude_deg: number;
+    longitude_deg: number;
+    altitude_m: number;
+    timezone: string;
+    [key: string]: unknown;
+  };
   battery: {
     min_soc: number;
     max_soc: number;
@@ -28,7 +35,17 @@ interface TestDocument {
     [key: string]: unknown;
   };
   grid: { export_limit_kw: number; [key: string]: unknown };
-  pv: { tilt_deg: number; installed_dc_kwp: number; [key: string]: unknown };
+  pv: {
+    tilt_deg: number;
+    azimuth_deg: number;
+    installed_dc_kwp: number;
+    panel_count: number;
+    tracker: { enabled: boolean; axes: number };
+    shading_profile?: {
+      windows: { start: string; end: string; shading_loss: number }[];
+    };
+    [key: string]: unknown;
+  };
   household: {
     rooms: { id: string }[];
     appliances: {
@@ -60,7 +77,89 @@ describe('the scenario contract', () => {
     for (const name of names) {
       const checked = validator.check(readJson(name));
       expect(checked.ok, `${name} should validate`).toBe(true);
+      if (checked.ok) {
+        expect(checked.scenario.schema_version).toBe('0.2.0');
+        expect(checked.scenario.site.latitude_deg).toBeGreaterThanOrEqual(-90);
+        expect(checked.scenario.site.latitude_deg).toBeLessThanOrEqual(90);
+        expect(checked.scenario.site.longitude_deg).toBeGreaterThanOrEqual(-180);
+        expect(checked.scenario.site.longitude_deg).toBeLessThanOrEqual(180);
+        expect(Number.isFinite(checked.scenario.site.altitude_m)).toBe(true);
+        expect(checked.scenario.site.altitude_m).toBeGreaterThanOrEqual(-100);
+        expect(checked.scenario.site.altitude_m).toBeLessThanOrEqual(5000);
+        expect(checked.scenario.pv.installed_dc_kwp).toBeGreaterThan(0);
+        expect(checked.scenario.pv.panel_count).toBeGreaterThan(0);
+        expect(checked.scenario.pv.tilt_deg).toBeGreaterThanOrEqual(0);
+        expect(checked.scenario.pv.tilt_deg).toBeLessThanOrEqual(90);
+        expect(checked.scenario.pv.azimuth_deg).toBeGreaterThanOrEqual(0);
+        expect(checked.scenario.pv.azimuth_deg).toBeLessThan(360);
+        expect(checked.scenario.pv.tracker).toEqual({ enabled: false, axes: 0 });
+        expect(checked.scenario.pv.shading_profile).toBeUndefined();
+      }
     }
+  });
+
+  it('allows an optional shading profile and requires tracking axes to be explicitly enabled', () => {
+    const unshaded = fixture();
+    expect(validator.check(unshaded).ok).toBe(true);
+
+    const shaded = fixture();
+    shaded.pv.shading_profile = {
+      windows: [{ start: '15:00', end: '16:30', shading_loss: 0.3 }],
+    };
+    expect(validator.check(shaded).ok).toBe(true);
+
+    const invalidShading = fixture();
+    invalidShading.pv.shading_profile = {
+      windows: [{ start: '25:00', end: '16:30', shading_loss: 0.3 }],
+    };
+    expect(validator.check(invalidShading).ok).toBe(false);
+
+    const impossibleLoss = fixture();
+    impossibleLoss.pv.shading_profile = {
+      windows: [{ start: '15:00', end: '16:30', shading_loss: 1.1 }],
+    };
+    expect(validator.check(impossibleLoss).ok).toBe(false);
+
+    const overnight = fixture();
+    overnight.pv.shading_profile = {
+      windows: [
+        { start: '22:00', end: '02:00', shading_loss: 0.3 },
+        { start: '02:00', end: '04:00', shading_loss: 0.2 },
+      ],
+    };
+    expect(validator.check(overnight).ok).toBe(true);
+
+    const emptyWindow = fixture();
+    emptyWindow.pv.shading_profile = {
+      windows: [{ start: '15:00', end: '15:00', shading_loss: 0.3 }],
+    };
+    expect(issueAt(emptyWindow, 'pv.shading_profile.windows[0]')?.code).toBe(
+      'relation.shading-window',
+    );
+
+    const overlap = fixture();
+    overlap.pv.shading_profile = {
+      windows: [
+        { start: '15:00', end: '17:00', shading_loss: 0.3 },
+        { start: '16:30', end: '18:00', shading_loss: 0.2 },
+      ],
+    };
+    expect(issueAt(overlap, 'pv.shading_profile.windows[1]')?.code).toBe(
+      'relation.shading-window-overlap',
+    );
+
+    const disabledWithAxis = fixture();
+    disabledWithAxis.pv.tracker.axes = 1;
+    expect(validator.check(disabledWithAxis).ok).toBe(false);
+
+    const enabledWithoutAxis = fixture();
+    enabledWithoutAxis.pv.tracker.enabled = true;
+    expect(validator.check(enabledWithoutAxis).ok).toBe(false);
+
+    const enabledOneAxis = fixture();
+    enabledOneAxis.pv.tracker.enabled = true;
+    enabledOneAxis.pv.tracker.axes = 1;
+    expect(validator.check(enabledOneAxis).ok).toBe(true);
   });
 
   it('rejects a battery capacity that cannot store energy', () => {
@@ -118,7 +217,7 @@ describe('the scenario contract', () => {
 
   it('rejects a site timezone the runtime does not know', () => {
     const document = fixture();
-    (document.site as { timezone: string }).timezone = 'Mars/Olympus';
+    document.site.timezone = 'Mars/Olympus';
     const issue = issueAt(document, 'site.timezone');
     expect(issue?.code).toBe('relation.timezone');
     expect(issue?.expected).toContain('Africa/Tunis');

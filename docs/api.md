@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.8.0 |
-| Date | 2026-11-16 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards |
+| Version | 1.9.0 |
+| Date | 2026-11-17 |
+| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards; v1.9.0 defines phase-03.1 PV geometry |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037, DEC-038, DEC-039, DEC-041–DEC-045 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-039, DEC-041–DEC-046 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -61,7 +61,7 @@ with the engine and not only with the application.
 | `Priority` | type | `'critical'`, `'important'`, `'flexible'` or `'discretionary'` |
 | `Provenance` | type | Provenance class and the notes that record assumptions |
 | `ProvenanceClass` | type | `'synthetic-design'`, `'dataset-derived'` or `'measured'` |
-| `Pv` | type | Array capacity, module count, tilt, azimuth, temperature terms, losses, shading and tracker |
+| `Pv` | type | Array nameplate capacity, module count, tilt from horizontal, true-north azimuth, temperature terms, losses, optional shading profile and opt-in tracker |
 | `Room` | type | Stable id, name and room type |
 | `Scenario` | type | The complete validated document: 17 top-level groups |
 | `SchedulerPolicy` | type | Reserve SOC, forecast horizon and the fallback policy |
@@ -71,7 +71,9 @@ with the engine and not only with the application.
 | `TariffBand` | type | A monthly threshold and its price, both nullable while the tariff is unverified |
 | `TimestepMinutes` | type | `5`, `15`, `30` or `60` |
 | `TimeWindow` | type | Clock start and end in site time; a window may cross midnight |
-| `Tracker` | type | Enable flag and 0, 1 or 2 axes |
+| `ShadingProfile` | type | Optional recurring site-local shading windows |
+| `ShadingWindow` | type | A site-local time interval with a shading-loss fraction in `[0, 1]` |
+| `Tracker` | type | Discriminated fixed (disabled, 0 axes) or tracking (enabled, 1 or 2 axes) configuration |
 | `Weather` | type | Primary and historical sources, cache directory, refresh period and fallback order |
 | `Instant` | type | Milliseconds since the Unix epoch, tagged; the only internal timestamp form |
 | `parseInstant` | function | Reads ISO 8601 with `Z` or `±hh:mm`; refuses a naive time, an impossible date, a leap second or sub-millisecond precision |

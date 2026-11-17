@@ -114,6 +114,60 @@ function checkBatteryWindow(scenario: Scenario, issues: ConfigIssue[]): void {
   }
 }
 
+function checkShadingProfile(scenario: Scenario, issues: ConfigIssue[]): void {
+  const windows = scenario.pv.shading_profile?.windows ?? [];
+  const segments: { start: number; end: number; index: number }[] = [];
+
+  windows.forEach((window, index) => {
+    const start = toMinutes(window.start);
+    const end = toMinutes(window.end);
+    const path = `pv.shading_profile.windows[${index}]`;
+    if (start === end) {
+      issues.push({
+        layer: 'scenario',
+        path,
+        code: 'relation.shading-window',
+        message: 'has the same start and end, so its daily duration is ambiguous',
+        received: `${window.start}–${window.end}`,
+        expected: 'a non-empty daily interval with different start and end times',
+        hint: 'use distinct site-local times; an interval may cross midnight',
+      });
+      return;
+    }
+
+    if (start < end) {
+      segments.push({ start, end, index });
+    } else {
+      segments.push({ start, end: 1440, index }, { start: 0, end, index });
+    }
+  });
+
+  const reportedPairs = new Set<string>();
+  for (let left = 0; left < segments.length; left += 1) {
+    const a = segments[left];
+    if (!a) continue;
+    for (let right = left + 1; right < segments.length; right += 1) {
+      const b = segments[right];
+      if (!b || a.index === b.index || Math.max(a.start, b.start) >= Math.min(a.end, b.end)) {
+        continue;
+      }
+      const pair = `${a.index}:${b.index}`;
+      if (reportedPairs.has(pair)) continue;
+      reportedPairs.add(pair);
+      issues.push({
+        layer: 'scenario',
+        path: `pv.shading_profile.windows[${b.index}]`,
+        code: 'relation.shading-window-overlap',
+        message: `overlaps shading window ${a.index}`,
+        received: `${windows[b.index]?.start ?? ''}–${windows[b.index]?.end ?? ''}`,
+        expected: 'windows that do not overlap within a repeating site-local day',
+        hint: 'merge overlapping periods and assign one shading loss to the merged interval',
+      });
+      break;
+    }
+  }
+}
+
 function checkHousehold(scenario: Scenario, issues: ConfigIssue[]): void {
   const { rooms, appliances } = scenario.household;
 
@@ -231,6 +285,7 @@ export function checkScenarioInvariants(scenario: Scenario): ConfigIssue[] {
   }
   checkSiteTime(scenario, issues);
   checkBatteryWindow(scenario, issues);
+  checkShadingProfile(scenario, issues);
   checkHousehold(scenario, issues);
   checkTariffBands(scenario, issues);
   return issues;

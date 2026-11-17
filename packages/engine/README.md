@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards |
+| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards; 03.1 defines PV installation geometry |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046 |
 
 ## Purpose
 
@@ -30,6 +30,8 @@ journal whose stable IDs derive from scenario, seed and deterministic append ord
 Task 02.7 makes energy quantities non-negative and finite, rejects negative interval energy and
 overflow, and provides an explicitly named SOC clamp for calculated battery state using validated
 minimum and maximum SOC bounds. Raw external SOC continues to fail closed.
+Task 03.1 makes site and array geometry scenario-owned and unambiguous, makes shading profiles
+optional, and enforces fixed-by-default tracking in both the schema and TypeScript union.
 
 ## Inputs
 
@@ -95,10 +97,11 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 75 engine tests and the application's ten, 85 in total:
+`npm run test` runs 76 engine tests and the application's ten, 86 in total:
 
-- [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 15 tests — the shipped scenarios
-  validate; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
+- [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
+  validate and describe their geometry; optional shading profiles and tracking combinations are
+  checked; invalid capacity, negative power, an impossible SOC window, a missing unit, an unknown
   site timezone and a start offset that contradicts that zone are each rejected with the right path,
   code and fix; issues collect instead of aborting; the issue report renders; the unit audit flags a
   synthetic `capacity` field; and properties cover issue rendering and the SOC invariant.
@@ -160,6 +163,7 @@ the ledger are tested; the simulation they will carry is not.
 | `src/simulation/interfaces.ts` | UI-free component inputs, outputs and ports for phase 02.4 |
 | `src/simulation/clock.ts` | Fixed-step clock lifecycle, playback speed and seeded PRNG for phase 02.5 |
 | `src/simulation/events.ts` | Typed state-transition events and deterministic append-only journal for phase 02.6 |
+| `src/config/scenario.ts` | Scenario types, including full PV geometry and opt-in tracking for phase 03.1 |
 | `src/units/state-of-charge.ts` | SOC fraction, percent crossings and battery-window clamp for calculated state |
 | `src/config/schema.ts` | Ajv 8.20.0, error-to-issue translation and unknown-key suggestions |
 | `src/config/invariants.ts` | The relational rules JSON Schema cannot express |

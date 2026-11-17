@@ -248,7 +248,7 @@
       "decimals": 2,
       "classes": ["D"],
       "inputs": ["MET-12"],
-      "source": "Loss from configured shading windows, applied at the timestep.",
+      "source": "Loss from configured optional shading-profile windows and their fractions, applied at the timestep when present; zero when no profile is configured.",
       "availability": "always",
       "notes": "A configured horizon approximation, not a ray-traced shadow."
     },

@@ -41,22 +41,35 @@ export interface Simulation {
   readonly default_speed_multiplier: number;
 }
 
-export interface Tracker {
-  readonly enabled: boolean;
-  readonly axes: 0 | 1 | 2;
+export type Tracker =
+  { readonly enabled: false; readonly axes: 0 } | { readonly enabled: true; readonly axes: 1 | 2 };
+
+/** Optional daily shading schedule; times are interpreted in the site timezone. */
+export interface ShadingProfile {
+  readonly windows: readonly ShadingWindow[];
+}
+
+/** A recurring site-local period with an explicit fractional production loss. */
+export interface ShadingWindow extends TimeWindow {
+  readonly shading_loss: number;
 }
 
 export interface Pv {
+  /** Total array nameplate DC power at standard test conditions, in kWp. */
   readonly installed_dc_kwp: number;
+  /** Number of PV modules contributing to installed_dc_kwp. */
   readonly panel_count: number;
+  /** Panel plane tilt from horizontal: 0° is flat, 90° is vertical. */
   readonly tilt_deg: number;
+  /** Compass bearing clockwise from true north: 0° north, 90° east, 180° south. */
   readonly azimuth_deg: number;
   readonly temperature_coefficient_per_degc: number;
   readonly noct_degc: number;
   readonly soiling_loss: number;
   readonly mismatch_loss: number;
   readonly availability: number;
-  readonly shading_windows: readonly TimeWindow[];
+  /** Absent means no scheduled shading profile; the physics phase applies configured windows. */
+  readonly shading_profile?: ShadingProfile;
   readonly tracker: Tracker;
 }
 
@@ -168,7 +181,7 @@ export interface Policies {
 }
 
 export interface Scenario {
-  readonly schema_version: '0.1.0';
+  readonly schema_version: '0.2.0';
   readonly id: string;
   readonly name: string;
   readonly description: string;

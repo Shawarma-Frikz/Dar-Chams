@@ -335,7 +335,7 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-16 | Specific yield | kWh/kWp | D | PV daily energy ÷ installed DC capacity. | MET-15 | Always | kWh/kWp · 2 dp |
 | MET-17 | Performance ratio | ratio | D | Actual yield ÷ reference yield (POA energy × installed capacity). | MET-15, MET-07 | Always | ratio · 2 dp |
 | MET-18 | Soiling loss | Wh | D | Energy removed by the configured soiling fraction; one row of the loss breakdown (FR-PV-05). | MET-12 | Always | kWh · 2 dp |
-| MET-19 | Shading loss | Wh | D | Loss from configured shading windows, applied at the timestep. | MET-12 | Always | kWh · 2 dp |
+| MET-19 | Shading loss | Wh | D | Loss from configured optional shading-profile windows and their fractions, applied at the timestep when present; zero when no profile is configured. | MET-12 | Always | kWh · 2 dp |
 | MET-20 | Mismatch loss | Wh | D | Loss from the configured module-mismatch fraction. | MET-12 | Always | kWh · 2 dp |
 | MET-21 | Availability loss | Wh | D | Loss from the configured availability fraction (planned and unplanned downtime). | MET-12 | Always | kWh · 2 dp |
 | MET-22 | Temperature derating loss | Wh | D | Difference between output at the stated cell temperature and output at 25 °C, using the configured temperature coefficient. | MET-12, MET-08 | Always | kWh · 2 dp |

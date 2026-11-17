@@ -41,7 +41,7 @@ _Generated from [`scenario.schema.json`](../scenarios/scenario.schema.json) by `
 
 | Path | Type and constraints | Required | Unit |
 | --- | --- | --- | --- |
-| `schema_version` | const `0.1.0` | Yes | — |
+| `schema_version` | const `0.2.0` | Yes | — |
 | `id` | string, pattern `^[a-z][a-z0-9-]*$` | Yes | — |
 | `name` | string | Yes | — |
 | `description` | string | Yes | — |
@@ -72,10 +72,12 @@ _Generated from [`scenario.schema.json`](../scenarios/scenario.schema.json) by `
 | `pv.soiling_loss` | number, ≥ 0, ≤ 0.9 | Yes | fraction [0, 1] |
 | `pv.mismatch_loss` | number, ≥ 0, ≤ 0.5 | Yes | fraction [0, 1] |
 | `pv.availability` | number, > 0, ≤ 1 | Yes | fraction [0, 1] |
-| `pv.shading_windows` | array | Yes | — |
-| `pv.shading_windows[]` | object | — | — |
-| `pv.shading_windows[].start` | string, pattern `^([01][0-9]\|2[0-3]):[0-5][0-9]$` | Yes | — |
-| `pv.shading_windows[].end` | string, pattern `^([01][0-9]\|2[0-3]):[0-5][0-9]$` | Yes | — |
+| `pv.shading_profile` | object | No | — |
+| `pv.shading_profile.windows` | array | Yes | — |
+| `pv.shading_profile.windows[]` | object | — | — |
+| `pv.shading_profile.windows[].start` | string, pattern `^([01][0-9]\|2[0-3]):[0-5][0-9]$` | Yes | — |
+| `pv.shading_profile.windows[].end` | string, pattern `^([01][0-9]\|2[0-3]):[0-5][0-9]$` | Yes | — |
+| `pv.shading_profile.windows[].shading_loss` | number, ≥ 0, ≤ 1 | Yes | — |
 | `pv.tracker` | object | Yes | — |
 | `pv.tracker.enabled` | boolean | Yes | — |
 | `pv.tracker.axes` | `0` or `1` or `2` | Yes | count |
@@ -165,7 +167,8 @@ row, so they are stated here. They are enforced by the schema on every validatio
 
 | When | Then |
 | --- | --- |
-| `pv.tracker.enabled` is `true` | `pv.tracker.axes` must be at least 1 |
+| `pv.tracker.enabled` is `true` | `pv.tracker.axes` must be 1 or 2 |
+| `pv.tracker.enabled` is `false` | `pv.tracker.axes` must be 0; a fixed array is the default |
 | `mode` is `off_grid` | `grid.import_limit_kw` and `grid.export_limit_kw` must both be 0 |
 | `tariff.verified` is `true` | Every band price, `tariff.fixed_monthly_tnd` and `tariff.export_compensation_tnd_per_kwh` must be numbers |
 | `household.appliances[].profile` is `always_on` | `duty_cycle`, `schedule` and `flexibility` must be absent |

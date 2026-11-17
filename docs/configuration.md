@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.2.0 |
-| Date | 2026-11-16 |
-| Phase | 01 (task 01.4), 02.1, 02.2; v1.1.0 adds the two site-time invariants; v1.2.0 adds the SOC, percent and temperature scale rules |
-| Decided by | DEC-033; the site time contract by DEC-037; the canonical units by DEC-038 |
+| Version | 1.3.0 |
+| Date | 2026-11-17 |
+| Phase | 01 (task 01.4), 02.1, 02.2, 03.1; v1.1.0 adds the two site-time invariants; v1.2.0 adds the SOC, percent and temperature scale rules; v1.3.0 records complete PV geometry and optional shading profiles |
+| Decided by | DEC-033; the site time contract by DEC-037; the canonical units by DEC-038; PV geometry by DEC-046 |
 | Checked by | `node scripts/check-config.mjs`, or `npm run check` for all checks |
 | Related | FR-SIM-10 · FR-SIM-07 · [Scenario conventions](../scenarios/README.md) · [Requirements](requirements.md) · [Decision log](decision-log.md) |
 

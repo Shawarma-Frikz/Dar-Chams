@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "id": "tunis-offgrid-v1",
   "name": "Tunis · off-grid villa",
   "description": "Off-grid variant sized for autonomy: 6 kWp array, 10.24 kWh LFP battery, 5 kW inverter, no grid exchange. The household is identical to tunis-typical-v1 so the effect of operating mode and storage sizing can be compared without also changing the load.",
@@ -33,7 +33,6 @@
     "soiling_loss": 0.02,
     "mismatch_loss": 0.02,
     "availability": 0.99,
-    "shading_windows": [],
     "tracker": {
       "enabled": false,
       "axes": 0

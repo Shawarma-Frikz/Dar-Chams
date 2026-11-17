@@ -17,6 +17,14 @@ DEC-033.
   the conditional rules for tracker axes, off-grid limits, verified tariffs and appliance profiles.
 - The author's design decisions for site, array, inverter, battery, grid, tariff, weather, household
   and policies, recorded in the file itself with a provenance class and notes.
+- For phase 03.1, site latitude/longitude/altitude and array capacity/count/tilt/azimuth are explicit.
+  Capacity is the total array nameplate DC rating at STC; tilt is measured from horizontal; azimuth
+  is a compass bearing clockwise from true north (0° north, 90° east, 180° south, 270° west).
+  `pv.shading_profile` is optional and, when present, its daily recurring, non-overlapping windows
+  use site-local clock time and each declares a shading-loss fraction in `[0, 1]`. Windows may
+  cross midnight; equal start/end and overlapping intervals are rejected. Fixed arrays are explicit
+  as `tracker: { enabled: false, axes: 0 }`; tracking must be
+  enabled and declare one or two axes before a scenario can use it.
 - The conventions below: units in names, fractions in `[0, 1]`, UTC instants, one seed, stable ids.
 
 ## Outputs
@@ -141,7 +149,7 @@ Two passes, because they catch different mistakes. Both live in `packages/engine
 
 Timestep, horizon arithmetic, off-grid limits, profile/block matching and tariff verification pairing are schema rules and are rejected in the first pass.
 
-Every failure is a `ConfigIssue` — layer, dotted path, stable code, message, received value, expected value and a hint — collected and rendered together, never a first-error abort. A scenario that fails is never silently repaired: there is no fallback to the default scenario and no clamping at load time (clamping rules arrive with the engine in phase 02.7).
+Every failure is a `ConfigIssue` — layer, dotted path, stable code, message, received value, expected value and a hint — collected and rendered together, never a first-error abort. A scenario that fails is never silently repaired: there is no fallback to the default scenario and no clamping of configuration at load time. Phase 02.7's bounded SOC clamp applies only to calculated battery state; invalid scenario and external values remain errors.
 
 Run the same validator the app starts with:
 

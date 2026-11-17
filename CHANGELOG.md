@@ -10,7 +10,7 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards and Dar Chams identity.
+Phase 02 complete; phase 03.1 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry and Dar Chams identity.
 
 ### Added
 
@@ -59,10 +59,15 @@ Phase 02 — the simulation time base, canonical units, energy ledger, component
   magnitudes, non-finite values and overflow; calculated SOC can be clamped only to a validated
   battery window, while invalid external SOC remains rejected. Property tests cover wide numerical
   ranges and boundary conditions.
+- Task 03.1 PV geometry (DEC-046): scenarios document the full site and fixed-array geometry, total
+  array nameplate DC capacity at STC, module count, tilt and true-north azimuth conventions. Optional
+  daily site-local shading profiles carry per-window loss fractions and reject empty or overlapping
+  periods. Tracking is a discriminated opt-in;
+  disabled trackers must have zero axes, and enabled trackers must declare one or two.
 
 ### Changed
 
-- `npm run check` retains its twelve register checks, and the suite runs 85 tests.
+- `npm run check` retains its twelve register checks, and the suite runs 86 tests.
 - Scenario validation refuses a site timezone the runtime does not know and a start offset that
   contradicts the zone at that instant.
 

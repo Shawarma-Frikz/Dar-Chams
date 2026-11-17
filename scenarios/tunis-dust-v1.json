@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "id": "tunis-dust-v1",
   "name": "Tunis · sirocco dust event",
   "description": "Grid-connected variant reproducing heavy dust deposition: soiling loss raised to 12%, starting in the spring dust season. Used to test the underproduction anomaly detector, soiling attribution and cleaning prioritisation. The event is injected as a scenario assumption, not measured; every other parameter matches tunis-typical-v1 so the soiling effect can be isolated.",
@@ -33,7 +33,6 @@
     "soiling_loss": 0.12,
     "mismatch_loss": 0.02,
     "availability": 0.99,
-    "shading_windows": [],
     "tracker": {
       "enabled": false,
       "axes": 0

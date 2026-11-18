@@ -300,7 +300,7 @@
       "decimals": 2,
       "classes": ["D"],
       "inputs": ["MET-12", "MET-13"],
-      "source": "DC energy minus AC energy plus configured standby consumption (FR-BAT-05).",
+      "source": "Energy admitted to the conversion path minus gross AC output; standby is reported independently.",
       "availability": "always",
       "notes": "Standby is a configured constant, shown as such."
     },
@@ -313,7 +313,7 @@
       "decimals": 2,
       "classes": ["D"],
       "inputs": ["MET-12", "MET-13"],
-      "source": "DC energy that exceeds the inverter AC limit while clipping is enabled.",
+      "source": "DC-side energy excluded from conversion when gross AC power reaches the inverter rating while clipping is enabled.",
       "availability": "always",
       "notes": "Zero when clipping is disabled; never negative."
     },

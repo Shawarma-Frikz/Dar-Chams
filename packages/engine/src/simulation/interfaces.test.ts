@@ -18,9 +18,22 @@ const pv = {
     void [
       input.system.installed_dc_kwp,
       input.step.durationMinutes,
+      input.site.timezone,
       input.weather.globalHorizontalIrradianceWm2,
+      input.planeOfArray.totalWm2,
+      input.systemDerate,
     ];
-    return { dcPower: engine.watts(0) };
+    return {
+      dcPower: engine.watts(0),
+      dcEnergy: engine.wattHours(0),
+      cellTemperature: engine.celsius(25),
+      temperatureFactor: 1,
+      systemDerate: 1,
+      soilingFactor: 1,
+      mismatchFactor: 1,
+      shadingFactor: 1,
+      availabilityFactor: 1,
+    };
   },
 } satisfies PvModel;
 const inverter = {
@@ -28,7 +41,9 @@ const inverter = {
     void [input.system.efficiency, input.step.durationMinutes, input.dcPower];
     return {
       acPower: engine.watts(0),
+      acEnergy: engine.wattHours(0),
       conversionLoss: engine.wattHours(0),
+      clippingLoss: engine.wattHours(0),
       standbyLoss: engine.wattHours(0),
     };
   },

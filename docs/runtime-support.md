@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.12.0 |
-| Date | 2026-11-16 |
-| Phase | 01 (tasks 01.2–01.6), 02.1–02.7; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests; v1.10.0 records the deterministic clock and 74 tests; v1.11.0 records the event journal and 82 tests; v1.12.0 records numerical guards and 85 tests |
+| Version | 1.13.0 |
+| Date | 2026-11-18 |
+| Phase | 01 (tasks 01.2–01.6), 02.1–02.7, 03.1–03.6; v1.5.0 corrects the pin after the first CI run (DEC-036); v1.6.0 records the tenth check; v1.7.0 records the unit check and 53 tests; v1.8.0 records the balance check and 65 tests; v1.9.0 records the 02.4 ports and 67 tests; v1.10.0 records the deterministic clock and 74 tests; v1.11.0 records the event journal and 82 tests; v1.12.0 records numerical guards and 85 tests; v1.13.0 records PV output, clipping accounting and 112 tests |
 | Decided by | DEC-031 (supersedes the Node version pin in DEC-018), version numbers superseded by DEC-036; the installed stack by DEC-032; the validator and module policy by DEC-033; the gates and CI matrix by DEC-034; the documentation check by DEC-035 |
 | Checked by | `node scripts/check-runtime.mjs`, or `npm run check` for all checks |
 | Related | [Conventions](conventions.md) §7 · [Acceptance checklist](acceptance-checklist.md) AC-18, AC-17 · [Scope brief](00-scope-brief.md) |
@@ -142,3 +142,12 @@ In this Windows execution environment, the default `npm run verify` production b
 Turbopack tried to start its PostCSS worker; `npm run build -- --webpack` then compiled and
 prerendered all eight app routes. Solar reference fixtures, DST transitions and polar cases are
 recorded in [`solar-validation.md`](solar-validation.md).
+
+After task 03.6, all twelve register checks, type-check, lint, format check and 112 tests pass
+when invoked with Node 26.2.0 and the pinned npm 11.20.0 CLI. The shell's normal `npm` command
+resolves npm 11.15.0 and fails `check:runtime`, as expected for the declared package-manager pin.
+The production build compiles and type-checks with Webpack, but this run cannot complete static
+generation: Windows returns `EPERM` while Next.js creates a nested `.next` route directory. The
+default Turbopack build also hits its PostCSS worker panic in this execution environment. These
+build failures occur after engine checks pass and do not identify a PV-model failure; rerun the
+production build in the normal local environment to confirm static export.

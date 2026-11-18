@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
-| Date | 2026-11-16 |
-| Phase | 02 (task 02.3) |
-| Decided by | DEC-039 |
+| Version | 1.1.0 |
+| Date | 2026-11-18 |
+| Phase | 02 (task 02.3); DEC-051 adds DC-side inverter clipping loss for phase 03.6 |
+| Decided by | DEC-039, DEC-051 |
 | Checked by | `node scripts/check-balance.mjs`, or `npm run check` for all checks |
 | Related | [API](api.md) · [Quality gates](quality-gates.md) · [Conventions](conventions.md) · [Decision log](decision-log.md) |
 
@@ -19,14 +19,15 @@ For each step, in watt-hours:
 
 ```text
 pv + gridImport + batteryDischarge =
-    load + batteryCharge + gridExport + conversionLoss + batteryLoss + standbyLoss
+    load + batteryCharge + gridExport + conversionLoss + clippingLoss + batteryLoss + standbyLoss
 ```
 
-Three supply terms on the left, six demand terms on the right. The roadmap names the same flows and adds "conversion/loss terms"; there are three of those, because they happen in three different places and belong to three different components:
+Three supply terms on the left, seven demand terms on the right. The clipping term was added when phase 03.6 introduced an inverter-limited AC conversion path; clipping is a distinct DC-side energy loss, not inverter inefficiency:
 
 | Term | Where the energy is lost |
 | --- | --- |
 | `conversionLoss` | the inverter, on every path that crosses it: PV production, battery discharge, battery charge |
+| `clippingLoss` | DC energy the inverter does not convert because AC output reached its rating |
 | `batteryLoss` | inside the battery, between its terminals and its cells |
 | `standbyLoss` | the inverter's own consumption, drawn from the AC bus while it is energised |
 
@@ -55,10 +56,11 @@ The convention buys three things:
 | `batteryCharge` | demand | the battery cells | the battery model (phase 04) | the round-trip loss, which is `batteryLoss` |
 | `gridExport` | demand | the meter | the grid model (phase 03) | anything on the house side of the meter |
 | `conversionLoss` | demand | the inverter | the inverter model (phase 03) | the standby draw, which is its own term |
+| `clippingLoss` | demand | DC input curtailed at the inverter | the inverter model (phase 03) | energy actually converted and inverter conversion loss |
 | `batteryLoss` | demand | inside the battery | the battery model (phase 04) | the inverter, which is `conversionLoss` |
 | `standbyLoss` | demand | the AC bus, into the inverter | the engine clock (phase 02.5) | conversion, which is `conversionLoss` |
 
-The measurement points are what make the identity checkable. `inverterConversionLoss(acEnergy, efficiency)` returns `acEnergy × (1 / efficiency - 1)`, the DC energy consumed beyond what the converter delivered; a producer calls it once per path that crosses the inverter and sums the results into `conversionLoss`. Nothing else may be put in that term.
+The measurement points are what make the identity checkable. `inverterConversionLoss(acEnergy, efficiency)` returns `acEnergy × (1 / efficiency - 1)`, the DC energy consumed beyond what the converter delivered; a producer calls it once per path that crosses the inverter and sums the results into `conversionLoss`. Clipping is the DC energy not admitted to the conversion path and is reported separately. Neither loss is counted twice.
 
 **A term is never invented to close the books.** A solver derives one flow from the others — the grid exports what the site cannot absorb, or the house absorbs what the battery cannot — and that derived term is a real quantity with a limit attached, not a remainder. The reference dispatch in the check names which term it derives in every shape.
 
@@ -108,24 +110,24 @@ BALANCE_TOLERANCE_WH = 1e-6
 
 ```text
 balance: OK
-  identity: pv + gridImport + batteryDischarge = load + batteryCharge + gridExport + conversionLoss + batteryLoss + standbyLoss
+  identity: pv + gridImport + batteryDischarge = load + batteryCharge + gridExport + conversionLoss + clippingLoss + batteryLoss + standbyLoss
   step: 1750 Wh on both sides, residual 0 Wh; a 1 Wh leak is refused and a residual at the tolerance is accepted
   steps: 1224 settled — 3 shipped scenarios, 456 steps of one Tunis day at 5/15/30/60 min, 192 steps across both Paris daylight-saving days
   shapes: 8 reference shapes (pv surplus to the grid; grid covers the house; battery covers the house; pv charges the battery and exports the rest; standby only; night discharge with grid top-up; pv covers the house and charges the battery; standby from the battery), every magnitude a fraction of the scenario's own limits
   tolerance: ±1e-6 Wh; largest residual -2.27e-13 Wh at 2026-06-21 at 60 min, step 5 (night discharge with grid top-up)
-  negative: 10 broken ledgers detected (a step one watt-hour short, a step one watt-hour long, a magnitude written negative, a term that is not finite, a ledger missing a term, a term the ledger does not have, a residual beyond the tolerance, an inverter efficiency of zero, an inverter efficiency above one, a step index that is not a whole number)
+  negative: 11 broken ledgers detected (a step one watt-hour short, a step one watt-hour long, a magnitude written negative, a clipping loss written negative, a term that is not finite, a ledger missing a term, a term the ledger does not have, a residual beyond the tolerance, an inverter efficiency of zero, an inverter efficiency above one, a step index that is not a whole number)
 ```
 
-The dispatch is a fixture, not a physical model. Each step of each shipped scenario is settled under one of eight reference shapes, cycling by index; every magnitude is a fraction of the scenario's own declared limits, and every loss is computed from the shipped efficiencies rather than chosen. The eight shapes exist so that each of the nine terms is exercised as a fixed quantity and as the derived one: export is derived in the PV-surplus shape, import in the grid shape, discharge in the off-grid battery shape, charge in the off-grid charging shape. The two off-grid shapes carry no import or export at all, because that scenario declares both limits at zero.
+The dispatch is a fixture, not a physical model. Each step of each shipped scenario is settled under one of eight reference shapes, cycling by index; every magnitude is a fraction of the scenario's own declared limits, and every loss is computed from the shipped efficiencies rather than chosen. The clipping term is zero in these reference shapes and is exercised by the phase-03 inverter model tests. The eight shapes cover each flow as a fixed quantity and as the derived one: export is derived in the PV-surplus shape, import in the grid shape, discharge in the off-grid battery shape, charge in the off-grid charging shape. The two off-grid shapes carry no import or export at all, because that scenario declares both limits at zero.
 
 ## 7 · What this does not cover yet
 
-- **No physics.** The engine has no PV, battery or household model, so the numbers come from the reference dispatch. From 02.4 each component reports its own terms, and the same `assertBalanced` call runs on their output; the ledger does not change when that happens.
-- **No curtailment term.** An off-grid step cannot export, so its PV must exactly equal what the site consumes and stores. A phase-03 PV model that produces more will fail the balance rather than silently lose the surplus — which is the correct failure until curtailment is added as a term by its own decision.
+- **Partial physics.** The engine now has deterministic solar, weather, POA, PV DC and inverter AC components; battery and household production models remain future work. The reference dispatch still proves the ledger over the shipped scenarios, and focused model tests prove PV clipping energy is separately attributable.
+- **No site curtailment term.** An off-grid step cannot export, so its PV must exactly equal what the site consumes and stores. Array surplus curtailment at the site remains a distinct future decision; inverter clipping itself is represented by `clippingLoss`.
 - **Per step, not per run.** A run total is the sum of its steps and inherits the property; no cross-step state is checked here. Battery state of charge is 04's accounting, and it consumes the same charge and discharge magnitudes this ledger fixes.
 - **A swapped pair still balances.** The ledger cannot tell import from export if both are reported as magnitudes that happen to total the same. The defence is that each term has one owner and one measurement point (§3), and that every number carries a provenance class (DEC-024).
 - **Limits are not enforced here.** The reference dispatch respects the declared kW limits, but the ledger itself checks conservation, not power. A component that exceeds a limit must be caught by its own model, not by this identity.
 
 ## 8 · Related decisions
 
-DEC-007 puts the battery behind an energy-bucket model, which is why charge and discharge are cell-side magnitudes here. DEC-012 makes the run deterministic, which is why the tolerance can be arithmetic rather than statistical. DEC-024 gives every term a provenance class when the interface displays it. DEC-039 records this ledger.
+DEC-007 puts the battery behind an energy-bucket model, which is why charge and discharge are cell-side magnitudes here. DEC-012 makes the run deterministic, which is why the tolerance can be arithmetic rather than statistical. DEC-024 gives every term a provenance class when the interface displays it. DEC-039 records the original nine-term ledger; DEC-051 adds explicit inverter clipping energy.

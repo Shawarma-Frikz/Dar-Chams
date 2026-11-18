@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.24.0 |
-| Date | 2026-11-17 |
-| Phase | 00–03.5, with DEC-050 recording cell-temperature and temperature-derate models |
+| Version | 0.25.0 |
+| Date | 2026-11-18 |
+| Phase | 00–03.6, with DEC-051 recording PV and inverter step outputs |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
@@ -13,7 +13,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 
 0.22.0 adds DEC-048: an optional Open-Meteo source with a validated complete-snapshot cache boundary, deterministic synthetic fallback and visible provider failure records.
 0.23.0 adds DEC-049: a named isotropic-sky transposition model with separate POA components, configurable albedo and explicit approximation provenance.
-0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate.
+0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate. 0.25.0 adds DEC-051: PV/inverter component models, clipping accounting and a tenth energy-ledger term.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -67,6 +67,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-048 | Optional Open-Meteo adapter with offline synthetic fallback | Accepted | 2026-11-17 |
 | DEC-049 | Named isotropic transposition for plane-of-array irradiance | Accepted | 2026-11-18 |
 | DEC-050 | NOCT panel temperature and configurable linear temperature derate | Accepted | 2026-11-18 |
+| DEC-051 | PV DC and inverter AC outputs with explicit clipping energy | Accepted | 2026-11-18 |
 
 ---
 
@@ -597,4 +598,16 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** Tests verify the documented NOCT equation, monotonic ambient/irradiance response, zero-irradiance ambient behavior, coefficient sign, 25 °C reference, separate system derate, cold gain, zero lower bound and numerical input guards. Wind and mounting corrections remain outside model v1, so values are estimates and not calibrated cell temperatures. PV power composition and the actual scenario-selected system derate connection are completed by the later PV production integration task.
 
 **Revisit if** validated mounting and module-height wind inputs are added, a manufacturer temperature response curve supersedes the linear coefficient, or system derate becomes an accepted scenario field with its own provenance and loss breakdown.
+
+## DEC-051 · Calculate PV and inverter step outputs with explicit clipping energy
+
+**Context.** Task 03.6 composes POA, NOCT temperature, temperature coefficient, soiling, shading, availability and system derate into PV DC power and interval energy, then applies inverter efficiency, standby and rated AC capacity. The existing nine-term ledger has no independent term for DC energy that never enters the inverter conversion path when AC clipping occurs (DEC-039, DEC-049, DEC-050).
+
+**Decision.** Implement fixed-array `calculatePvOutput` and `calculateInverterOutput`, and expose them through the phase-02.4 component model factories. PV DC power is `installed_dc_kwp × POA_Wm2 × temperatureFactor × systemDerate × (1−soiling) × (1−mismatch) × shadingFactor × availability`. Shading windows use the site-local step-start time. Below the solar horizon the PV output is forced to zero. Integrate step-start power over the exact timestep. Inverter AC power is DC × efficiency, capped at the rated AC limit when clipping is enabled; if the request exceeds the rating while clipping is disabled, reject the physically inconsistent configuration rather than emit over-rated AC. Report conversion loss, DC-side clipping loss and AC-bus standby energy separately.
+
+**Alternatives rejected.** Place clipping energy inside `conversionLoss` — this breaks the measurement-point definition and double-counts or hides conversion efficiency. Let AC power exceed the nameplate when clipping is disabled — the output would violate hardware limits. Include standby consumption in gross PV AC output — the energy ledger places standby as a separate AC-bus demand. Treat nameplate DC kWp as an instantaneous absolute ceiling — STC nameplate is a reference scaling point, and irradiance and cell temperature can produce valid excursions above it.
+
+**Consequences.** Supersede DEC-039's statement that the ledger remains unchanged when physics arrives: add `clippingLoss` as a tenth non-negative demand term, update its contract and reference checker, and preserve a strict separation between inverter conversion and clipping. Tests cover all PV factors, site-local shading, forced night zero, step energy, conversion identity, clipping, standby, disabled clipping and bounds. Existing scenario-based reference checks continue to settle the expanded ledger. Site-level surplus curtailment, the application coordinator and wiring the scenario's availability and system derate selection into a full run remain future integration work.
+
+**Revisit if** a measured inverter supplies a different clipping point or clipping curve, a second DC path needs its own loss attribution, or system derate becomes a scenario field and needs a persisted source and acceptance threshold.
 

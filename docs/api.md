@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.13.0 |
-| Date | 2026-11-17 |
-| Phase | 01–03.5; v1.13.0 adds NOCT panel temperature and power derating (DEC-050) |
+| Version | 1.14.0 |
+| Date | 2026-11-18 |
+| Phase | 01–03.6; v1.14.0 adds PV output and inverter clipping models (DEC-051) |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-050 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-051 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -97,6 +97,10 @@ with the engine and not only with the application.
 | `PlaneOfArrayIrradiance` | type | Separate beam, sky-diffuse and ground-reflected terms, total, incidence angle, model id, approximation and provenance |
 | `estimatePanelTemperature` | function | NOCT linear cell-temperature estimate from ambient °C, POA W/m² and configured NOCT |
 | `calculateTemperatureDerate` | function | Applies configured Pmax temperature coefficient at 25 °C reference and explicit system derate |
+| `calculatePvOutput` | function | Applies temperature, system derate, soiling, mismatch, site-local shading and availability to array DC power and interval energy |
+| `calculateInverterOutput` | function | Converts DC to AC, enforces rated AC output, and reports conversion, clipping and standby energy separately |
+| `createPvModel` | function | Builds the phase-02.4 `PvModel` from the deterministic phase-03 physics implementation |
+| `createInverterModel` | function | Builds the phase-02.4 `InverterModel` from the deterministic phase-03 implementation |
 | `PanelTemperatureInput` | type | Ambient Celsius, POA irradiance and configured NOCT |
 | `PanelTemperatureEstimate` | type | Modeled cell temperature with model id, approximation and class-S provenance |
 | `TemperatureDerateInput` | type | Cell temperature, configured coefficient and required system-derate multiplier |
@@ -140,13 +144,13 @@ with the engine and not only with the application.
 | `clampStateOfCharge` | function | Clamps a finite calculated SOC to a validated battery usable window |
 | `percentFromStateOfCharge` | function | Fraction → percent at a display boundary |
 | `stateOfChargeFromPercent` | function | Percent → fraction at an input boundary |
-| `BALANCE_TERMS` | const | The nine term names in supply-then-demand order: `pv`, `gridImport`, `batteryDischarge`, `load`, `batteryCharge`, `gridExport`, `conversionLoss`, `batteryLoss`, `standbyLoss` |
+| `BALANCE_TERMS` | const | The ten term names in supply-then-demand order, including separate inverter `conversionLoss` and `clippingLoss` |
 | `BALANCE_TOLERANCE_WH` | const | `1e-6`; the absolute, inclusive bound on the residual in watt-hours |
 | `BalanceError` | class | `Error` subclass carrying the step index, supply, demand, residual and tolerance |
 | `assertBalanced` | function | Settles a step and throws `BalanceError` when the residual exceeds the tolerance |
-| `balanceStep` | function | Sums the nine magnitudes into supply and demand and returns the signed residual and the balance decision |
+| `balanceStep` | function | Sums the ten magnitudes into supply and demand and returns the signed residual and the balance decision |
 | `inverterConversionLoss` | function | AC energy × (1 / efficiency − 1); the DC energy an inverter consumed beyond what it delivered |
-| `BalanceTerm` | type | One of the nine ledger term names |
+| `BalanceTerm` | type | One of the ten ledger term names |
 | `StepBalance` | type | Supply, demand, signed residual, tolerance and `balanced` |
 | `StepTerms` | type | One non-negative watt-hour magnitude per ledger term |
 | `ApplianceDispatch` | type | Scheduler decision for one appliance ID |
@@ -162,10 +166,10 @@ with the engine and not only with the application.
 | `GridOutput` | type | Grid import and export energy in Wh |
 | `InverterInput` | type | Inverter configuration, step and PV DC power |
 | `InverterModel` | type | `convert(input): InverterOutput` |
-| `InverterOutput` | type | AC power and separately owned conversion and standby losses |
-| `PvInput` | type | PV configuration, step and one weather frame |
+| `InverterOutput` | type | AC power and interval energy, conversion loss, clipped DC energy and standby energy |
+| `PvInput` | type | PV configuration, site, step, weather frame, POA irradiance and explicit system derate |
 | `PvModel` | type | `evaluate(input): PvOutput` |
-| `PvOutput` | type | DC power at the array terminals in W |
+| `PvOutput` | type | DC power and interval energy at the array terminals plus individual derate factors |
 | `Scheduler` | type | `decide(input): SchedulerOutput`; consumes only an explicit observation |
 | `SchedulerInput` | type | Scheduler policy, observed state and appliance configurations |
 | `SchedulerObservation` | type | Step, SOC, available PV, forecast load, grid availability and import price; no Scenario or UI store |

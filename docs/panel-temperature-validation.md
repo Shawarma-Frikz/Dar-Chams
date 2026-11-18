@@ -46,5 +46,6 @@ modeled class-S provenance.
 - invalid NOCT, negative irradiance, invalid coefficient and out-of-range system derate.
 
 These tests validate the declared formulas and their numerical guards. They are not a module
-calibration study and do not prove AC yield accuracy. Wind-aware thermal models and PV output
-composition remain separate future work.
+calibration study and do not prove AC yield accuracy. Wind-aware thermal models and PVGIS yield
+calibration remain future work; the composition into PV DC and inverter AC outputs is implemented
+as a headless component in [PV output validation](pv-output-validation.md).

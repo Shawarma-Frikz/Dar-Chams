@@ -72,6 +72,12 @@ export type {
   TemperatureDerateInput,
   TemperatureDerateResult,
 } from './solar/panel-temperature.ts';
+export {
+  calculateInverterOutput,
+  calculatePvOutput,
+  createInverterModel,
+  createPvModel,
+} from './solar/pv-output.ts';
 export type {
   SolarCoordinates,
   SolarDay,

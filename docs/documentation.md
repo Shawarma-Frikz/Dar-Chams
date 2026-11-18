@@ -39,7 +39,7 @@ authority; the other one links to it rather than restating it.
 | [`docs/weather-validation.md`](weather-validation.md) | Provider, cache and deterministic fallback validation evidence | Weather task 03.3 validation and scope limits | `check-docs`; Vitest |
 | [`docs/irradiance-validation.md`](irradiance-validation.md) | Isotropic plane-of-array formula, assumptions and edge-case evidence | Irradiance task 03.4 validation | `check-docs`; Vitest |
 | [`docs/panel-temperature-validation.md`](panel-temperature-validation.md) | NOCT temperature estimate, linear coefficient derating and limitations | PV temperature task 03.5 validation | `check-docs`; Vitest |
-| [`docs/panel-temperature-validation.md`](panel-temperature-validation.md) | NOCT temperature estimate, linear coefficient derating and limitations | PV temperature task 03.5 validation | `check-docs`; Vitest |
+| [`docs/pv-output-validation.md`](pv-output-validation.md) | PV DC loss factors, interval conversion, inverter efficiency, clipping and limits | PV output task 03.6 validation | `check-docs`; Vitest; `check-balance` |
 | [`docs/conventions.md`](conventions.md) | Licence, branches, commits, evidence policy, checks | How the repository is kept | `check-docs` |
 | [`docs/quality-gates.md`](quality-gates.md) | Gates, CI job, demonstrated failure path | How a build turns red | `check-ci`; existence by `check-docs` |
 | [`docs/runtime-support.md`](runtime-support.md) | Pinned runtime, browsers, hardware, budgets | What the toolchain is | `check-runtime` |

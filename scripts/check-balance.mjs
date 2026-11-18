@@ -55,6 +55,7 @@ const ledger = (overrides = {}) => ({
   batteryCharge: 0,
   gridExport: 0,
   conversionLoss: 0,
+  clippingLoss: 0,
   batteryLoss: 0,
   standbyLoss: 0,
   ...overrides,
@@ -71,6 +72,7 @@ const worked = ledger({
   batteryCharge: 400,
   gridExport: 100,
   conversionLoss: 40,
+  clippingLoss: 0,
   batteryLoss: 90,
   standbyLoss: 20,
 });
@@ -79,7 +81,7 @@ same(settled.supplyWh, 1750, 'the supply side is pv + import + discharge');
 same(settled.demandWh, 1750, 'the demand side is load + charge + export + the three losses');
 same(settled.residualWh, 0, 'a worked step has no residual');
 expect(settled.balanced, 'a worked step must be balanced');
-same(BALANCE_TERMS.length, 9, 'the ledger has nine terms');
+same(BALANCE_TERMS.length, 10, 'the ledger has ten terms');
 same(
   [...BALANCE_TERMS],
   [
@@ -90,6 +92,7 @@ same(
     'batteryCharge',
     'gridExport',
     'conversionLoss',
+    'clippingLoss',
     'batteryLoss',
     'standbyLoss',
   ],
@@ -424,6 +427,11 @@ rejected(
   () => balanceStep(ledger({ load: -5 })),
   /non-negative magnitude/,
 );
+rejected(
+  'a clipping loss written negative',
+  () => balanceStep(ledger({ clippingLoss: -1 })),
+  /clippingLoss must be a non-negative magnitude/,
+);
 rejected('a term that is not finite', () => balanceStep(ledger({ pv: Number.NaN })), /finite/);
 rejected(
   'a ledger missing a term',
@@ -488,7 +496,7 @@ if (problems.length > 0) {
 
 console.log('balance: OK');
 console.log(
-  '  identity: pv + gridImport + batteryDischarge = load + batteryCharge + gridExport + conversionLoss + batteryLoss + standbyLoss',
+  '  identity: pv + gridImport + batteryDischarge = load + batteryCharge + gridExport + conversionLoss + clippingLoss + batteryLoss + standbyLoss',
 );
 console.log(
   '  step: 1750 Wh on both sides, residual 0 Wh; a 1 Wh leak is refused and a residual at the tolerance is accepted',

@@ -10,9 +10,16 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phases 03.1–03.5 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.6 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating, PV/inverter output and Dar Chams identity.
 
 ### Added
+
+- Task 03.6 PV and inverter models (DEC-051): compose POA, temperature, system derate, soiling,
+  mismatch, local shading and availability into DC W/Wh; model AC efficiency, rated output,
+  clipping, conversion loss and standby separately.
+- Added DC-side `clippingLoss` to the energy ledger so inverter-limited energy is conserved and
+  attributed separately from conversion inefficiency.
+- Model equations, limits and evidence in [`docs/pv-output-validation.md`](docs/pv-output-validation.md).
 
 - Task 03.5 panel-temperature estimate and power derating (DEC-050): configured linear NOCT model,
   coefficient-based derate at 25 °C reference, explicit system derate input and class-S labels.

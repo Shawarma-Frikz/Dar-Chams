@@ -23,6 +23,7 @@ const step = (overrides: Partial<StepTerms> = {}): StepTerms => ({
   batteryCharge: zero(),
   gridExport: zero(),
   conversionLoss: zero(),
+  clippingLoss: zero(),
   batteryLoss: zero(),
   standbyLoss: zero(),
   ...overrides,
@@ -37,6 +38,7 @@ const worked = (): StepTerms =>
     batteryCharge: wattHours(400),
     gridExport: wattHours(100),
     conversionLoss: wattHours(40),
+    clippingLoss: zero(),
     batteryLoss: wattHours(90),
     standbyLoss: wattHours(20),
   });
@@ -70,6 +72,9 @@ describe('the energy ledger', () => {
     expect(() => balanceStep(step({ gridExport: -0.001 as unknown as WattHours }))).toThrow(
       /gridExport/,
     );
+    expect(() => balanceStep(step({ clippingLoss: -1 as unknown as WattHours }))).toThrow(
+      /clippingLoss/,
+    );
   });
 
   it('refuses a term that is not a finite number', () => {
@@ -90,7 +95,7 @@ describe('the energy ledger', () => {
     expect(() => balanceStep(extra as unknown as StepTerms)).toThrow(
       /curtailment is not a step term/,
     );
-    expect(BALANCE_TERMS).toHaveLength(9);
+    expect(BALANCE_TERMS).toHaveLength(10);
   });
 
   it('throws a BalanceError that names the step and both totals', () => {

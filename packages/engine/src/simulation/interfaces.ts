@@ -13,6 +13,7 @@ import type {
   SchedulerPolicy,
   Site,
 } from '../config/scenario.ts';
+import type { PlaneOfArrayIrradiance } from '../solar/plane-of-array.ts';
 import type { Step, StepGrid } from '../time/timeline.ts';
 import type { Instant } from '../time/instant.ts';
 import type { Celsius } from '../units/temperature.ts';
@@ -62,12 +63,23 @@ export interface WeatherSource {
 export interface PvInput {
   readonly system: Pv;
   readonly step: Step;
+  readonly site: Site;
   readonly weather: WeatherFrame;
+  readonly planeOfArray: PlaneOfArrayIrradiance;
+  readonly systemDerate: number;
 }
 
 export interface PvOutput {
   /** DC power at the array terminals; the inverter owns later conversion. */
   readonly dcPower: Watts;
+  readonly dcEnergy: WattHours;
+  readonly cellTemperature: Celsius;
+  readonly temperatureFactor: number;
+  readonly systemDerate: number;
+  readonly soilingFactor: number;
+  readonly mismatchFactor: number;
+  readonly shadingFactor: number;
+  readonly availabilityFactor: number;
 }
 
 export interface PvModel {
@@ -82,7 +94,10 @@ export interface InverterInput {
 
 export interface InverterOutput {
   readonly acPower: Watts;
+  readonly acEnergy: WattHours;
   readonly conversionLoss: WattHours;
+  /** DC-side energy discarded because the AC rating was reached. */
+  readonly clippingLoss: WattHours;
   readonly standbyLoss: WattHours;
 }
 

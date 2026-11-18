@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01–03.5: component ports, deterministic clock/events, numerical guards, PV geometry, weather, plane irradiance and panel thermal derating |
+| Phase | 01–03.6: component ports, deterministic clock/events, numerical guards, PV/weather geometry, irradiance, panel thermal derating and DC/AC output models |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051 |
 
 ## Purpose
 
@@ -18,7 +18,7 @@ scenario is. Phase 01 built the boundary the physics runs behind — the types, 
 relational invariants, the unit audit and the issue model. Phase 02.1 adds the axis: absolute
 instants, the site timezone's calendar-day boundaries and a uniform step grid. Phase 02.2 adds the
 canonical units: branded watts, watt-hours, degrees Celsius and state of charge, with every scale
-change behind a named conversion. Phase 02.3 adds the energy ledger: the nine magnitudes every step
+change behind a named conversion. Phase 02.3 adds the energy ledger: the ledger magnitudes every step
 must satisfy, with the direction in the term name and an absolute tolerance on the residual. Phase
 02.4 adds pure, typed ports for weather, PV, inverter, battery, appliance, grid, scheduler and clock;
 these specify the dependency boundary without claiming a physical model exists. The scheduler sees
@@ -99,7 +99,7 @@ and limits are in [`docs/panel-temperature-validation.md`](../../docs/panel-temp
   conversion; and `addWatts`/`addWattHours` sum one unit only. `celsius` holds °C above absolute
   zero, and `stateOfCharge` holds the 0–1 fraction with `percentFromStateOfCharge` and
   `stateOfChargeFromPercent` as the two display crossings.
-- The **energy ledger**: `balanceStep` and `assertBalanced` settle a step's nine magnitudes into
+- The **energy ledger**: `balanceStep` and `assertBalanced` settle a step's ten magnitudes into
   supply and demand and report a signed residual; `BALANCE_TERMS` and `BALANCE_TOLERANCE_WH` state
   the terms and the ±1e-6 Wh bound; `inverterConversionLoss` derives one loss from a declared
   efficiency; and `StepTerms`, `StepBalance`, `BalanceTerm` and `BalanceError` carry the shape, the
@@ -128,7 +128,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 96 engine tests and the application's ten, 106 in total:
+`npm run test` runs 102 engine tests and the application's ten, 112 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
   validate and describe their geometry; optional shading profiles and tracking combinations are
@@ -151,6 +151,8 @@ node scripts/validate-scenarios.mjs
   panel orientation and sun incidence, cloudier inputs, night behavior, input guards and overflow.
 - [`src/solar/panel-temperature.test.ts`](src/solar/panel-temperature.test.ts), 5 tests — NOCT equation,
   thermal monotonicity, coefficient direction, separate system derate, cold gain and guards.
+- [`src/solar/pv-output.test.ts`](src/solar/pv-output.test.ts), 6 tests — PV loss factors, local shading,
+  night zero, interval energy, inverter efficiency/clipping/standby and physical bounds.
 - [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
   non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
   non-finite and overflow values are refused, and properties cover wide power and interval ranges.
@@ -184,14 +186,15 @@ eight deliberately mixed calculations that must each be refused, and feeds nine 
 back through the constructors and the schema audit. `node scripts/check-balance.mjs` is the
 acceptance proof for 02.3: it settles 1224 steps across the three shipped scenarios, one Tunis day
 at all four timesteps and both Paris daylight-saving days, keeps every residual inside ±1e-6 Wh, and
-feeds ten broken ledgers back through the public API. `node scripts/validate-scenarios.mjs` runs the validator over every
+feeds eleven broken ledgers back through the public API. `node scripts/validate-scenarios.mjs` runs the validator over every
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
-**Not covered yet.** Weather inputs are available through the port, but the app does not yet persist
-the injected cache or call the adapter from a complete simulation coordinator. Irradiance conversion,
-PV output and battery/controller models are still future work. The time base and energy ledger are
-tested; the simulation they will carry is not yet producing physical metrics.
+**Not covered yet.** Weather, POA, panel temperature, PV DC and inverter AC components are available
+through the engine, but the app does not yet persist the injected weather cache or call them from a
+complete simulation coordinator. Battery/controller and household-dispatch models, full run outputs,
+frontend visualizations and loss-breakdown UI remain future integration work. PVGIS yield calibration
+also remains outstanding; these component calculations are modeled, not measured production.
 
 ## Layout
 
@@ -226,6 +229,6 @@ tested; the simulation they will carry is not yet producing physical metrics.
 | `src/units/state-of-charge.ts` | The 0–1 SOC fraction and its two percent crossings |
 | `src/units/energy.test.ts` | Six unit and property tests over power and energy |
 | `src/units/quantity.test.ts` | Five tests over temperature and state of charge |
-| `src/balance/balance.ts` | The nine-term step ledger, its tolerance and the conversion-loss helper |
+| `src/balance/balance.ts` | The ten-term step ledger, its tolerance and the conversion-loss helper |
 | `src/balance/balance.test.ts` | Twelve ledger and property tests |
 | `package.json` | `@dar-chams/engine`, TypeScript-source exports for the workspace |

@@ -23,7 +23,7 @@
 import type { WattHours } from '../units/energy.ts';
 import { addWattHours, wattHours } from '../units/energy.ts';
 
-/** The nine magnitudes, in ledger order: three supply terms, then six demand terms. */
+/** The ten magnitudes, in ledger order: three supply terms, then seven demand terms. */
 export const BALANCE_TERMS = [
   'pv',
   'gridImport',
@@ -32,6 +32,7 @@ export const BALANCE_TERMS = [
   'batteryCharge',
   'gridExport',
   'conversionLoss',
+  'clippingLoss',
   'batteryLoss',
   'standbyLoss',
 ] as const;
@@ -53,6 +54,8 @@ export interface StepTerms {
   readonly gridExport: WattHours;
   /** Energy lost in the inverter on every path that crosses it. */
   readonly conversionLoss: WattHours;
+  /** DC-side PV energy discarded when an inverter reaches its AC rating. */
+  readonly clippingLoss: WattHours;
   /** Energy lost inside the battery between its terminals and its cells. */
   readonly batteryLoss: WattHours;
   /** Energy the inverter consumes while it is energised. */
@@ -72,7 +75,7 @@ export interface StepBalance {
  * The largest residual a step may carry, in watt-hours.
  *
  * The terms are exact arithmetic, not measurements, so this is the rounding
- * allowance of nine double-precision sums near 1e5 Wh — about 1e-10 Wh — with
+ * allowance of ten double-precision sums near 1e5 Wh — about 1e-10 Wh — with
  * four orders of headroom. It is four orders below the smallest term a shipped
  * appliance produces (1 W over 5 minutes is 0.083 Wh), so a real leak cannot
  * hide inside it.
@@ -85,6 +88,7 @@ const DEMAND_TERMS = [
   'batteryCharge',
   'gridExport',
   'conversionLoss',
+  'clippingLoss',
   'batteryLoss',
   'standbyLoss',
 ] as const;
@@ -111,7 +115,7 @@ const formatWh = (value: number): string =>
   Number.isInteger(value) ? String(value) : value.toPrecision(12).replace(/\.?0+$/, '');
 
 /**
- * Settles one step: sums the three supply terms and the six demand terms and
+ * Settles one step: sums the three supply terms and the seven demand terms and
  * returns the residual. A malformed ledger is a programming error and throws; a
  * ledger that merely fails to close is reported, so the caller can name the step.
  */
@@ -179,7 +183,8 @@ export function assertBalanced(terms: StepTerms, stepIndex: number): StepBalance
  * The DC energy the inverter consumed beyond the AC energy it delivered:
  * `acEnergy × (1 / efficiency - 1)`. A producer calls it once per path that
  * crosses the inverter — PV production, battery discharge, battery charge — and
- * sums the results into `conversionLoss`. The standby draw is a separate term
+ * sums the results into `conversionLoss`. DC energy never converted because
+ * of inverter clipping is a separate `clippingLoss` term. Standby draw is separate
  * because the inverter takes it from the AC bus rather than losing it in
  * conversion.
  */

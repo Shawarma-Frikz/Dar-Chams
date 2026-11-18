@@ -18,7 +18,7 @@ import type { Instant } from '../time/instant.ts';
 import type { Celsius } from '../units/temperature.ts';
 import type { StateOfCharge } from '../units/state-of-charge.ts';
 import type { WattHours, Watts } from '../units/energy.ts';
-import type { ProvenanceClass } from '../config/scenario.ts';
+import type { Weather } from '../config/scenario.ts';
 
 /** Weather needed by a physical model for one instant, with units in field names. */
 export interface WeatherFrame {
@@ -28,17 +28,35 @@ export interface WeatherFrame {
   readonly directNormalIrradianceWm2: number;
   readonly diffuseHorizontalIrradianceWm2: number;
   readonly windSpeedMps: number;
-  readonly provenance: ProvenanceClass;
+  /** X is provider data; S is deterministic synthetic fallback. */
+  readonly provenance: 'X' | 'S';
 }
 
 export interface WeatherQuery {
   readonly site: Site;
   readonly grid: StepGrid;
+  readonly weather: Weather;
+  readonly seed: number;
+}
+
+export interface WeatherFallbackEvent {
+  readonly kind: 'weather-fallback';
+  readonly at: Instant;
+  readonly from: 'open-meteo';
+  readonly to: 'cached' | 'synthetic';
+  readonly reason: string;
+}
+
+export interface WeatherReadResult {
+  readonly frames: readonly WeatherFrame[];
+  readonly source: 'provider' | 'cached' | 'synthetic';
+  readonly fallbackEvent: WeatherFallbackEvent | null;
+  readonly warning: string | null;
 }
 
 /** External weather I/O stays behind an async port; simulation models stay pure. */
 export interface WeatherSource {
-  read(query: WeatherQuery): Promise<readonly WeatherFrame[]>;
+  read(query: WeatherQuery): Promise<WeatherReadResult>;
 }
 
 export interface PvInput {

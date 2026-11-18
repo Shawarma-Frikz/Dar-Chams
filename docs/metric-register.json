@@ -1,6 +1,6 @@
 {
   "$comment": "Single source of truth for every value Dar Chams may display. The contract is described in data-provenance.md; scripts/check-provenance.mjs validates this file, regenerates the register table in that document and fails the build if the two disagree.",
-  "register_version": "1.1.0",
+  "register_version": "1.2.0",
   "schema_version": "0.1.0",
   "created": "2026-11-15",
   "classes": ["M", "X", "S", "F", "E", "D", "C"],
@@ -91,10 +91,10 @@
       "display_unit": "W/m²",
       "decimals": 0,
       "classes": ["S"],
-      "inputs": ["MET-01", "MET-02", "MET-03"],
-      "source": "Simplified transposition from GHI, DNI and DHI plus panel tilt and azimuth; an approximation labelled in code and report (FR-PV-03).",
+      "inputs": ["MET-01", "MET-02", "MET-03", "MET-09", "MET-10"],
+      "source": "Isotropic-sky transposition v1: DNI × max(0, cos incidence) + DHI × (1 + cos tilt)/2 + GHI × 0.2 × (1 − cos tilt)/2; simplified model (FR-PV-03).",
       "availability": "always",
-      "notes": "The transposition model is named in the interface tooltip, not hidden."
+      "notes": "Albedo 0.2 is an explicit candidate default, not a site measurement. Cloud effects enter through GHI/DNI/DHI and are not multiplied a second time. Result is modeled class S, never a measured POA sensor value."
     },
     {
       "id": "MET-08",

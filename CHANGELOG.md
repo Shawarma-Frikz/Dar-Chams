@@ -10,9 +10,19 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phases 03.1–03.2 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.4 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition and Dar Chams identity.
 
 ### Added
+
+- Task 03.4 plane-of-array irradiance (DEC-049): named isotropic-sky transposition with explicit
+  beam, sky-diffuse and ground-reflected components, incidence-angle handling, overrideable albedo
+  assumption, and approximation/class-S labels.
+- Formula, assumptions and test coverage in [`docs/irradiance-validation.md`](docs/irradiance-validation.md).
+
+- Task 03.3 weather adapter (DEC-048): optional Open-Meteo forecast input, strict full-series
+  validation, fixed-step alignment, injected complete-snapshot cache, deterministic synthetic
+  fallback and a visible failure record. External data carry `X`; synthetic weather carries `S`.
+- Weather adapter evidence and limitations in [`docs/weather-validation.md`](docs/weather-validation.md).
 
 - Dar Chams product identity (DEC-040): the name and Arabic form, doorway-and-sun mark, audited
   day/night colour tokens, self-hosted type and the identity charter.

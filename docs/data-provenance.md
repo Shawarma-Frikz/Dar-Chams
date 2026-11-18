@@ -318,7 +318,7 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-04 | Ambient temperature | °C | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | °C · 1 dp |
 | MET-05 | Wind speed at 10 m | m/s | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | m/s · 1 dp |
 | MET-06 | Cloud cover | % | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | % · 0 dp |
-| MET-07 | Plane-of-array irradiance | W/m² | S | Simplified transposition from GHI, DNI and DHI plus panel tilt and azimuth; an approximation labelled in code and report (FR-PV-03). | MET-01, MET-02, MET-03 | Always | W/m² · 0 dp |
+| MET-07 | Plane-of-array irradiance | W/m² | S | Isotropic-sky transposition v1: DNI × max(0, cos incidence) + DHI × (1 + cos tilt)/2 + GHI × 0.2 × (1 − cos tilt)/2; simplified model (FR-PV-03). | MET-01, MET-02, MET-03, MET-09, MET-10 | Always | W/m² · 0 dp |
 | MET-08 | Cell temperature | °C | S | NOCT-type thermal model from ambient temperature, plane-of-array irradiance and wind speed. | MET-04, MET-07, MET-05 | Always | °C · 1 dp |
 | MET-09 | Sun elevation | ° | S | SunCalc 2.1.4 apparent solar-position algorithm evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 2 dp |
 | MET-10 | Sun azimuth | ° | S | SunCalc 2.1.4 true-north clockwise azimuth evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 1 dp |

@@ -120,7 +120,7 @@ _Generated from [`scenario.schema.json`](../scenarios/scenario.schema.json) by `
 | `weather.historical_source` | `open-meteo-era5` | Yes | — |
 | `weather.cache_dir` | string | Yes | — |
 | `weather.refresh_hours` | number, > 0 | Yes | h |
-| `weather.fallback_order` | array, unique items | Yes | — |
+| `weather.fallback_order` | array, min 1 item(s), unique items | Yes | — |
 | `weather.fallback_order[]` | `cached` or `synthetic` | — | — |
 | `household` | object | Yes | — |
 | `household.preset` | `economical` or `typical` or `high-consumption` or `high-flexibility` | Yes | — |

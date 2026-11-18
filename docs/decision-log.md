@@ -2,14 +2,17 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.21.0 |
+| Version | 0.23.0 |
 | Date | 2026-11-17 |
-| Phase | 00 (task 00.7); v0.3.0 amends Phase 00 for the embedded track; v0.4.0–v0.5.0 record phase 01.1–01.2; v0.6.0 records phase 01.3; v0.7.0 records phase 01.4; v0.8.0 records phase 01.5; v0.9.0 records phase 01.6; v0.10.0 corrects the runtime pin after the first CI run (DEC-036); v0.11.0 records the phase-02.1 time base (DEC-037); v0.12.0 records the phase-02.2 canonical units (DEC-038); v0.13.0 records the phase-02.3 energy ledger (DEC-039); v0.14.0 adopts the Dar Chams identity (DEC-040); v0.15.0 renames the repository, npm packages and current project identifiers (DEC-041); v0.16.0 records phase-02.4 component ports (DEC-042); v0.17.0 records phase-02.5 deterministic clock behavior (DEC-043); v0.18.0 records phase-02.6 deterministic event records (DEC-044); v0.19.0 records phase-02.7 numerical guards (DEC-045); v0.20.0 records phase-03.1 PV installation geometry (DEC-046); v0.21.0 records phase-03.2 solar geometry (DEC-047) |
+| Phase | 00–03.4, with DEC-049 recording simplified plane-of-array transposition |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
 
 **Change history.** 0.1.0 recorded DEC-001–020. 0.2.0 adds DEC-021–025, brings the index in sync with the body, and adds the machine check (`scripts/check-decisions.mjs`). 0.3.0 adds DEC-026–028: the embedded sensing track admitted by the module requirement, its telemetry contract and source modes, and its free-path transport rule. 0.4.0 adds DEC-029–030: the MIT licence and the repository conventions asked for by task 01.1. 0.5.0 adds DEC-031: the pinned Node 26 LTS runtime, the exact-version policy with a committed lockfile, and the recorded browser and hardware baseline; it supersedes DEC-018's version pin. 0.6.0 adds DEC-032: the application shell, its exact stack, the engine workspace and the static-export workarounds. 0.7.0 adds DEC-033: the four configuration layers, Ajv-validated scenarios shared by app and CI, and the erasable-TypeScript policy that lets Node run the engine source directly. 0.8.0 adds DEC-034: the six quality gates, the 22 tests that exercise the configuration layers, and a CI workflow that is itself machine-checked. 0.9.0 adds DEC-035: the documentation system — decision-record conventions, six module READMEs, API notes, a generated data dictionary, an experiment log, a changelog and the ninth check that holds them together. 0.10.0 adds DEC-036: the runtime pin moves to Node 26.13.1 and npm 11.20.0, because Node 26.2.0 bundles npm 11.13.0 and the first CI run refused the install before any gate. 0.11.0 adds DEC-037: the time base — stored instants, the site timezone's day boundaries, a whole-minute step grid and the internal watt and watt-hour units. 0.12.0 adds DEC-038: the canonical units — branded W, Wh, °C and SOC, the named scale conversions, and a type guard that proves a mixed-unit calculation cannot compile. 0.13.0 adds DEC-039: the nine-term energy ledger, magnitudes with the direction in the name, and an absolute tolerance on the residual. 0.14.0 adds DEC-040: the Dar Chams identity. 0.15.0 adds DEC-041: `Dar-Chams` on GitHub, the `dar-chams` root and `@dar-chams/engine` workspace packages, `dar-chams-engine` manifests, the new settings key, telemetry topic prefix and matching links and paths. 0.16.0 adds DEC-042: typed, UI-free ports between the engine and all simulation components. 0.17.0 adds DEC-043: the deterministic fixed-step clock lifecycle, playback-speed contract and SplitMix64 seeded stream. 0.18.0 adds DEC-044: a deterministic, typed event journal for state transitions. 0.19.0 adds DEC-045: finite non-negative energy quantities and explicit SOC clamping for calculated battery states. 0.20.0 adds DEC-046: explicit PV geometry conventions, optional shading profiles and a fixed-by-default discriminated tracker configuration. 0.21.0 adds DEC-047: SunCalc solar position and site-local solar events, validated against three independent site/date fixtures and DST/polar cases.
+
+0.22.0 adds DEC-048: an optional Open-Meteo source with a validated complete-snapshot cache boundary, deterministic synthetic fallback and visible provider failure records.
+0.23.0 adds DEC-049: a named isotropic-sky transposition model with separate POA components, configurable albedo and explicit approximation provenance.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -60,6 +63,8 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-045 | Reject negative energy and clamp modeled SOC to the battery usable window | Accepted | 2026-11-16 |
 | DEC-046 | Fully described PV array geometry, optional shading profile, and fixed-by-default tracking | Accepted | 2026-11-17 |
 | DEC-047 | Calculate site-local solar position and events with SunCalc | Accepted | 2026-11-17 |
+| DEC-048 | Optional Open-Meteo adapter with offline synthetic fallback | Accepted | 2026-11-17 |
+| DEC-049 | Named isotropic transposition for plane-of-array irradiance | Accepted | 2026-11-18 |
 
 ---
 
@@ -554,4 +559,28 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** Three fixed reference fixtures cover Tunis, Paris and Sydney, with published event times and solar-noon elevations, plus meridian azimuth checks. Tests verify Paris spring and autumn DST days, Tromsø polar day/night, night-time position and invalid inputs. Evidence and limitations are in `docs/solar-validation.md`. This task establishes geometry only; it does not calculate irradiance or PV power. The author-signed acceptance checklist is not edited by this implementation.
 
 **Revisit if** a newer ephemeris is required, the supported date interval needs to expand, weather pressure/temperature must affect refraction, or a future physics model needs an explicit daylight threshold distinct from SunCalc's sunrise definition.
+
+## DEC-048 · Build an optional weather adapter with offline fallback
+
+**Context.** Task 03.3 needs weather forecasts as optional inputs, cached provider data for offline replay, and a deterministic fallback when neither the provider nor a valid cache can supply the requested interval. The engine must remain headless and must not expose partial or malformed weather to physics components (DEC-002, DEC-006, DEC-042, DEC-043).
+
+**Decision.** Add an injectable Open-Meteo forecast source using UTC hourly data for air temperature, shortwave radiation, direct and diffuse irradiance, and wind. Validate the full response, align it to the requested fixed-step grid, and label provider frames `X`. Store only complete snapshots through an injected `WeatherCache` port. On provider failure, try a complete matching cached snapshot and then seeded synthetic weather labeled `S`; return a typed fallback record with the provider failure reason. Require every validated weather configuration to retain the synthetic fallback. Keep persistence implementation outside the engine so browser storage remains optional.
+
+**Alternatives rejected.** Let simulation components fetch weather directly — network failure and provider formats would leak into state transitions. Return partial provider data — it silently mixes complete and missing inputs and makes outcomes depend on failure position. Use `Math.random` or wall-clock values in synthetic weather — same seed and scenario would no longer replay. Import IndexedDB or filesystem storage into the engine — this breaks the headless, browser-neutral boundary.
+
+**Consequences.** Tests exercise provider validation and interpolation, full snapshot cache reuse, offline synthetic repeatability, HTTP errors and malformed response fallback. Cache implementations can use memory, IndexedDB or another caller-owned store. This task supplies weather frames; it does not yet calculate POA irradiance, PV energy, or a full running simulation.
+
+**Revisit if** a persistent cache adapter is admitted into the application, an archive endpoint is required for historical weather, or provider licensing/availability changes.
+
+## DEC-049 · Model plane-of-array irradiance with isotropic transposition
+
+**Context.** Task 03.4 converts the horizontal irradiance components supplied by the weather adapter into irradiance on the configured fixed panel plane. The Dar Chams proposal names the isotropic transposition equation, and the project requires an approximation label (FR-PV-03, MET-07).
+
+**Decision.** Export `calculatePlaneOfArrayIrradiance`, which uses SunCalc apparent elevation and true-north clockwise azimuth with the validated array tilt and azimuth. Compute beam as `DNI × max(0, cos(incidence))`, isotropic sky diffuse as `DHI × (1 + cos(tilt))/2`, and ground reflection as `GHI × albedo × (1 − cos(tilt))/2`. The default albedo is 0.2, an explicit configurable candidate assumption. Clamp back-face direct contribution to zero, and force direct beam to zero when the apparent Sun is at or below the horizon. Label the model version, approximation and class-S derived provenance in the result. Cloud effects are already present in the input irradiance components and are not applied twice.
+
+**Alternatives rejected.** Multiply total GHI by an orientation factor — it loses the distinction between direct and diffuse irradiance. Apply cloud cover again as a scalar — Open-Meteo's GHI/DNI/DHI already represent weather conditions, so that would double-count cloud attenuation. Adopt Perez/Hay-Davies now — these need additional inputs and calibration and exceed the accepted simplified model for 03.4. Treat albedo 0.2 as measured site ground reflectance — the value is a proposal assumption, not an observation.
+
+**Consequences.** The result includes separate beam, sky-diffuse and ground-reflected terms, their total, incidence angle, model identifier, approximation flag and class-S provenance. Input geometry, irradiance, albedo and overflow are guarded. Reference-formula tests cover plane orientation, cloudy versus clear input, horizontal and grazing cases, back-face incidence and night. No PV power or AC energy is claimed by this model.
+
+**Revisit if** site-specific albedo is measured, an anisotropic sky model is calibrated against references, or tracker geometry is admitted; these require explicit inputs and validation rather than silently changing model v1.
 

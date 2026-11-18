@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.10.0 |
+| Version | 1.12.0 |
 | Date | 2026-11-17 |
-| Phase | 01 (task 01.6); v1.1.0 adds the phase-02.1 time base; v1.2.0 adds the phase-02.2 canonical units; v1.3.0 adds the phase-02.3 energy ledger; v1.4.0 records the Dar Chams package and run identity (DEC-041); v1.5.0 defines the phase-02.4 component ports; v1.6.0 implements the phase-02.5 deterministic clock; v1.7.0 adds the phase-02.6 event journal; v1.8.0 adds phase-02.7 numerical guards; v1.9.0 defines phase-03.1 PV geometry; v1.10.0 adds phase-03.2 solar calculations |
+| Phase | 01–03.4; v1.12.0 adds isotropic plane-of-array irradiance (DEC-049) |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-039, DEC-041–DEC-047 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-049 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -91,6 +91,10 @@ with the engine and not only with the application.
 | `siteDayBounds` | function | Local midnight to the next local midnight, with the day's real length in minutes |
 | `solarPositionAt` | function | SunCalc apparent elevation and true-north clockwise azimuth at an absolute instant and typed scenario coordinates; validates coordinates and the 1900–2150 algorithm range |
 | `solarDayForSiteDate` | function | Sunrise, solar noon and sunset as absolute instants for a typed site and IANA-zone calendar day; preserves DST day length and returns explicit polar-day/night states with null sunrise/sunset |
+| `calculatePlaneOfArrayIrradiance` | function | Converts GHI/DNI/DHI to fixed-panel plane irradiance with isotropic sky, explicit albedo, incidence-angle handling and class-S approximation labeling |
+| `DEFAULT_GROUND_ALBEDO` | const | `0.2`; configurable candidate ground-reflection assumption |
+| `PlaneOfArrayInput` | type | Instant, site coordinates, fixed-array tilt/azimuth, weather irradiance and optional albedo |
+| `PlaneOfArrayIrradiance` | type | Separate beam, sky-diffuse and ground-reflected terms, total, incidence angle, model id, approximation and provenance |
 | `ZonedParts` | type | Year, month, day, hour, minute and second in a zone |
 | `SiteDayBounds` | type | Date, start, end and minutes of one site day |
 | `SolarPosition` | type | Apparent elevation and north-based clockwise azimuth in degrees |
@@ -163,8 +167,15 @@ with the engine and not only with the application.
 | `SimulationClock` | type | Read lifecycle state, start/pause/resume/reset, advance one fixed step, set playback speed and draw seeded random values |
 | `SimulationClockState` | type | Status, step index, current step, selected and maximum playback speed and replay seed |
 | `WeatherFrame` | type | Time, ambient temperature, irradiance, wind speed and provenance |
-| `WeatherQuery` | type | Site and requested step grid |
-| `WeatherSource` | type | `read(query): Promise<WeatherFrame[]>`; external I/O boundary |
+| `WeatherFallbackEvent` | type | Visible reason and destination when provider data falls back |
+| `WeatherQuery` | type | Site, requested grid, weather policy and deterministic seed |
+| `WeatherReadResult` | type | Complete frames, selected source, fallback event and warning |
+| `WeatherSource` | type | `read(query): Promise<WeatherReadResult>`; external I/O boundary |
+| `WeatherCache` | type | Caller-owned async cache read/write boundary for complete snapshots |
+| `WeatherSourceOptions` | type | Optional fetch implementation, cache and request timeout |
+| `MemoryWeatherCache` | class | Process-local implementation of the cache port for previews and tests |
+| `createOpenMeteoWeatherSource` | function | Creates a validated Open-Meteo source with cache then deterministic synthetic fallback |
+| `createSyntheticWeather` | function | Rebuilds stable seeded weather frames for the requested grid |
 | `createSimulationClock` | function | Builds an idle fixed-step clock from a validated scenario; playback speed never changes the step grid |
 | `SimulationClockOptions` | type | Optional maximum playback speed, default 1000× |
 | `createEventJournal` | function | Creates an append-only, timestamp-ordered event journal with IDs derived from scenario ID, seed and sequence |

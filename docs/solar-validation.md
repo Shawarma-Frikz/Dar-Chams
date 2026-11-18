@@ -44,5 +44,7 @@ altitude, malformed calendar dates and dates outside the algorithm's 1900–2150
 are bounded or rejected. SunCalc's horizon dip uses positive height above the horizon; a site below
 mean sea level is treated at sea level for that small horizon correction.
 
-This proves the solar geometry calculation contract. It does not yet model irradiance, array output,
-clouds, shading, plane-of-array transposition or PV yield; those remain later phase-03 tasks.
+This proves the solar geometry calculation contract. The separate phase-03.4 POA implementation
+uses this geometry in its named approximation; irradiance transposition validation lives in
+[`irradiance-validation.md`](irradiance-validation.md). This solar test does not validate array
+output, thermal derating, shading or PV yield; those remain later phase-03 tasks.

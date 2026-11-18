@@ -69,8 +69,8 @@ const grid = {
 } satisfies GridModel;
 const weather = {
   read: async (query) => {
-    void [query.site.timezone, query.grid.stepCount];
-    return [];
+    void [query.site.timezone, query.grid.stepCount, query.seed, query.weather.refresh_hours];
+    return { frames: [], source: 'synthetic', fallbackEvent: null, warning: null };
   },
 } satisfies WeatherSource;
 const scheduler = {

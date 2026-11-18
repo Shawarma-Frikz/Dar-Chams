@@ -63,6 +63,8 @@ export {
 export type { SiteDaySegment, Step, StepGrid } from './time/timeline.ts';
 
 export { solarDayForSiteDate, solarPositionAt } from './solar/solar.ts';
+export { calculatePlaneOfArrayIrradiance, DEFAULT_GROUND_ALBEDO } from './solar/plane-of-array.ts';
+export type { PlaneOfArrayInput, PlaneOfArrayIrradiance } from './solar/plane-of-array.ts';
 export type {
   SolarCoordinates,
   SolarDay,
@@ -132,9 +134,17 @@ export type {
   SimulationClock,
   SimulationClockState,
   WeatherFrame,
+  WeatherFallbackEvent,
   WeatherQuery,
+  WeatherReadResult,
   WeatherSource,
 } from './simulation/interfaces.ts';
+export {
+  createOpenMeteoWeatherSource,
+  createSyntheticWeather,
+  MemoryWeatherCache,
+} from './weather.ts';
+export type { WeatherCache, WeatherSourceOptions } from './weather.ts';
 export { createSimulationClock } from './simulation/clock.ts';
 export type { SimulationClockOptions } from './simulation/clock.ts';
 export { createEventJournal } from './simulation/events.ts';

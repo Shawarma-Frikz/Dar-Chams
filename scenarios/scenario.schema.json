@@ -277,7 +277,9 @@
         "refresh_hours": { "type": "number", "exclusiveMinimum": 0 },
         "fallback_order": {
           "type": "array",
+          "minItems": 1,
           "uniqueItems": true,
+          "contains": { "const": "synthetic" },
           "items": { "enum": ["cached", "synthetic"] }
         }
       }

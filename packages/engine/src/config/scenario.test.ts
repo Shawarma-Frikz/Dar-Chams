@@ -98,6 +98,13 @@ describe('the scenario contract', () => {
     }
   });
 
+  it('requires a synthetic weather fallback for offline runs', () => {
+    const scenario = fixture();
+    const weather = scenario.weather as { fallback_order: string[] };
+    weather.fallback_order = ['cached'];
+    expect(validator.check(scenario).ok).toBe(false);
+  });
+
   it('allows an optional shading profile and requires tracking axes to be explicitly enabled', () => {
     const unshaded = fixture();
     expect(validator.check(unshaded).ok).toBe(true);

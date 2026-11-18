@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01 (task 01.6); 02.1 adds the time base; 02.2 adds the canonical units; 02.3 adds the energy ledger; 02.4 defines component ports; 02.5 implements deterministic clock behavior; 02.6 adds deterministic state-transition events; 02.7 adds numerical guards; 03.1 defines PV installation geometry; 03.2 calculates solar position |
+| Phase | 01–03.4: component ports, deterministic clock/events, numerical guards, PV geometry, solar position, weather and plane irradiance |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049 |
 
 ## Purpose
 
@@ -35,8 +35,22 @@ optional, and enforces fixed-by-default tracking in both the schema and TypeScri
 
 Task 03.2 adds SunCalc-backed apparent solar elevation and true-north azimuth at an instant, plus
 sunrise, solar noon and sunset for an IANA-zone site date. Event instants follow the real site-day
-boundaries across DST; polar day and night are explicit. This is astronomy geometry, not an
-irradiance or PV production model.
+boundaries across DST; polar day and night are explicit. Task 03.4 consumes that position for its
+plane-of-array transposition model.
+
+Task 03.3 implements an optional Open-Meteo forecast adapter for temperature, irradiance and wind.
+It validates complete UTC hourly responses and maps them onto the fixed-step grid. A caller-owned
+cache stores complete provider snapshots; an unavailable provider uses the matching snapshot and
+then repeatable seed-based synthetic weather. Provider failures return a typed, visible fallback
+record. The engine imports no storage API and still produces a complete offline weather series.
+Cache persistence is supplied by the application; this engine package includes a memory cache for
+headless use and tests. Validation details and limits are in [`docs/weather-validation.md`](../../docs/weather-validation.md).
+
+Task 03.4 adds `isotropic-sky-transposition-v1`. It combines beam incidence, isotropic sky diffuse
+and ground-reflected irradiance using the configured panel orientation and SunCalc position. Albedo
+defaults to the documented candidate assumption 0.2 and can be overridden. The output labels its
+approximation and class-S modeled provenance. This calculates POA irradiance; temperature derating
+and PV power are later tasks. See [`docs/irradiance-validation.md`](../../docs/irradiance-validation.md).
 
 ## Inputs
 
@@ -107,7 +121,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 80 engine tests and the application's ten, 90 in total:
+`npm run test` runs 91 engine tests and the application's ten, 101 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
   validate and describe their geometry; optional shading profiles and tracking combinations are
@@ -121,9 +135,13 @@ node scripts/validate-scenarios.mjs
   25-hour days; Lord Howe gives 94 and 98 on its half-hour days, and an hourly grid on a 23.5-hour day
   is refused; gap and overlap times resolve in the documented direction; the shipped 48-hour run is
   192 steps over two 96-step days; and two properties tile the grid and assign every step to one day.
+- [`src/weather.test.ts`](src/weather.test.ts), 4 tests — provider validation and fixed-step interpolation,
+  complete cache reuse while offline, deterministic synthetic replay, and visible HTTP/malformed-data fallback.
 - [`src/solar/solar.test.ts`](src/solar/solar.test.ts), 4 tests — three independent city/date fixtures
   check sunrise, solar noon, sunset and noon position; DST start/end, polar day/night and invalid
   numerical/date inputs are covered.
+- [`src/solar/plane-of-array.test.ts`](src/solar/plane-of-array.test.ts), 6 tests — formula components,
+  panel orientation and sun incidence, cloudier inputs, night behavior, input guards and overflow.
 - [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
   non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
   non-finite and overflow values are refused, and properties cover wide power and interval ranges.
@@ -161,10 +179,10 @@ feeds ten broken ledgers back through the public API. `node scripts/validate-sce
 committed scenario. None of the commands needs a build: Node strips the TypeScript types, and
 `erasableSyntaxOnly` keeps the source within what stripping accepts (DEC-033).
 
-**Not covered yet.** Solar elevation, azimuth and sun events are implemented in 03.2, but the
-weather model's daylight flag (MET-11), irradiance, PV output and battery/controller models are
-still future work. The time base and energy ledger are tested; the simulation they will carry is
-not yet producing physical metrics.
+**Not covered yet.** Weather inputs are available through the port, but the app does not yet persist
+the injected cache or call the adapter from a complete simulation coordinator. Irradiance conversion,
+PV output and battery/controller models are still future work. The time base and energy ledger are
+tested; the simulation they will carry is not yet producing physical metrics.
 
 ## Layout
 
@@ -186,6 +204,10 @@ not yet producing physical metrics.
 | `src/time/zone.ts` | IANA offsets, wall-clock resolution, site-date and site-day bounds |
 | `src/solar/solar.ts` | SunCalc-backed position and site-local sun events for phase 03.2 |
 | `src/solar/solar.test.ts` | Reference, DST, polar and input-boundary checks |
+| `src/solar/plane-of-array.ts` | Isotropic-sky plane-of-array irradiance model for phase 03.4 |
+| `src/solar/plane-of-array.test.ts` | Plane transposition, orientation and numerical-boundary checks |
+| `src/weather.ts` | Open-Meteo source, weather cache boundary and deterministic fallback for phase 03.3 |
+| `src/weather.test.ts` | Provider, cache, offline repeatability and failure-path checks |
 | `src/time/timeline.ts` | The uniform step grid and its split at local midnight |
 | `src/time/time.test.ts` | Eighteen instance, day-boundary, DST and grid tests |
 | `src/units/energy.ts` | Branded W, Wh, kW and kWh, the named conversions and same-unit addition |

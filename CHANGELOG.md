@@ -10,10 +10,12 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phases 03.1–03.6 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating, PV/inverter output and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.7 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating, PV/inverter output, repeatable shading/soiling experiments and Dar Chams identity.
 
 ### Added
 
+- Task 03.7 (DEC-052): repeatable paired experiment for scenario-owned soiling and site-local shading controls. It reports per-step and aggregate DC/AC energy with source/config hashes and no hidden random penalties.
+- Added experiment assumptions and evidence in [`docs/shading-soiling-validation.md`](docs/shading-soiling-validation.md); the runner writes ignored output to `runs/exp-001/summary.json`.
 - Task 03.6 PV and inverter models (DEC-051): compose POA, temperature, system derate, soiling,
   mismatch, local shading and availability into DC W/Wh; model AC efficiency, rated output,
   clipping, conversion loss and standby separately.

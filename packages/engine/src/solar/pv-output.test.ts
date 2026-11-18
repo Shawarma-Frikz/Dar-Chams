@@ -97,6 +97,55 @@ describe('PV and inverter step output', () => {
     expect(shaded.dcPower).toBeCloseTo(unshaded.dcPower * 0.5, 8);
   });
 
+  it('repeats a controlled soiling-and-shading experiment with an explainable energy reduction', () => {
+    const start = parseInstant('2026-06-21T09:00:00Z');
+    const grid = createStepGrid(start, 60, 240);
+    const poa = {
+      ...makePv().planeOfArray,
+      beamWm2: 700,
+      skyDiffuseWm2: 80,
+      groundReflectedWm2: 20,
+      totalWm2: 800,
+    };
+    const baseline = makePv({ installed_dc_kwp: 5, soiling_loss: 0.02 });
+    const experiment = makePv({
+      installed_dc_kwp: 5,
+      soiling_loss: 0.12,
+      shading_profile: { windows: [{ start: '12:00', end: '13:00', shading_loss: 0.5 }] },
+    });
+    const inverter = { rated_ac_kw: 10, efficiency: 0.96, standby_w: 0, clipping: true };
+
+    const run = (input: PvInput) =>
+      Array.from({ length: 4 }, (_, index) => {
+        const step = stepAt(grid, index);
+        const pv = calculatePvOutput({
+          ...input,
+          step,
+          weather: { ...weather, instant: step.start, ambientTemperature: celsius(25) },
+          planeOfArray: poa,
+        });
+        const ac = calculateInverterOutput({ system: inverter, step, dcPower: pv.dcPower });
+        return { dcEnergy: pv.dcEnergy, acEnergy: ac.acEnergy, shadingFactor: pv.shadingFactor };
+      });
+
+    const baselineRun = run(baseline);
+    const experimentRun = run(experiment);
+    const replay = run(experiment);
+    const baselineDcWh = baselineRun.reduce((sum, step) => sum + step.dcEnergy, 0);
+    const experimentDcWh = experimentRun.reduce((sum, step) => sum + step.dcEnergy, 0);
+    const baselineAcWh = baselineRun.reduce((sum, step) => sum + step.acEnergy, 0);
+    const experimentAcWh = experimentRun.reduce((sum, step) => sum + step.acEnergy, 0);
+
+    expect(replay).toEqual(experimentRun);
+    expect(experimentRun.map((step) => step.shadingFactor)).toEqual([1, 1, 0.5, 1]);
+    expect(experimentDcWh / baselineDcWh).toBeCloseTo(
+      (3 * (0.88 / 0.98) + 0.5 * (0.88 / 0.98)) / 4,
+      12,
+    );
+    expect(experimentAcWh / baselineAcWh).toBeCloseTo(experimentDcWh / baselineDcWh, 12);
+    expect((1 - experimentDcWh / baselineDcWh) * 100).toBeCloseTo(21.4285714286, 8);
+  });
+
   it('forces PV DC power and energy to zero at night even if weather inputs are inconsistent', () => {
     const nightInstant = parseInstant('2026-06-21T00:00:00Z');
     const night = makePv();

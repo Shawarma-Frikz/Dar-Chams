@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.25.0 |
+| Version | 0.26.0 |
 | Date | 2026-11-18 |
-| Phase | 00–03.6, with DEC-051 recording PV and inverter step outputs |
+| Phase | 00–03.7, with DEC-052 recording explicit shading/soiling experiments |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
@@ -13,7 +13,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 
 0.22.0 adds DEC-048: an optional Open-Meteo source with a validated complete-snapshot cache boundary, deterministic synthetic fallback and visible provider failure records.
 0.23.0 adds DEC-049: a named isotropic-sky transposition model with separate POA components, configurable albedo and explicit approximation provenance.
-0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate. 0.25.0 adds DEC-051: PV/inverter component models, clipping accounting and a tenth energy-ledger term.
+0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate. 0.25.0 adds DEC-051: PV/inverter component models, clipping accounting and a tenth energy-ledger term. 0.26.0 adds DEC-052: scenario-owned shading/soiling controls and a repeatable, explicitly synthetic paired experiment.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -68,6 +68,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-049 | Named isotropic transposition for plane-of-array irradiance | Accepted | 2026-11-18 |
 | DEC-050 | NOCT panel temperature and configurable linear temperature derate | Accepted | 2026-11-18 |
 | DEC-051 | PV DC and inverter AC outputs with explicit clipping energy | Accepted | 2026-11-18 |
+| DEC-052 | Scenario-controlled shading and soiling with repeatable attribution | Accepted | 2026-11-18 |
 
 ---
 
@@ -610,4 +611,16 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** Supersede DEC-039's statement that the ledger remains unchanged when physics arrives: add `clippingLoss` as a tenth non-negative demand term, update its contract and reference checker, and preserve a strict separation between inverter conversion and clipping. Tests cover all PV factors, site-local shading, forced night zero, step energy, conversion identity, clipping, standby, disabled clipping and bounds. Existing scenario-based reference checks continue to settle the expanded ledger. Site-level surplus curtailment, the application coordinator and wiring the scenario's availability and system derate selection into a full run remain future integration work.
 
 **Revisit if** a measured inverter supplies a different clipping point or clipping curve, a second DC path needs its own loss attribution, or system derate becomes a scenario field and needs a persisted source and acceptance threshold.
+
+## DEC-052 · Keep shading and soiling scenario-owned and prove their repeatable effect
+
+**Context.** The scenario schema already exposes `pv.soiling_loss` and optional recurring site-local `pv.shading_profile.windows` (DEC-046); phase 03.6 applies both as explicit PV multipliers (DEC-051). The missing phase-03.7 evidence is a controlled experiment that isolates the factors and demonstrates a replayable production reduction without introducing hidden random penalties (FR-PV-05, FR-PV-08).
+
+**Decision.** Preserve the existing scenario fields as the only controls. Keep shading as validated, non-overlapping, site-local windows, and keep soiling as an explicit fraction. Add a repeatable experiment runner that hashes the source scenario, changes only those two controls in a paired in-memory PV configuration, uses fixed weather/POA inputs and the scenario seed, and writes the per-step comparison to ignored run output. Expose applied factors alongside PV output. Do not infer random shadow or soiling events from the seed.
+
+**Alternatives rejected.** Add RNG-driven shading or dust inside the power model — it would confound policy comparisons and make a loss impossible to attribute. Edit the shipped scenario during an experiment — it would destroy the identity of prior runs. Claim the fixed-input response test is a yield calibration — it isolates control behavior but does not represent weather or prove annual AC yield.
+
+**Consequences.** The repeatable `EXP-001` fixture compares 2% soiling/no shading with 12% soiling and a 50% one-hour local shading window over four identical input steps. It yields a 21.428571% reduction in both DC and gross AC interval energy and identical replay output. The fixture, source hash, controls and per-step result are recorded in `docs/experiment-log.md` and `runs/exp-001/summary.json`; this is component response evidence only. Dynamic soiling growth/cleaning, weather-driven week runs, the application coordinator, loss UI and PVGIS calibration remain future work.
+
+**Revisit if** an accepted soiling accumulation/cleaning model or geometric shadow model is added; it must remain an explicit scenario or event input and retain paired, repeatable attribution.
 

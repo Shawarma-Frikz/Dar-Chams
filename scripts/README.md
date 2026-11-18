@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.4.0 |
-| Phase | 01 (task 01.6); v0.2.0 adds the phase-02.1 time proof; v0.3.0 adds the phase-02.2 unit proof; v0.4.0 adds the phase-02.3 balance proof |
+| Version | 0.5.0 |
+| Phase | 01 (task 01.6), 03.7; v0.2.0 adds the phase-02.1 time proof; v0.3.0 adds the phase-02.2 unit proof; v0.4.0 adds the phase-02.3 balance proof; v0.5.0 adds the deterministic PV loss experiment |
 | Runtime | Node 26 type stripping; no checker imports a third-party module, and only `check-units.mjs` runs one, the already-installed TypeScript compiler |
 | Checked by | `npm run check` |
 | Decisions | DEC-023, DEC-030, DEC-034, DEC-035, DEC-037, DEC-038, DEC-039 |
@@ -25,6 +25,7 @@ the exported site for a manual preview.
 - `src/` and `packages/` — the exports and modules the documentation claims to describe.
 - `.github/workflows/ci.yml` — parsed as a YAML subset and held to the gate list.
 - `scenarios/scenario.schema.json` — the source of the generated data dictionary.
+- `scripts/run-pv-loss-experiment.mjs` reads a scenario and writes a paired, fixed-input PV response report under ignored `runs/` output.
 
 ## Outputs
 
@@ -74,6 +75,8 @@ responsibility.
 | `check-ci.mjs` | Workflow structure and the gate list | A gate, trigger, pin or install command drifts | — |
 | `validate-scenarios.mjs` | Every committed scenario through the runtime validator | A scenario is invalid | — |
 | `serve-static.mjs` | Serves `out/` for `npm run preview` | Port in use, or a path escapes `out/` | — |
+| `run-pv-loss-experiment.mjs` | Replays a fixed-input soiling/shading comparison and writes per-step metrics | A control changes unexpected PV fields or a replay differs | `runs/exp-001/summary.json` |
 
-The generated artefacts are the only files a script may write, and only behind `--write`. Everything
-else is read-only, so a check can never repair the thing it is meant to measure.
+Checkers are read-only except for their documented generated tables behind `--write`. The separate
+experiment runner writes only its reproducible, ignored report under `runs/`; it does not edit a
+scenario or source file.

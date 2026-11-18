@@ -2,10 +2,10 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.0.0 |
-| Date | 2026-11-16 |
-| Phase | 01 (task 01.6); first records from phase 03.7 |
-| Records | 0 |
+| Version | 1.1.0 |
+| Date | 2026-11-18 |
+| Phase | 01 (task 01.6); EXP-001 records the controlled phase-03.7 shading/soiling response |
+| Records | 1 |
 | Checked by | `node scripts/check-docs.mjs` |
 | Related | [Data provenance](data-provenance.md) · [Metric register](metric-register.json) · [Decision log](decision-log.md) · AC-02, AC-09, AC-11, AC-33 |
 
@@ -53,8 +53,22 @@ order. `check-docs` rejects a record that omits one.
 
 ## Records
 
-No experiment has been run yet. The first is scheduled at phase 03.7 (solar-position and irradiance
-fixtures); the template below is a format illustration and is not counted as a record.
+## EXP-001 · Do configured soiling and shading losses produce a repeatable PV reduction?
+
+- Date: 2026-11-18
+- Question: Do explicit scenario soiling and site-local shading controls produce an explainable, repeatable reduction in modeled PV energy?
+- Hypothesis: With the fixed four-step input fixture, 12% soiling and a 50% shading window active for one step reduce DC and gross AC interval energy by 21.4286% relative to 2% soiling and no shading; replay is identical.
+- Scenario: scenarios/tunis-typical-v1.json
+- Seed: 20260621
+- Engine: dar-chams-engine 0.1.0
+- Metrics: MET-12, MET-13, MET-18, MET-19, MET-23, MET-24
+- Result: hypothesis confirmed. DC energy was 7912.524312 Wh → 6216.983388 Wh; gross AC energy was 7596.023340 Wh → 5968.304052 Wh (21.428571% reduction). Replaying the fixed inputs produced identical per-step output. This synthetic controlled fixture is not an annual-yield validation.
+- Artefact: runs/exp-001/summary.json
+- Decision: DEC-052
+
+The runner and assumptions are documented in [shading/soiling validation](shading-soiling-validation.md).
+
+The template below is a format illustration and is not counted as a record.
 
 ### Template — not a record
 

@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.6.0 |
+| Version | 1.7.0 |
 | Date | 2026-11-18 |
-| Phase | 02 complete; phases 03.1–03.6 complete; adoption crosswalk for the Dar Chams roadmap |
+| Phase | 02 complete; phases 03.1–03.7 complete at component scope; adoption crosswalk for the Dar Chams roadmap |
 | Authority | [Dar Chams Roadmap](../Dar_Chams_Roadmap.html), [accepted engineering roadmap](../Dar_Chams_Roadmap_and_Graphic_Charter_v2_Embedded.html), [requirements](requirements.md), [acceptance checklist](acceptance-checklist.md) |
-| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051 |
+| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051, DEC-052 |
 
 The Dar Chams roadmap adds useful specificity to the existing project: physical PV geometry and plane-of-array irradiance, weather inputs and uncertainty, battery voltage and aging, tracker energy cost, explicit load priority thresholds, and a clearer evidence package. This crosswalk admits those ideas at the existing phase gates. It does not mark planned features as implemented or silently change the signed acceptance targets. The checklist and its author-bound digest remain untouched; its earlier use of Helios in the claim-gate wording refers to this same project and prohibition.
 
@@ -14,11 +14,11 @@ The Dar Chams roadmap adds useful specificity to the existing project: physical 
 
 - The deterministic, offline-capable TypeScript engine remains the source of truth. The root package and repository, `@dar-chams/engine`, static export, IndexedDB direction, scenario schema, provenance register, append-only decision log, signed acceptance checklist and machine checks remain in place.
 - The app remains simulation-first. No real plant is monitored or controlled, weather services remain optional, and sensor or Wokwi observations never become measurements of PV or battery state by implication.
-- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01, 02.1–02.7 or 03.1–03.6. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events; task 02.7 guards finite/non-negative energy and keeps calculated battery SOC inside its usable window; task 03.1 makes PV geometry explicit in validated scenarios; task 03.2 calculates site-local solar position and events; task 03.3 provides optional external weather and visible offline fallback; task 03.4 estimates panel-plane irradiance with a named approximation; task 03.5 estimates cell temperature and applies an explicit linear temperature and system derate; task 03.6 calculates PV DC and inverter AC output, interval energy and clipping losses. Production-run coordination and the event timeline UI remain future integration work.
+- The existing task IDs and phase gates remain the schedule. The Dar Chams roadmap enriches their definitions; it does not replace evidence already recorded for phases 00, 01, 02.1–02.7 or 03.1–03.7. Task 02.4 establishes UI-free typed component ports; task 02.5 adds a deterministic fixed-step clock and seeded random stream; task 02.6 adds deterministic, typed state-transition events; task 02.7 guards finite/non-negative energy and keeps calculated battery SOC inside its usable window; task 03.1 makes PV geometry explicit in validated scenarios; task 03.2 calculates site-local solar position and events; task 03.3 provides optional external weather and visible offline fallback; task 03.4 estimates panel-plane irradiance with a named approximation; task 03.5 estimates cell temperature and applies an explicit linear temperature and system derate; task 03.6 calculates PV DC and inverter AC output, interval energy and clipping losses; task 03.7 keeps shading and soiling as explicit scenario controls and proves their repeatable impact. Production-run coordination and the event timeline UI remain future integration work.
 
 ## Adopt into the existing gates
 
-Tasks 03.1–03.6 are complete. Task 03.1 uses scenario geometry as the authority: site latitude/longitude/altitude, total array
+Tasks 03.1–03.7 are complete at component scope. Task 03.1 uses scenario geometry as the authority: site latitude/longitude/altitude, total array
 nameplate DC capacity at STC, module count, panel tilt from horizontal and compass azimuth clockwise
 from true north. An absent shading profile means no scheduled shading; when present its daily
 recurring, non-overlapping windows use the site timezone and declare their own loss fraction.
@@ -67,6 +67,15 @@ closed instead of exceeding the hardware rating. The energy ledger has a separat
 (DEC-051). These headless models are ready for a later run coordinator; no completed PV production
 simulation or UI loss breakdown is claimed yet. Details and limits are in
 [`pv-output-validation.md`](pv-output-validation.md).
+
+Task 03.7 uses the existing `pv.soiling_loss` and recurring site-local shading windows as explicit
+scenario controls; no random penalty is added to the PV model. `EXP-001` holds all other PV settings
+fixed and applies a four-step fixed irradiance fixture, replaying the controlled variation twice.
+Increasing soiling from 2% to 12% and applying 50% shading for one interval reduces modeled DC and
+gross AC energy by 21.429%. The per-step factors, source/config hashes and exact outputs are written
+to ignored `runs/exp-001/summary.json`; method and limits are in
+[`shading-soiling-validation.md`](shading-soiling-validation.md). This response fixture does not
+claim a full weather-driven week or annual-yield calibration.
 
 | Dar Chams addition | Existing home | Admission rule |
 | --- | --- | --- |

@@ -47,4 +47,6 @@ mean sea level is treated at sea level for that small horizon correction.
 This proves the solar geometry calculation contract. The separate phase-03.4 POA implementation
 uses this geometry in its named approximation; irradiance transposition validation lives in
 [`irradiance-validation.md`](irradiance-validation.md). This solar test does not validate array
-output, thermal derating, shading or PV yield; those remain later phase-03 tasks.
+output, thermal derating or PV yield; shading/soiling response is independently covered by
+[`shading-soiling-validation.md`](shading-soiling-validation.md), and PVGIS yield calibration
+remains future work.

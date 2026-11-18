@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01–03.6: component ports, deterministic clock/events, numerical guards, PV/weather geometry, irradiance, panel thermal derating and DC/AC output models |
+| Phase | 01–03.7: component ports, deterministic clock/events, numerical guards, PV/weather geometry, irradiance, panel thermal derating, DC/AC output and controlled shading/soiling experiments |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051, DEC-052 |
 
 ## Purpose
 
@@ -58,6 +58,18 @@ the coefficient from PV configuration and an explicit system derate; the result 
 factors separate and labels both estimates class S. The thermal model omits mounting and wind
 corrections because the current scenario has no module-height wind or mounting inputs. Validation
 and limits are in [`docs/panel-temperature-validation.md`](../../docs/panel-temperature-validation.md).
+
+Task 03.6 composes plane-of-array irradiance, the temperature model and explicit system derate
+with configured soiling, mismatch, local shading and availability into interval DC output. The
+inverter model applies efficiency and the AC rating, and reports clipping, conversion and standby
+energy separately. Equations and limits are in
+[`docs/pv-output-validation.md`](../../docs/pv-output-validation.md).
+
+Task 03.7 keeps soiling and shading in scenario fields and adds a repeatable fixed-input experiment.
+It hashes the source and both PV configurations, checks only the declared controls differ, then
+writes per-step factors and energy results to ignored `runs/exp-001/summary.json`. No random penalty
+is introduced; the runner and validation contract are documented in
+[`docs/shading-soiling-validation.md`](../../docs/shading-soiling-validation.md).
 
 ## Inputs
 
@@ -128,7 +140,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 102 engine tests and the application's ten, 112 in total:
+`npm run test` runs 103 engine tests and the application's ten, 113 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
   validate and describe their geometry; optional shading profiles and tracking combinations are
@@ -151,7 +163,7 @@ node scripts/validate-scenarios.mjs
   panel orientation and sun incidence, cloudier inputs, night behavior, input guards and overflow.
 - [`src/solar/panel-temperature.test.ts`](src/solar/panel-temperature.test.ts), 5 tests — NOCT equation,
   thermal monotonicity, coefficient direction, separate system derate, cold gain and guards.
-- [`src/solar/pv-output.test.ts`](src/solar/pv-output.test.ts), 6 tests — PV loss factors, local shading,
+- [`src/solar/pv-output.test.ts`](src/solar/pv-output.test.ts), 7 tests — PV loss factors, local shading,
   night zero, interval energy, inverter efficiency/clipping/standby and physical bounds.
 - [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
   non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
@@ -163,7 +175,7 @@ node scripts/validate-scenarios.mjs
   both sides; the residual stays signed and the tolerance is inclusive; a negative, missing, unknown
   or non-finite term is refused; `BalanceError` names the step and both totals; conversion loss
   follows the inverter efficiency; and three properties show the residual is supply − demand, a
-  derived eighth term closes the step, and interval energy feeds the ledger.
+  derived term closes the step, and interval energy feeds the ledger.
 - [`src/simulation/interfaces.test.ts`](src/simulation/interfaces.test.ts), 2 tests — the public
   engine entry runs in plain Node with no browser globals, and typed ports exist for all eight
   component groups.

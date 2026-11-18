@@ -65,6 +65,13 @@ export type { SiteDaySegment, Step, StepGrid } from './time/timeline.ts';
 export { solarDayForSiteDate, solarPositionAt } from './solar/solar.ts';
 export { calculatePlaneOfArrayIrradiance, DEFAULT_GROUND_ALBEDO } from './solar/plane-of-array.ts';
 export type { PlaneOfArrayInput, PlaneOfArrayIrradiance } from './solar/plane-of-array.ts';
+export { calculateTemperatureDerate, estimatePanelTemperature } from './solar/panel-temperature.ts';
+export type {
+  PanelTemperatureEstimate,
+  PanelTemperatureInput,
+  TemperatureDerateInput,
+  TemperatureDerateResult,
+} from './solar/panel-temperature.ts';
 export type {
   SolarCoordinates,
   SolarDay,

@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.12.0 |
+| Version | 1.13.0 |
 | Date | 2026-11-17 |
-| Phase | 01–03.4; v1.12.0 adds isotropic plane-of-array irradiance (DEC-049) |
+| Phase | 01–03.5; v1.13.0 adds NOCT panel temperature and power derating (DEC-050) |
 | Checked by | `node scripts/check-docs.mjs` |
-| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-049 |
+| Related | [Documentation system](documentation.md) §4 · [Data dictionary](data-dictionary.md) · DEC-002, DEC-033, DEC-037–DEC-050 |
 
 This document records the surfaces another module may rely on. It is deliberately narrower than the
 source: a helper that is exported for a test is not an API, and an interface that appears here is a
@@ -95,6 +95,12 @@ with the engine and not only with the application.
 | `DEFAULT_GROUND_ALBEDO` | const | `0.2`; configurable candidate ground-reflection assumption |
 | `PlaneOfArrayInput` | type | Instant, site coordinates, fixed-array tilt/azimuth, weather irradiance and optional albedo |
 | `PlaneOfArrayIrradiance` | type | Separate beam, sky-diffuse and ground-reflected terms, total, incidence angle, model id, approximation and provenance |
+| `estimatePanelTemperature` | function | NOCT linear cell-temperature estimate from ambient °C, POA W/m² and configured NOCT |
+| `calculateTemperatureDerate` | function | Applies configured Pmax temperature coefficient at 25 °C reference and explicit system derate |
+| `PanelTemperatureInput` | type | Ambient Celsius, POA irradiance and configured NOCT |
+| `PanelTemperatureEstimate` | type | Modeled cell temperature with model id, approximation and class-S provenance |
+| `TemperatureDerateInput` | type | Cell temperature, configured coefficient and required system-derate multiplier |
+| `TemperatureDerateResult` | type | Temperature-only and combined derate factors, 25 °C reference, model and provenance |
 | `ZonedParts` | type | Year, month, day, hour, minute and second in a zone |
 | `SiteDayBounds` | type | Date, start, end and minutes of one site day |
 | `SolarPosition` | type | Apparent elevation and north-based clockwise azimuth in degrees |

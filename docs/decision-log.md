@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.23.0 |
+| Version | 0.24.0 |
 | Date | 2026-11-17 |
-| Phase | 00–03.4, with DEC-049 recording simplified plane-of-array transposition |
+| Phase | 00–03.5, with DEC-050 recording cell-temperature and temperature-derate models |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
@@ -13,6 +13,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 
 0.22.0 adds DEC-048: an optional Open-Meteo source with a validated complete-snapshot cache boundary, deterministic synthetic fallback and visible provider failure records.
 0.23.0 adds DEC-049: a named isotropic-sky transposition model with separate POA components, configurable albedo and explicit approximation provenance.
+0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -65,6 +66,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-047 | Calculate site-local solar position and events with SunCalc | Accepted | 2026-11-17 |
 | DEC-048 | Optional Open-Meteo adapter with offline synthetic fallback | Accepted | 2026-11-17 |
 | DEC-049 | Named isotropic transposition for plane-of-array irradiance | Accepted | 2026-11-18 |
+| DEC-050 | NOCT panel temperature and configurable linear temperature derate | Accepted | 2026-11-18 |
 
 ---
 
@@ -583,4 +585,16 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** The result includes separate beam, sky-diffuse and ground-reflected terms, their total, incidence angle, model identifier, approximation flag and class-S provenance. Input geometry, irradiance, albedo and overflow are guarded. Reference-formula tests cover plane orientation, cloudy versus clear input, horizontal and grazing cases, back-face incidence and night. No PV power or AC energy is claimed by this model.
 
 **Revisit if** site-specific albedo is measured, an anisotropic sky model is calibrated against references, or tracker geometry is admitted; these require explicit inputs and validation rather than silently changing model v1.
+
+## DEC-050 · Estimate panel temperature and apply configured temperature derating
+
+**Context.** Task 03.5 requires a simplified documented panel-temperature estimate driven by ambient temperature and POA irradiance, then a configured power temperature coefficient and a separate system derate (FR-PV-04). Scenario geometry already provides NOCT and the coefficient; the preceding task provides modeled POA irradiance (DEC-046, DEC-049).
+
+**Decision.** Export `estimatePanelTemperature` using the linear NOCT relation `Tcell = Tair + (NOCT − 20) × POA / 800`, with configured scenario NOCT and modeled POA. Export `calculateTemperatureDerate` using the configured Pmax coefficient around the 25 °C STC reference: `temperatureFactor = max(0, 1 + coefficient × (Tcell − 25))`; apply the explicit `systemDerate` multiplier separately. Permit cold-temperature gain, but never a negative output multiplier. Label both model results as approximations with class-S derived provenance. Keep the system derate a required explicit calculation input so future scenario wiring must choose it rather than inherit an unexplained default.
+
+**Alternatives rejected.** Faiman/NOCT-SAM thermal model — it requires module-height wind, mounting and heat-loss coefficients that current scenarios do not specify; 10 m forecast wind alone is not a justified substitute. Hide system derate inside availability — availability already represents planned/unplanned downtime and is reported as its own loss (MET-21). Clamp cold-temperature gain to one — this erases the valid direction implied by a negative Pmax coefficient. Silently default system derate to 1 — omission would hide a configuration decision.
+
+**Consequences.** Tests verify the documented NOCT equation, monotonic ambient/irradiance response, zero-irradiance ambient behavior, coefficient sign, 25 °C reference, separate system derate, cold gain, zero lower bound and numerical input guards. Wind and mounting corrections remain outside model v1, so values are estimates and not calibrated cell temperatures. PV power composition and the actual scenario-selected system derate connection are completed by the later PV production integration task.
+
+**Revisit if** validated mounting and module-height wind inputs are added, a manufacturer temperature response curve supersedes the linear coefficient, or system derate becomes an accepted scenario field with its own provenance and loss breakdown.
 

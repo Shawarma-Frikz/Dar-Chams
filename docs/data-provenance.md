@@ -319,7 +319,7 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-05 | Wind speed at 10 m | m/s | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | m/s · 1 dp |
 | MET-06 | Cloud cover | % | X / S | Open-Meteo forecast or ERA5 reanalysis; synthetic fallback as for MET-01. | — | Always | % · 0 dp |
 | MET-07 | Plane-of-array irradiance | W/m² | S | Isotropic-sky transposition v1: DNI × max(0, cos incidence) + DHI × (1 + cos tilt)/2 + GHI × 0.2 × (1 − cos tilt)/2; simplified model (FR-PV-03). | MET-01, MET-02, MET-03, MET-09, MET-10 | Always | W/m² · 0 dp |
-| MET-08 | Cell temperature | °C | S | NOCT-type thermal model from ambient temperature, plane-of-array irradiance and wind speed. | MET-04, MET-07, MET-05 | Always | °C · 1 dp |
+| MET-08 | Cell temperature | °C | S | NOCT linear estimate: ambient temperature + (configured NOCT − 20 °C) × POA / 800 W/m². | MET-04, MET-07 | Always | °C · 1 dp |
 | MET-09 | Sun elevation | ° | S | SunCalc 2.1.4 apparent solar-position algorithm evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 2 dp |
 | MET-10 | Sun azimuth | ° | S | SunCalc 2.1.4 true-north clockwise azimuth evaluated at the simulation instant for the configured site coordinates. | — | Always | ° · 1 dp |
 | MET-11 | Daylight state | state | S | Derived from sun-elevation thresholds; drives day/night rendering and forces zero PV at night (FR-PV-06). | MET-09 | Always | state |
@@ -328,7 +328,7 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 
 | ID | Metric | Unit | Class | Source / formula | Inputs | Availability | Display |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| MET-12 | PV DC power | W | S | POA irradiance × installed DC capacity × temperature factor × (1 − soiling) × (1 − mismatch) × shading × availability. | MET-07, MET-08 | Always | kW · 2 dp |
+| MET-12 | PV DC power | W | S | POA irradiance × installed DC capacity × linear temperature factor × configurable system derate × separately modeled soiling, mismatch, shading and availability factors. | MET-07, MET-08 | Always | kW · 2 dp |
 | MET-13 | PV AC power | W | S | min(DC × inverter efficiency, rated AC power); zero at night and never negative (FR-PV-06). | MET-12 | Always | kW · 2 dp |
 | MET-14 | PV interval energy | Wh | S | AC power × interval length, integrated to the step boundary. | MET-13 | Always | kWh · 2 dp |
 | MET-15 | PV daily energy | kWh | D | Sum of PV interval energy over one site-day (midnight to midnight, site timezone). | MET-14 | Always | kWh · 2 dp |

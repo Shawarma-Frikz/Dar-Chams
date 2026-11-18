@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Version | 0.1.0 |
-| Phase | 01–03.4: component ports, deterministic clock/events, numerical guards, PV geometry, solar position, weather and plane irradiance |
+| Phase | 01–03.5: component ports, deterministic clock/events, numerical guards, PV geometry, weather, plane irradiance and panel thermal derating |
 | Boundary | No React, Next.js, Three.js, DOM or browser API may be imported (DEC-002) |
 | Checked by | `npm run test`, `node scripts/check-config.mjs`, `node scripts/check-time.mjs`, `node scripts/check-units.mjs`, `node scripts/check-balance.mjs` |
 | API | [`docs/api.md`](../../docs/api.md) §1 |
-| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049 |
+| Decisions | DEC-002, DEC-003, DEC-004, DEC-005, DEC-006, DEC-012, DEC-021, DEC-033, DEC-037, DEC-038, DEC-039, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050 |
 
 ## Purpose
 
@@ -49,8 +49,15 @@ headless use and tests. Validation details and limits are in [`docs/weather-vali
 Task 03.4 adds `isotropic-sky-transposition-v1`. It combines beam incidence, isotropic sky diffuse
 and ground-reflected irradiance using the configured panel orientation and SunCalc position. Albedo
 defaults to the documented candidate assumption 0.2 and can be overridden. The output labels its
-approximation and class-S modeled provenance. This calculates POA irradiance; temperature derating
-and PV power are later tasks. See [`docs/irradiance-validation.md`](../../docs/irradiance-validation.md).
+approximation and class-S modeled provenance. This calculates POA irradiance; applying losses to
+PV electrical output is a later task. See [`docs/irradiance-validation.md`](../../docs/irradiance-validation.md).
+
+Task 03.5 implements `noct-linear-v1` for modeled cell temperature and
+`linear-power-temperature-coefficient-v1` for the 25 °C-relative power factor. The caller supplies
+the coefficient from PV configuration and an explicit system derate; the result keeps those
+factors separate and labels both estimates class S. The thermal model omits mounting and wind
+corrections because the current scenario has no module-height wind or mounting inputs. Validation
+and limits are in [`docs/panel-temperature-validation.md`](../../docs/panel-temperature-validation.md).
 
 ## Inputs
 
@@ -121,7 +128,7 @@ node scripts/check-balance.mjs
 node scripts/validate-scenarios.mjs
 ```
 
-`npm run test` runs 91 engine tests and the application's ten, 101 in total:
+`npm run test` runs 96 engine tests and the application's ten, 106 in total:
 
 - [`src/config/scenario.test.ts`](src/config/scenario.test.ts), 16 tests — the shipped scenarios
   validate and describe their geometry; optional shading profiles and tracking combinations are
@@ -142,6 +149,8 @@ node scripts/validate-scenarios.mjs
   numerical/date inputs are covered.
 - [`src/solar/plane-of-array.test.ts`](src/solar/plane-of-array.test.ts), 6 tests — formula components,
   panel orientation and sun incidence, cloudier inputs, night behavior, input guards and overflow.
+- [`src/solar/panel-temperature.test.ts`](src/solar/panel-temperature.test.ts), 5 tests — NOCT equation,
+  thermal monotonicity, coefficient direction, separate system derate, cold gain and guards.
 - [`src/units/energy.test.ts`](src/units/energy.test.ts), 7 tests — power over an interval becomes
   non-negative watt-hours, the kW/kWh conversions round-trip, negative energy is rejected,
   non-finite and overflow values are refused, and properties cover wide power and interval ranges.
@@ -206,6 +215,8 @@ tested; the simulation they will carry is not yet producing physical metrics.
 | `src/solar/solar.test.ts` | Reference, DST, polar and input-boundary checks |
 | `src/solar/plane-of-array.ts` | Isotropic-sky plane-of-array irradiance model for phase 03.4 |
 | `src/solar/plane-of-array.test.ts` | Plane transposition, orientation and numerical-boundary checks |
+| `src/solar/panel-temperature.ts` | NOCT cell-temperature and linear power-derating models for phase 03.5 |
+| `src/solar/panel-temperature.test.ts` | Temperature, derating, provenance and invalid-input checks |
 | `src/weather.ts` | Open-Meteo source, weather cache boundary and deterministic fallback for phase 03.3 |
 | `src/weather.test.ts` | Provider, cache, offline repeatability and failure-path checks |
 | `src/time/timeline.ts` | The uniform step grid and its split at local midnight |

@@ -104,10 +104,10 @@
       "display_unit": "°C",
       "decimals": 1,
       "classes": ["S"],
-      "inputs": ["MET-04", "MET-07", "MET-05"],
-      "source": "NOCT-type thermal model from ambient temperature, plane-of-array irradiance and wind speed.",
+      "inputs": ["MET-04", "MET-07"],
+      "source": "NOCT linear estimate: ambient temperature + (configured NOCT − 20 °C) × POA / 800 W/m².",
       "availability": "always",
-      "notes": "A modelled cell temperature, not a module sensor reading."
+      "notes": "Model `noct-linear-v1`; wind and mounting geometry are omitted in this simplified approximation. This is a modeled estimate, not a module sensor reading."
     },
     {
       "id": "MET-09",
@@ -157,7 +157,7 @@
       "decimals": 2,
       "classes": ["S"],
       "inputs": ["MET-07", "MET-08"],
-      "source": "POA irradiance × installed DC capacity × temperature factor × (1 − soiling) × (1 − mismatch) × shading × availability.",
+      "source": "POA irradiance × installed DC capacity × linear temperature factor × configurable system derate × separately modeled soiling, mismatch, shading and availability factors.",
       "availability": "always",
       "notes": "A modelled array output; never described as production data."
     },

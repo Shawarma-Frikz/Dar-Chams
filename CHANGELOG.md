@@ -10,9 +10,13 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phases 03.1–03.4 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.5 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating and Dar Chams identity.
 
 ### Added
+
+- Task 03.5 panel-temperature estimate and power derating (DEC-050): configured linear NOCT model,
+  coefficient-based derate at 25 °C reference, explicit system derate input and class-S labels.
+- Model equations, guards, tests and limits in [`docs/panel-temperature-validation.md`](docs/panel-temperature-validation.md).
 
 - Task 03.4 plane-of-array irradiance (DEC-049): named isotropic-sky transposition with explicit
   beam, sky-diffuse and ground-reflected components, incidence-angle handling, overrideable albedo

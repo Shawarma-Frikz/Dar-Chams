@@ -2,11 +2,11 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 1.7.0 |
-| Date | 2026-11-18 |
-| Phase | 02 complete; phases 03.1–03.7 complete at component scope; adoption crosswalk for the Dar Chams roadmap |
+| Version | 1.8.0 |
+| Date | 2026-11-19 |
+| Phase | 02 complete; phases 03.1–03.7 complete at component scope; 03.8 reserves tracking behind AC-06 |
 | Authority | [Dar Chams Roadmap](../Dar_Chams_Roadmap.html), [accepted engineering roadmap](../Dar_Chams_Roadmap_and_Graphic_Charter_v2_Embedded.html), [requirements](requirements.md), [acceptance checklist](acceptance-checklist.md) |
-| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051, DEC-052 |
+| Decision | DEC-041, DEC-042, DEC-043, DEC-044, DEC-045, DEC-046, DEC-047, DEC-048, DEC-049, DEC-050, DEC-051, DEC-052, DEC-053 |
 
 The Dar Chams roadmap adds useful specificity to the existing project: physical PV geometry and plane-of-array irradiance, weather inputs and uncertainty, battery voltage and aging, tracker energy cost, explicit load priority thresholds, and a clearer evidence package. This crosswalk admits those ideas at the existing phase gates. It does not mark planned features as implemented or silently change the signed acceptance targets. The checklist and its author-bound digest remain untouched; its earlier use of Helios in the claim-gate wording refers to this same project and prohibition.
 
@@ -77,11 +77,21 @@ to ignored `runs/exp-001/summary.json`; method and limits are in
 [`shading-soiling-validation.md`](shading-soiling-validation.md). This response fixture does not
 claim a full weather-driven week or annual-yield calibration.
 
+Task 03.8 reserves tracking as a Should item (FR-PV-09). Fixed tilt remains the v1 default; the
+scenario keeps explicit tilt and azimuth inputs and all shipped scenarios keep tracking disabled.
+No tracker geometry, stow behavior, actuator energy, or tracking net-gain calculation is implemented
+or permitted into the MVP path before AC-06 is accepted. The 12-day 2023 PVGIS comparison records
+4.9919% mean absolute daily-energy bias, below the 15% threshold, with no individual day exceeding
+15%. Thus the numeric fixed-tilt yield criterion is met; AC-06 remains Pending in the signed
+checklist until the author reviews the evidence and renews sign-off. See
+[`tracker-reservation.md`](tracker-reservation.md), the [PVGIS validation report](pvgis-ac-06-validation.md),
+and DEC-053.
+
 | Dar Chams addition | Existing home | Admission rule |
 | --- | --- | --- |
 | POA irradiance, IAM, NOCT cell temperature, soiling growth and rain reset | Phase 03; FR-PV-03–08 and AC-05 | Task 03.4 implements simplified isotropic POA transposition; task 03.5 implements `Tcell = Tair + (NOCT−20)·POA/800` and the configured linear Pmax coefficient about 25 °C, with an explicit separate system-derate input. Albedo 0.2 is an explicit overrideable candidate default. The charter's NOCT 45 °C, temperature coefficient −0.004/°C, IAM `clamp(1−0.05·(1/cos θ−1), 0, 1)`, and 3% wiring/mismatch loss are not universally assumed; each must remain configured or separately validated. Guard grazing incidence and distinguish implemented formulas from calibrated model choices; benchmark daily AC yield against PVGIS within the existing acceptance tolerance. Daily soiling growth and a 2 mm rain reset remain adjustable scenario assumptions, not universal constants. |
 | Battery voltage curve, charge/discharge efficiency, cutoff and aging | Phase 04; FR-BAT-01–07 and the energy ledger | Keep the energy-bucket state as the accounting authority. The reference's 0.005% capacity fade per equivalent full cycle and 8% off / 15% recovery thresholds are candidate assumptions only. Add a voltage curve or cutoff only as an explicit derived/observed state with configured chemistry data, bounded behavior and tests; capacity fade must not create or destroy energy inside a step. |
-| Tracker geometry, fixed/one-axis/two-axis comparison and motor energy | Phase 03 geometry and phase 06 policy; FR-PV-09 | Candidate geometry is 30° south fixed, one-axis rotation clamped to ±60°, and two-axis tilt from 0° to 80°. The reference assumes 0.5°/s travel, 30 W per moving axis and 2 W idle. Make these configurable assumptions, include idle and movement energy in the household ledger, and compare net gain against the fixed-array baseline on paired inputs before claiming benefit. |
+| Tracker geometry, fixed/one-axis/two-axis comparison and motor energy | Phase 03 geometry and phase 06 policy; FR-PV-09; DEC-053 | Deferred until AC-06 is accepted. Fixed tilt is the only v1 behavior. Any later tracker model needs explicit geometry, bounded stow behavior, actuator energy in the ledger, and paired net-yield comparison; the reference's 30°/±60°/0.5°/s/30 W/2 W values remain unaccepted candidates. |
 | Priority tiers, 40/30/15/8% example thresholds, hysteresis and reason codes | Phase 05 appliance states and phase 06 controller | Treat the percentages as candidate values from the reference, not accepted defaults. The reference adds 10 percentage points of hysteresis and minimum on/off times; those values also need review against battery reserve, load continuity and acceptance targets. Preserve FR-SIM-06 transitions and log the reason for each action. |
 | Forecast shift, selective shedding and policy comparison | Phase 06; DEC-009 and DEC-013 | Preserve the rule baseline, forecast-aware scheduler and perfect-foresight bound on identical inputs. Forecast changes may influence actions only through explicit, replayable policy inputs. |
 | Coursework targets, evidence E1–E9, risk table, glossary and defense deck | Phase 10–11 and final report | Add as report artefacts after the underlying experiment has passed its acceptance gate; do not substitute presentation material for raw run evidence. |

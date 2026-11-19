@@ -10,9 +10,17 @@ names the phase and the patch number is reserved for a fix between phases.
 
 ## [Unreleased]
 
-Phase 02 complete; phases 03.1–03.7 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating, PV/inverter output, repeatable shading/soiling experiments and Dar Chams identity.
+Phase 02 complete; phases 03.1–03.7 — the simulation time base, canonical units, energy ledger, component ports, deterministic clock, event journal, numerical guards, PV installation geometry, solar geometry, weather adapter, plane-of-array transposition, panel-temperature derating, PV/inverter output, repeatable shading/soiling experiments and Dar Chams identity. Task 03.8 records the tracking gate and a fixed-tilt yield comparison that meets the numerical AC-06 threshold; signed checklist review remains pending.
 
 ### Added
+
+- Task 03.8 (DEC-053): reserve tracker behavior as a Should item, keep fixed tilt as v1 default,
+  and disable tracker-only metrics until AC-06 is accepted. No tracker physics was added.
+- Ran the 12-day PVGIS fixed-tilt comparison: mean absolute daily bias 4.9919% (≤15%); AC-06
+  checklist sign-off remains pending review. Evidence and replay command are in
+  [`docs/pvgis-ac-06-validation.md`](docs/pvgis-ac-06-validation.md).
+- Added [`docs/tracker-reservation.md`](docs/tracker-reservation.md) to record the deferred scope,
+  current implementation boundary and fixed-tilt yield-validation exit criteria.
 
 - Task 03.7 (DEC-052): repeatable paired experiment for scenario-owned soiling and site-local shading controls. It reports per-step and aggregate DC/AC energy with source/config hashes and no hidden random penalties.
 - Added experiment assumptions and evidence in [`docs/shading-soiling-validation.md`](docs/shading-soiling-validation.md); the runner writes ignored output to `runs/exp-001/summary.json`.

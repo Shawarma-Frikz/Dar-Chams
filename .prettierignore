@@ -13,3 +13,4 @@ scenarios/
 
 # Embedded build output
 .pio/
+validation/ac-06/pvgis-*.json

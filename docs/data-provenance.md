@@ -294,8 +294,8 @@ The register is the complete list of values the interface may display. It is edi
 | --- | --- |
 | Registered metrics | 97 |
 | Always available | 83 |
-| Conditional | 10 |
-| Disabled by a data gate | 4 |
+| Conditional | 8 |
+| Disabled by a data gate | 6 |
 | Derived (D) | 33 |
 | Simulated (S) | 25 |
 | Configured (C) | 20 |
@@ -341,8 +341,8 @@ _Generated from [`metric-register.json`](metric-register.json) by `scripts/check
 | MET-22 | Temperature derating loss | Wh | D | Difference between output at the stated cell temperature and output at 25 °C, using the configured temperature coefficient. | MET-12, MET-08 | Always | kWh · 2 dp |
 | MET-23 | Inverter conversion loss | Wh | D | Energy admitted to the conversion path minus gross AC output; standby is reported independently. | MET-12, MET-13 | Always | kWh · 2 dp |
 | MET-24 | Clipping loss | Wh | D | DC-side energy excluded from conversion when gross AC power reaches the inverter rating while clipping is enabled. | MET-12, MET-13 | Always | kWh · 2 dp |
-| MET-25 | Tracker actuator energy | Wh | S | Energy consumed by tracker actuators, from the configured axis count and actuation profile (FR-PV-09). | — | Only when `tracking.enabled` | Wh · 0 dp |
-| MET-26 | Tracking net gain | % | D | Additional harvest minus actuator energy, divided by fixed-tilt harvest. | MET-14, MET-25 | Only when `tracking.enabled` | % · 1 dp |
+| MET-25 | Tracker actuator energy | Wh | S | Energy consumed by tracker actuators, from the configured axis count and actuation profile (FR-PV-09). | — | Disabled until `tracking.ac_06.accepted` | Wh · 0 dp |
+| MET-26 | Tracking net gain | % | D | Additional harvest minus actuator energy, divided by fixed-tilt harvest. | MET-14, MET-25 | Disabled until `tracking.ac_06.accepted` | % · 1 dp |
 
 #### Battery and inverter
 

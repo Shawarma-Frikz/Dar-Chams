@@ -1,0 +1,223 @@
+{
+  "method": "PVGIS-SARAH3 hourly irradiance and temperature replayed through Dar Chams POA, PV and inverter components",
+  "sampleDays": [
+    "2023-03-20",
+    "2023-03-21",
+    "2023-03-22",
+    "2023-06-20",
+    "2023-06-21",
+    "2023-06-22",
+    "2023-09-22",
+    "2023-09-23",
+    "2023-09-24",
+    "2023-12-20",
+    "2023-12-21",
+    "2023-12-22"
+  ],
+  "scenario": "tunis-typical-v1",
+  "scenarioSha256": "bb448d47e07cfa8e461b99f87083f7b6fe1e4e39f1e06a694dd47245de1b2d18",
+  "pvgisReferenceSha256": "f0a3e02018f4af344aa0f853df047e9fbc7e83904cac661c32afd07619e07710",
+  "pvgisWeatherSha256": "961a1b394760b47b56a5c2ea13363ce14147e6f22c4a1c226c72e92725aa9fc4",
+  "pvgisInputs": {
+    "location": {
+      "latitude": 36.8065,
+      "longitude": 10.1815,
+      "elevation": 7
+    },
+    "meteo_data": {
+      "radiation_db": "PVGIS-SARAH3",
+      "meteo_db": "ERA5",
+      "year_min": 2023,
+      "year_max": 2023,
+      "use_horizon": false,
+      "horizon_db": null
+    },
+    "mounting_system": {
+      "fixed": {
+        "slope": {
+          "value": 30,
+          "optimal": false
+        },
+        "azimuth": {
+          "value": 0,
+          "optimal": false
+        },
+        "type": "building-integrated"
+      }
+    },
+    "pv_module": {
+      "technology": "c-Si",
+      "peak_power": 3,
+      "system_loss": 8.723584
+    }
+  },
+  "weatherInputs": {
+    "location": {
+      "latitude": 36.8065,
+      "longitude": 10.1815,
+      "elevation": 7
+    },
+    "meteo_data": {
+      "radiation_db": "PVGIS-SARAH3",
+      "meteo_db": "ERA5",
+      "year_min": 2023,
+      "year_max": 2023,
+      "use_horizon": false,
+      "horizon_db": null
+    },
+    "mounting_system": {
+      "fixed": {
+        "slope": {
+          "value": 0,
+          "optimal": false
+        },
+        "azimuth": {
+          "value": 0,
+          "optimal": false
+        },
+        "type": "free-standing"
+      }
+    },
+    "pv_module": {
+      "technology": null,
+      "peak_power": null,
+      "system_loss": null
+    }
+  },
+  "systemLossEquivalencePercent": 8.723584000000017,
+  "modelSystemDerate": 1,
+  "modelStandbyExcluded": true,
+  "timezoneAggregation": "Africa/Tunis",
+  "timestampsInterpretedAsUtc": true,
+  "maxDaylightSolarElevationDifferenceDeg": 0.377,
+  "metrics": {
+    "meanAbsoluteDailyBiasPercent": 4.9919,
+    "meanAbsoluteErrorKWh": 0.5985,
+    "aggregateSignedBiasPercent": 4.08,
+    "maxAbsoluteDailyBiasPercent": 13.29,
+    "acceptanceThresholdPercent": 15,
+    "passesBiasThreshold": true
+  },
+  "daily": [
+    {
+      "date": "2023-03-20",
+      "season": "spring",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 13.8689,
+      "pvgisAcKWh": 13.2438,
+      "signedBiasPercent": 4.72,
+      "absoluteBiasPercent": 4.72
+    },
+    {
+      "date": "2023-03-21",
+      "season": "spring",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 13.1996,
+      "pvgisAcKWh": 13.1569,
+      "signedBiasPercent": 0.32,
+      "absoluteBiasPercent": 0.32
+    },
+    {
+      "date": "2023-03-22",
+      "season": "spring",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 11.9465,
+      "pvgisAcKWh": 11.5125,
+      "signedBiasPercent": 3.77,
+      "absoluteBiasPercent": 3.77
+    },
+    {
+      "date": "2023-06-20",
+      "season": "summer",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 18.5276,
+      "pvgisAcKWh": 17.3928,
+      "signedBiasPercent": 6.52,
+      "absoluteBiasPercent": 6.52
+    },
+    {
+      "date": "2023-06-21",
+      "season": "summer",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 18.4784,
+      "pvgisAcKWh": 17.288,
+      "signedBiasPercent": 6.89,
+      "absoluteBiasPercent": 6.89
+    },
+    {
+      "date": "2023-06-22",
+      "season": "summer",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 18.6191,
+      "pvgisAcKWh": 16.9346,
+      "signedBiasPercent": 9.95,
+      "absoluteBiasPercent": 9.95
+    },
+    {
+      "date": "2023-09-22",
+      "season": "autumn",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 15.4121,
+      "pvgisAcKWh": 14.738,
+      "signedBiasPercent": 4.57,
+      "absoluteBiasPercent": 4.57
+    },
+    {
+      "date": "2023-09-23",
+      "season": "autumn",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 10.1598,
+      "pvgisAcKWh": 9.7579,
+      "signedBiasPercent": 4.12,
+      "absoluteBiasPercent": 4.12
+    },
+    {
+      "date": "2023-09-24",
+      "season": "autumn",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 14.1488,
+      "pvgisAcKWh": 14.1175,
+      "signedBiasPercent": 0.22,
+      "absoluteBiasPercent": 0.22
+    },
+    {
+      "date": "2023-12-20",
+      "season": "winter",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 10.3728,
+      "pvgisAcKWh": 10.922,
+      "signedBiasPercent": -5.03,
+      "absoluteBiasPercent": 5.03
+    },
+    {
+      "date": "2023-12-21",
+      "season": "winter",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 3.2829,
+      "pvgisAcKWh": 2.8978,
+      "signedBiasPercent": 13.29,
+      "absoluteBiasPercent": 13.29
+    },
+    {
+      "date": "2023-12-22",
+      "season": "winter",
+      "steps": 24,
+      "reconstructedSteps": 0,
+      "modeledAcKWh": 5.7387,
+      "pvgisAcKWh": 5.7676,
+      "signedBiasPercent": -0.5,
+      "absoluteBiasPercent": 0.5
+    }
+  ]
+}

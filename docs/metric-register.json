@@ -327,8 +327,9 @@
       "classes": ["S"],
       "inputs": [],
       "source": "Energy consumed by tracker actuators, from the configured axis count and actuation profile (FR-PV-09).",
-      "availability": "conditional:tracking.enabled",
-      "notes": "Shown only when tracking is enabled; subtracted in MET-26."
+      "availability": "disabled:tracking.ac_06.accepted",
+      "reason": "No tracker actuator-energy model is implemented; AC-06 fixed-tilt yield validation and a follow-on tracker decision are prerequisites.",
+      "notes": "Reserved for a future admitted tracker model; configuration alone does not provide actuator-energy calculations. Do not report before AC-06 is accepted."
     },
     {
       "id": "MET-26",
@@ -340,8 +341,9 @@
       "classes": ["D"],
       "inputs": ["MET-14", "MET-25"],
       "source": "Additional harvest minus actuator energy, divided by fixed-tilt harvest.",
-      "availability": "conditional:tracking.enabled",
-      "notes": "A net figure; the report must not quote the gross gain."
+      "availability": "disabled:tracking.ac_06.accepted",
+      "reason": "No tracking-yield calculation is implemented; AC-06 fixed-tilt yield validation and a follow-on tracker decision are prerequisites.",
+      "notes": "Reserved for a future admitted tracker model; no tracking-yield calculation exists. Do not report before AC-06 is accepted."
     },
     {
       "id": "MET-27",

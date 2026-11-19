@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.26.0 |
-| Date | 2026-11-18 |
-| Phase | 00–03.7, with DEC-052 recording explicit shading/soiling experiments |
+| Version | 0.27.0 |
+| Date | 2026-11-19 |
+| Phase | 00–03.8, with DEC-053 reserving tracking behind AC-06 |
 | Owner | Author (sole developer) |
 
 A decision is recorded when it constrains later work, when a reasonable alternative was rejected, or when undoing it would be expensive. Entries are append-only; a changed decision is superseded by a new entry rather than edited.
@@ -13,7 +13,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 
 0.22.0 adds DEC-048: an optional Open-Meteo source with a validated complete-snapshot cache boundary, deterministic synthetic fallback and visible provider failure records.
 0.23.0 adds DEC-049: a named isotropic-sky transposition model with separate POA components, configurable albedo and explicit approximation provenance.
-0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate. 0.25.0 adds DEC-051: PV/inverter component models, clipping accounting and a tenth energy-ledger term. 0.26.0 adds DEC-052: scenario-owned shading/soiling controls and a repeatable, explicitly synthetic paired experiment.
+0.24.0 adds DEC-050: configured NOCT panel-temperature estimation, linear power temperature coefficient and separate required system derate. 0.25.0 adds DEC-051: PV/inverter component models, clipping accounting and a tenth energy-ledger term. 0.26.0 adds DEC-052: scenario-owned shading/soiling controls and a repeatable, explicitly synthetic paired experiment. 0.27.0 adds DEC-053: fixed tilt remains the v1 default; tracker behavior and its metrics are reserved until AC-06 closes.
 
 | ID | Decision | Status | Date |
 | --- | --- | --- | --- |
@@ -69,6 +69,7 @@ A decision is recorded when it constrains later work, when a reasonable alternat
 | DEC-050 | NOCT panel temperature and configurable linear temperature derate | Accepted | 2026-11-18 |
 | DEC-051 | PV DC and inverter AC outputs with explicit clipping energy | Accepted | 2026-11-18 |
 | DEC-052 | Scenario-controlled shading and soiling with repeatable attribution | Accepted | 2026-11-18 |
+| DEC-053 | Reserve tracking behind the fixed-tilt AC-06 gate | Accepted | 2026-11-19 |
 
 ---
 
@@ -623,4 +624,16 @@ Three supply terms and six demand terms. The three losses stay separate because 
 **Consequences.** The repeatable `EXP-001` fixture compares 2% soiling/no shading with 12% soiling and a 50% one-hour local shading window over four identical input steps. It yields a 21.428571% reduction in both DC and gross AC interval energy and identical replay output. The fixture, source hash, controls and per-step result are recorded in `docs/experiment-log.md` and `runs/exp-001/summary.json`; this is component response evidence only. Dynamic soiling growth/cleaning, weather-driven week runs, the application coordinator, loss UI and PVGIS calibration remain future work.
 
 **Revisit if** an accepted soiling accumulation/cleaning model or geometric shadow model is added; it must remain an explicit scenario or event input and retain paired, repeatable attribution.
+
+## DEC-053 · Reserve tracking behind the fixed-tilt AC-06 gate
+
+**Context.** FR-PV-09 is a Should item. The scenario contract already represents fixed orientation and permits a discriminated tracker configuration, but the production components do not calculate tracker geometry, stow behavior, actuator energy or tracking net gain. AC-06 remains pending and requires fixed-tilt daily-energy comparison over at least 12 days spanning seasons with mean absolute bias no greater than 15%; SH-04 explicitly places tracker comparison after that validation.
+
+**Decision.** Fixed tilt remains the v1 default and the only implemented array orientation. Keep panel tilt and azimuth in the array input so orientation is explicit and ready for later work. Keep tracking disabled with zero axes in every shipped scenario. Do not implement, enable, or report tracker geometry, stow rules, actuator consumption, or tracking net gain until AC-06 is accepted and a follow-on decision admits the tracker model. AC-06 remains Pending; this decision does not modify its signed checklist or claim that fixed-tilt yield has been validated.
+
+**Alternatives rejected.** Implement tracker calculations now behind a configuration flag — dormant code would still be unvalidated behavior and could enter the MVP path before the prerequisite gate. Remove orientation-ready inputs — this would make a later admitted tracker task require unnecessary scenario-contract churn. Treat the existing component tests or synthetic shading experiment as fixed-tilt yield validation — neither provides the required seasonal daily-energy comparison.
+
+**Consequences.** FR-PV-09 stays outside the MVP gate. MET-25 and MET-26 remain defined for future reporting but are marked unavailable until a tracking model is admitted; a scenario flag alone cannot make them available. The tracker reservation is documented in `docs/tracker-reservation.md`; AC-06 evidence remains the prerequisite. Any future implementation must model orientation, stow behavior and actuator energy explicitly and compare net output against fixed tilt on identical inputs.
+
+**Revisit if** AC-06 is accepted with its required seasonal evidence and a new decision authorizes tracker implementation and verification.
 

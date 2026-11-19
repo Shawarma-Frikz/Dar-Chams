@@ -41,6 +41,8 @@ authority; the other one links to it rather than restating it.
 | [`docs/panel-temperature-validation.md`](panel-temperature-validation.md) | NOCT temperature estimate, linear coefficient derating and limitations | PV temperature task 03.5 validation | `check-docs`; Vitest |
 | [`docs/pv-output-validation.md`](pv-output-validation.md) | PV DC loss factors, interval conversion, inverter efficiency, clipping and limits | PV output task 03.6 validation | `check-docs`; Vitest; `check-balance` |
 | [`docs/shading-soiling-validation.md`](shading-soiling-validation.md) | Scenario-owned shade/soil controls and repeatable paired response evidence | PV loss task 03.7 validation | `check-docs`; experiment runner; Vitest |
+| [`docs/tracker-reservation.md`](tracker-reservation.md) | Fixed-tilt default, tracker implementation boundary and AC-06 prerequisite | Tracker reservation task 03.8 | `check-docs`; `check-acceptance`; `check-requirements` |
+| [`docs/pvgis-ac-06-validation.md`](pvgis-ac-06-validation.md) | Reproducible 12-day fixed-tilt comparison with PVGIS | AC-06 / FR-PV-07 yield evidence | `node validation/ac-06/run.mjs`; manual acceptance review |
 | [`docs/conventions.md`](conventions.md) | Licence, branches, commits, evidence policy, checks | How the repository is kept | `check-docs` |
 | [`docs/quality-gates.md`](quality-gates.md) | Gates, CI job, demonstrated failure path | How a build turns red | `check-ci`; existence by `check-docs` |
 | [`docs/runtime-support.md`](runtime-support.md) | Pinned runtime, browsers, hardware, budgets | What the toolchain is | `check-runtime` |
